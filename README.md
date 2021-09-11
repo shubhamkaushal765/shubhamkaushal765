@@ -1,10 +1,10 @@
-- 👋 Hi, I’m @shubhamkaushal765
+- 👋 Hi, I’m @shubhamkaushal765, or Shubham Kaushal
 - 👀 I’m interested in Data Science and Applied Machine Learning.
 - 🌱 I’m currently learning Advanced Neural Networks.
 - 💞️ I’m looking to collaborate on projects related to Machine Learning.
 - 📫 How to reach me ... <br>
-          - Email: shubhamkaushal765@gmail.com
-          - GitHub: https://github.com/shubhamkaushal765
+          - Email: shubhamkaushal765@gmail.com <br>
+          - GitHub: https://github.com/shubhamkaushal765 <br>
           - LinkedIn: https://www.linkedin.com/in/kaushalshubham/
 
 <!---
