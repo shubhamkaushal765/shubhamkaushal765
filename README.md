@@ -1,7 +1,7 @@
 # Hello Folks!
 [GMail](mailto:shubhamkaushal765@gmail.com) | [LinkedIn](https://www.linkedin.com/in/kaushalshubham/) | [GitHub](https://github.com/shubhamkaushal765)
 
-Welcome to my GitHub page.
+My name is Shubham Kaushal and welcome to my GitHub page.
 <img align="center" src="https://github-readme-stats.vercel.app/api/<CARD_TYPE>/?username=<USERNAME>&theme=<THEME_NAME>" />
 
 <!--
