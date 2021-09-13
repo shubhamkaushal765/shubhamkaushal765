@@ -1,7 +1,11 @@
 <table>
     <tr>
         <td>Shubham Kaushal</td>    <td>Contact: 7045 603 792</td>
+    </tr>
+    <tr>
         <td>IIT Bombay '21</td>    <td>shubhamkaushal765@gmail.com</td>
+    </tr>
+    <tr>
         <td>Shubham Kaushal</td>    <td><a href='mailto:shubhamkaushal765@gmail.com'>GMail</a> | 
                                     <a href='https://www.linkedin.com/in/kaushalshubham/'>LinkedIn</a> | 
                                     <a href='https://github.com/shubhamkaushal765'>GitHub</a></td>
