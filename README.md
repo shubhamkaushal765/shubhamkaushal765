@@ -1,16 +1,5 @@
-<table width=1000>
-    <tr>
-        <td>Shubham Kaushal</td>    <td>Contact: 7045 603 792</td>
-    </tr>
-    <tr>
-        <td>IIT Bombay '21</td>    <td>shubhamkaushal765@gmail.com</td>
-    </tr>
-    <tr>
-        <td>Shubham Kaushal</td>    <td><a href='mailto:shubhamkaushal765@gmail.com'>GMail</a> | 
-                                    <a href='https://www.linkedin.com/in/kaushalshubham/'>LinkedIn</a> | 
-                                    <a href='https://github.com/shubhamkaushal765'>GitHub</a></td>
-    </tr>
-</table>
+# Shubham Kaushal
+[GMail](mailto:shubhamkaushal765@gmail.com) | [LinkedIn](https://www.linkedin.com/in/kaushalshubham/) | [GitHub](https://github.com/shubhamkaushal765)
 
 <!--
 - 👋 Hi, I’m @shubhamkaushal765, or Shubham Kaushal
