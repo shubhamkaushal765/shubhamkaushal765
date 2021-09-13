@@ -1,7 +1,11 @@
-# Shubham Kaushal
+# Hello Folks!
 [GMail](mailto:shubhamkaushal765@gmail.com) | [LinkedIn](https://www.linkedin.com/in/kaushalshubham/) | [GitHub](https://github.com/shubhamkaushal765)
 
+Welcome to my GitHub page.
+<img align="center" src="https://github-readme-stats.vercel.app/api/<CARD_TYPE>/?username=<USERNAME>&theme=<THEME_NAME>" />
+
 <!--
+https://towardsdatascience.com/build-a-stunning-readme-for-your-github-profile-9b80434fe5d7
 - 👋 Hi, I’m @shubhamkaushal765, or Shubham Kaushal
 - 👀 I’m interested in Data Science and Applied Machine Learning.
 - 🌱 I’m currently learning Advanced Neural Networks.
