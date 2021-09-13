@@ -1,4 +1,4 @@
-<table width='100%'>
+<table width=100%>
     <tr>
         <td>Shubham Kaushal</td>    <td>Contact: 7045 603 792</td>
     </tr>
