@@ -4,8 +4,12 @@
 My name is Shubham Kaushal and welcome to my GitHub page.
 
 ## Technology & Tools
-![](https://img.shields.io/badge/Code-Python-informational?style=flat&logo=python&logoColor=white&color=2bbc8a)
-![](https://img.shields.io/badge/DeepLearning-TensorFlow-informational?style=flat&logoColor=white&2bbc8a)
+![](https://img.shields.io/badge/OS-Linux-informational?style=flat&logo=linux&logoColor=white&color=2bbc8a)
+![](https://img.shields.io/badge/Code-Python-informational?style=flat&logo=python&logoColor=white&color=2bbc8a) 
+![](https://img.shields.io/badge/Code-C++-blue.svg?style=flat&logo=c%2B%2B&color=2bbc8a)
+![](https://img.shields.io/badge/Tools-TensorFlow-informational?style=flat&logo=tensorflow&logoColor=white&color=2bbc8a)
+![](https://img.shields.io/badge/Tools-Keras-informational?style=flat&logo=keras&logoColor=white&color=2bbc8a)
+![](https://img.shields.io/badge/Tools-Google_Colab-informational?style=flat&logo=Google&logoColor=white&color=2bbc8a)
 
 ## My Repositories
 To know more about my work, follow to my repositories. <br>
