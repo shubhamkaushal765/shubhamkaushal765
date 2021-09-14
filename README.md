@@ -9,7 +9,7 @@ To know more about my work, follow to my repositories. <br>
     [<img align="center" src="images/autoencoders.png" />](https://github.com/shubhamkaushal765/Denoising-images-Autoencoders)
 
 2. Sentiment Analysis on movie reviews (RNNs(LSTM))
-    [<img align="center" src="images/sentiment.png" />](https://github.com/shubhamkaushal765/IMDB-Sentiment-Analysis)
+    [<img align="center" src="images/sentiment.PNG" />](https://github.com/shubhamkaushal765/IMDB-Sentiment-Analysis)
     
 3. Image Classifier on MNIST handwritten digits (Supervised Learning | Data Augmentation | Model Stacking)
     [<img align="center" src="images/MNIST.PNG" />](https://github.com/shubhamkaushal765/MNIST-image-classifier)
