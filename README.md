@@ -6,10 +6,11 @@ My name is Shubham Kaushal and welcome to my GitHub page.
 ## My Repositories
 To know more about my work, follow to my repositories. <br>
 1. Denoising images (Autoencoders | CNNs)
-  [<img align="center" src="images/autoencoders.png" />](https://github.com/shubhamkaushal765/Denoising-images-Autoencoders)
+    [<img align="center" src="images/autoencoders.png" />](https://github.com/shubhamkaushal765/Denoising-images-Autoencoders)
 
 2. Sentiment Analysis on movie reviews (RNNs(LSTM))
 3. Image Classifier on MNIST handwritten digits (Supervised Learning | Data Augmentation | Model Stacking)
+    [<img align="center" src="images/MNIST.png" />](https://github.com/shubhamkaushal765/MNIST-image-classifier)
 
 
 <!--
