@@ -5,6 +5,7 @@ My name is Shubham Kaushal and welcome to my GitHub page.
 
 ## Technology & Tools
 ![](https://img.shields.io/badge/Code-Python-informational?style=flat&logo=python&logoColor=white&color=2bbc8a)
+![](https://img.shields.io/badge/DeepLearning-TensorFlow-informational?style=flat&logoColor=white&2bbc8a)
 
 ## My Repositories
 To know more about my work, follow to my repositories. <br>
