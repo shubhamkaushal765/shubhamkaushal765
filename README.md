@@ -1,8 +1,12 @@
-# Hello Folks!
+# Hello there!
 [GMail](mailto:shubhamkaushal765@gmail.com) | [LinkedIn](https://www.linkedin.com/in/kaushalshubham/) | [GitHub](https://github.com/shubhamkaushal765)
 
 My name is Shubham Kaushal and welcome to my GitHub page.
-<img align="center" src="images/autoencoders.png" />
+
+## My Repositories
+To know more about my work, follow to my repositories: <br>
+1. Denoising images using Autoencoders (CNNs)
+[<img align="center" src="images/autoencoders.png" />](https://github.com/shubhamkaushal765/Denoising-images-Autoencoders)
 
 <!--
 https://towardsdatascience.com/build-a-stunning-readme-for-your-github-profile-9b80434fe5d7
