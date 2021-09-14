@@ -15,7 +15,7 @@
 
 # Hello there!
 
-My name is Shubham Kaushal and welcome to my GitHub page.
+Welcome to my GitHub page.
 
 ## Technology & Tools
 ![](https://img.shields.io/badge/OS-Linux-informational?style=flat&logo=linux&logoColor=white&color=2bbc8a)
