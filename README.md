@@ -15,7 +15,7 @@
 
 # Hello there!
 
-Welcome to my GitHub page.
+I'm Shubham and welcome to my GitHub page.
 
 ## Technology & Tools
 ![](https://img.shields.io/badge/OS-Linux-informational?style=flat&logo=linux&logoColor=white&color=2bbc8a)
@@ -56,7 +56,7 @@ To know more about my work, follow to my repositories. <br>
 Links
 https://github.com/edent/SuperTinyIcons/blob/master/README.md
 https://github.com/carlsednaoui/gitsocial
-
+https://aboutmonica.com/blog/how-to-create-a-github-profile-readme#how-do-i-create-a-profile-readme
 -->
 
 
