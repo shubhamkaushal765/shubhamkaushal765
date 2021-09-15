@@ -24,7 +24,7 @@ Welcome to my GitHub page.
 ![](https://img.shields.io/badge/Tools-TensorFlow-informational?style=flat&logo=tensorflow&logoColor=white&color=2bbc8a)
 ![](https://img.shields.io/badge/Tools-Keras-informational?style=flat&logo=keras&logoColor=white&color=2bbc8a)
 
-## My Work
+## My Repositories
 To know more about my work, follow to my repositories. <br>
 1. Denoising images (Autoencoders | CNNs)
     [<img align="center" src="images/autoencoders.png" />](https://github.com/shubhamkaushal765/Denoising-images-Autoencoders)
