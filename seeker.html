@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Savita Bains - Tarot Card Reader & Medical Professional</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -28,11 +30,14 @@
             border-radius: 8px;
         }
 
-        img {
+        .slider {
             max-width: 100%;
-            height: auto;
-            border-radius: 8px;
             margin-bottom: 20px;
+        }
+
+        .slick-slide img {
+            width: 100%;
+            border-radius: 8px;
         }
 
         p {
@@ -57,7 +62,13 @@
     </header>
 
     <section>
-        <img src="tarot_card.jpg" alt="Savita Bains - Tarot Card Reader">
+        <div class="slider">
+            <div><img src="tarot_card.jpg" alt="Image 1"></div>
+            <div><img src="tarot_card.jpg" alt="Image 2"></div>
+            <div><img src="tarot_card.jpg" alt="Image 3"></div>
+            <!-- Add more images as needed -->
+        </div>
+
         <p>
             I extend a warm welcome to you. I am Savita Bains, a devoted tarot card reader and a seasoned medical professional with four years of experience in hospitals. Holding a BSc in Nursing and currently pursuing an MSc in Nutrition and Dietetics at Chandigarh University, my journey into holistic well-being has led me to seamlessly integrate my extensive medical expertise with the mystical realm of tarot card reading. I bring with me over a year of rich experience in this fascinating field.
         </p>
@@ -82,6 +93,20 @@
     <footer>
         &copy; 2023 Savita Bains. All rights reserved.
     </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.slider').slick({
+                dots: true,
+                infinite: true,
+                speed: 300,
+                slidesToShow: 1,
+                adaptiveHeight: true
+            });
+        });
+    </script>
 
 </body>
 </html>
