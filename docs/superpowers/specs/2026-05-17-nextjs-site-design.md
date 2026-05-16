@@ -108,20 +108,44 @@ npm run build              # runs next build with output: 'export'
 Build configuration in `next.config.mjs`:
 
 ```js
+import createMDX from '@next/mdx';
+
+const withMDX = createMDX({ extension: /\.mdx?$/ });
+
 /** @type {import('next').NextConfig} */
-export default {
+export default withMDX({
   output: 'export',
-  distDir: '../docs',
   basePath: '',
   trailingSlash: true,
   images: { unoptimized: true },
-  pageExtensions: ['ts', 'tsx', 'mdx'],
-};
+  pageExtensions: ['ts', 'tsx'],   // NOT 'mdx' — see §3.0 MDX wiring
+});
 ```
 
 `trailingSlash: true` makes the export emit `/about/index.html` style URLs that GitHub Pages serves cleanly.
 `images.unoptimized: true` is required because static export cannot run the Next.js image-optimization API.
 `basePath: ''` is correct because the site is at the root of `*.github.io`, not a subpath.
+`pageExtensions` deliberately excludes `mdx` so that MDX files in `content/` are imported into TSX route handlers rather than becoming routes themselves. See §3.0.
+
+**Note on `distDir`:** `distDir` controls Next's internal build cache directory (default `.next`), not the static-export output directory. With `output: 'export'`, Next writes the export to `out/` inside the project root regardless of `distDir`. To land the output in the repo's `docs/` folder, `npm run build` is wrapped:
+
+```json
+{
+  "scripts": {
+    "build": "next build && node ./scripts/publish-to-docs.mjs",
+    "dev": "next dev",
+    "lint": "next lint"
+  }
+}
+```
+
+`scripts/publish-to-docs.mjs` performs three deterministic steps:
+
+1. `rm -rf ../docs` (clears stale output, preserves `docs/.gitkeep` if added — not needed here since the folder is regenerated each build)
+2. `mv out ../docs` (relocates the export)
+3. `fs.writeFile('../docs/.nojekyll', '')` (recreates the Jekyll-disable marker)
+
+This is the only out-of-Next post-processing step. The script is committed and reviewable.
 
 TypeScript config (`tsconfig.json`) is strict and pins the two flags called out in the parent spec §3:
 
@@ -186,6 +210,8 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add docs
             git commit -m "chore: rebuild site from $GITHUB_SHA"
+            # rebase onto any newer main before pushing to avoid races
+            git pull --rebase origin main
             git push
           fi
 ```
@@ -208,6 +234,41 @@ The CI commit is the only situation where a non-human author appears in `main`'s
 ## 3. Page content
 
 Each page is built from an MDX file in `content/` rendered by a thin TSX route handler. Prose lives in MDX so future edits do not require touching JSX.
+
+### 3.0 MDX wiring (binding decision)
+
+Two valid Next.js patterns exist for MDX pages. This spec locks the first:
+
+**Chosen pattern — TSX route handler imports MDX as a component:**
+
+```tsx
+// app/page.tsx
+import Content from '@/content/home.mdx';
+import Hero from '@/components/Hero';
+import FooterSignature from '@/components/FooterSignature';
+
+export const metadata = { title: 'Shubham Kaushal — Parsers to qubits.' };
+
+export default function HomePage() {
+  return (
+    <main>
+      <Hero variant="full" />
+      <article className="prose"><Content /></article>
+      <FooterSignature />
+    </main>
+  );
+}
+```
+
+**Rejected alternative:** placing `page.mdx` files directly under `app/` and exporting `metadata` from MDX frontmatter. Rejected because it forces `pageExtensions` to include `mdx`, which then prevents a TSX route handler at the same path (Next collapses the two into ambiguous routing), and because it makes the `<Hero>` + `<Content>` + `<FooterSignature>` composition harder to enforce as a uniform page layout.
+
+**Consequences locked by this decision:**
+
+- `pageExtensions: ['ts', 'tsx']` in `next.config.mjs` (no `'mdx'`).
+- Path alias `@/*` in `tsconfig.json` resolves `@/content/home.mdx` correctly.
+- `@next/mdx` is still required: the loader registers the `.mdx` extension so the TSX import works at all.
+- `metadata` exports live in the TSX file, not in MDX frontmatter. (MDX frontmatter is therefore unused; do not write any.)
+- `<Hero>`, `<FooterSignature>`, and other layout-level components are rendered in TSX around the MDX, not inside it. The MDX file contains only prose, headings, links, and inline `<code>`.
 
 ### 3.1 `/` (Home)
 
@@ -407,7 +468,11 @@ The current `README.md` (committed in 09c4223) is structurally correct per the p
 
 ### 6.1 `.agent/profile-system.md`
 
-Add a new section "Personality motifs" between "Voice rules" and "Audience perception matrix". Content: the five motifs from §4 above, restated as binding rules. This ensures future edits do not reintroduce decoration or remove the motifs by accident.
+Two changes:
+
+1. Add a new section "Personality motifs" between "Voice rules" and "Audience perception matrix". Content: the five motifs from §4 above, restated as binding rules. This ensures future edits do not reintroduce decoration or remove the motifs by accident.
+
+2. **Amend the existing Hard rules line** "No HTML in `README.md` except `<sub>` for the forks footnote at the bottom." to read: "No HTML in `README.md` except `<sub>` tags. Two `<sub>` blocks are permitted: the footer signature (per §4.5) and the forks footnote, in that order at the bottom of the file." This resolves the silent conflict between the existing rule and the new footer signature added in §5.1.
 
 ### 6.2 `.agent/visual-system.md`
 
@@ -546,7 +611,7 @@ Explicitly NOT installed for v1 (deferred):
 
 This spec is the input to `writing-plans`. The plan will break implementation into these phases (in order):
 
-1. **Specs relocation** — `git mv docs/superpowers/ superpowers/`. One commit: `chore: relocate specs to superpowers/`.
+1. **Specs relocation** — `git mv docs/superpowers/ superpowers/`. One commit: `chore: relocate specs to superpowers/`. **Note on self-reference:** this spec lives at `docs/superpowers/specs/2026-05-17-nextjs-site-design.md` before phase 1 and at `superpowers/specs/2026-05-17-nextjs-site-design.md` after. All subsequent phases reference the new path. Any tooling that re-reads the spec by absolute path must be re-pointed.
 2. **Jekyll deletion** — `git rm -rf` the 13 files/dirs listed in §8. One commit included in the next phase.
 3. **Next.js scaffold** — create `site/` with `package.json`, `next.config.mjs`, `tsconfig.json`, `app/layout.tsx`, `app/page.tsx`, `styles/globals.css`, `public/.nojekyll`. Verify `npm install` and `npm run build` succeed before adding content.
 4. **Components** — implement `Hero`, `PillarDiagram`, `SectionRule`, `FootnoteList`, `FooterSignature`. Each is a server component (no `"use client"` needed; the accent reveal is CSS-only).
@@ -573,7 +638,7 @@ After implementation, the following must all be true:
 - [ ] `docs/.nojekyll` exists.
 - [ ] `docs/about/index.html`, `docs/writing/index.html`, `docs/now/index.html`, `docs/404.html` all exist.
 - [ ] README hero codefence contains the canonical ASCII diagram verbatim from §4.1.
-- [ ] No emoji anywhere in the repo: `grep -rP '[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}]' --include='*.md' --include='*.mdx' --include='*.tsx' --include='*.ts' --include='*.html' .` returns nothing.
+- [ ] No emoji anywhere in the repo: `rg --pcre2 '[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}]' -g '*.md' -g '*.mdx' -g '*.tsx' -g '*.ts' -g '*.html'` returns nothing. (Uses ripgrep for cross-platform PCRE support; macOS BSD `grep` lacks `-P`.)
 - [ ] No badges in README: `grep -E 'shields\.io|img\.shields|github-readme-stats|streak-stats|top-langs|wakatime|skill-icons|profile-views' README.md` returns nothing.
 - [ ] All five locked Selected-work descriptions in README match parent spec §5 verbatim.
 - [ ] The three engineering-philosophy lines appear verbatim in README, `/`, and `/about`.
