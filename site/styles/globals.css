@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+@theme {
+  /* spacing -- fibonacci on 0.25rem (see .agent/visual-system.md §spacing) */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-5: 1.25rem;
+  --spacing-8: 2rem;
+  --spacing-13: 3.25rem;
+
+  /* surfaces */
+  --color-surface-base: #0a0a0a;
+  --color-surface-card: #111111;
+  --color-surface-hover: #161616;
+
+  /* text */
+  --color-text-body: #ededed;
+  --color-text-muted: #a3a3a3;
+  --color-text-footnote: #737373;
+
+  /* accent -- single use only */
+  --color-accent: #7dd3fc;
+
+  /* typography */
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Inter Display", "Inter", system-ui, sans-serif;
+  --font-mono: "Berkeley Mono", "JetBrains Mono", "Geist Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    background: var(--color-surface-base);
+    color: var(--color-text-body);
+    font-family: var(--font-sans);
+    line-height: 1.75;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  main {
+    max-width: 68ch;
+    margin: 0 auto;
+    padding: var(--spacing-13) var(--spacing-5);
+  }
+
+  /* h2 carries the section-rule motif; SectionRule.tsx renders the line + small-caps */
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-variant: small-caps;
+    letter-spacing: -0.02em;
+    margin-top: var(--spacing-13);
+    margin-bottom: var(--spacing-5);
+  }
+
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-top: var(--spacing-8);
+    margin-bottom: var(--spacing-3);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklab, currentColor 50%, transparent);
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+    transition: text-decoration-color 120ms ease-out;
+  }
+  a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    background: var(--color-surface-card);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.95em;
+  }
+
+  pre {
+    font-family: var(--font-mono);
+    line-height: 1.2;
+    overflow-x: auto;
+    max-width: 82ch;
+  }
+
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+  }
+}
+
+/* one-time accent reveal for the home hero tagline */
+@keyframes accent-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.hero-tagline {
+  color: var(--color-accent);
+  animation: accent-fade-in 200ms ease-out;
+}

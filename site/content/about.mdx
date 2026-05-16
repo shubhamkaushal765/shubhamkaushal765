@@ -1,0 +1,56 @@
+## Identity
+
+Independent engineer and researcher working across code intelligence, machine learning, and quantum computing — from Rust-based static analyzers at the bottom of the stack to transformer-based quantum error correction at the top.
+
+The connecting thread is operating on *symbolic structure* — ASTs, code embeddings, syndrome graphs — and building tooling that respects the structure. Rust at the bottom for compiler-grade tooling. Python at the top for research code. The senior pattern, not a portfolio juxtaposition.
+
+## Three pillars
+
+### Code intelligence
+
+`zuit` is a multi-language static-analysis CLI in Rust. The work centers on a five-dimension finding taxonomy (maintainability, security, complexity, documentation, test smells) emitted as SARIF 2.1.0 with CWE and OWASP anchors. Correctness is held to a contract: the `zuit-python-test-cases` fixture corpus pairs vulnerable and safe Python with `expected.json` files, so every Python rule has both a positive and negative example checked into git. SARIF [1] is the deliverable, not a logging side effect.
+
+### Machine learning
+
+`tell-me-why` is local-first RAG over source code. Multi-language parsing — Python, Rust, C#, Java, JS/TS, Go — extracts structural units before embedding. The model layer is Ollama; the vector store is Chroma; embeddings come from sentence-transformers. Nothing leaves the operator's machine. The earlier ML fundamentals (autoencoders, sentiment classification, MNIST, EDA) established the applied baseline; the current focus is benchmark methodology at fixed memory budget across embedding models.
+
+### Quantum computing
+
+`TransformerQEC` is a transformer-based decoder for surface-code quantum error correction. The architecture encodes syndrome graphs as sequences and trains a custom transformer encoder under PyTorch Lightning, with Stim providing the noisy-circuit simulation. The implementation follows the *Transformer-QEC* paper [2]. The adjacent `qosf_excercises` repo holds the QOSF Cohort 9 Task 4 solutions on QAOA and adiabatic-to-QAOA mapping [3].
+
+## Bridge artifacts
+
+`TransformerQEC` is the ML-to-Quantum bridge. The transformer architecture that underlies code embeddings turns out to be the right structural prior for syndrome graphs: both are sparse, both have local correlations, both reward learning a low-dimensional structural representation rather than a surface-form one.
+
+`tell-me-why` is the Code-to-ML bridge. Source code is the structured corpus; multi-language parsing is the structure-extraction step; local embedding + retrieval is the model layer. The pipeline respects program structure — it does not flatten a function into a string of tokens before embedding.
+
+## Engineering philosophy
+
+- Structure first, syntax second — work on the AST, the syndrome graph, the embedding, not the surface form.
+- Run local until proven otherwise — code, models, and quantum simulators belong on the operator's machine.
+- Reproducibility is the deliverable — fixtures, seeds, SARIF, `expected.json` — the artifact is the contract.
+
+## How I work
+
+- Conventional Commits strict on every owned repository. Linear history on `main`. GPG-signed.
+- No Claude co-author tags. Commits are authored by the human operator.
+- Releases ship a `CHANGELOG.md`. Research repos (`TransformerQEC`) ship a `CITATION.cff`.
+- Project READMEs follow a fixed skeleton: install, usage, architecture, **status**, license. The status section is mandatory.
+
+## 12-month direction
+
+### Q1
+
+`zuit` to 1.0: SARIF schema stabilization, first three Python rules with paper-grade rationale, submission to `awesome-static-analysis`.
+
+### Q2
+
+`tell-me-why` benchmark suite vs. cursor / continue / claude-projects at fixed memory budget.
+
+### Q3
+
+`TransformerQEC` reproduction on public datasets; release of training weights and full training script.
+
+### Q4
+
+Synthesis writeup — *Three projects, one thesis* — formalizing the parsers-to-qubits framing as a single coherent research program.
