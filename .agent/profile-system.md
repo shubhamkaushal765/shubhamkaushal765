@@ -1,0 +1,132 @@
+# Profile Operating Manual
+
+This document is the authoritative reference for the GitHub profile
+`shubhamkaushal765`. Every edit to `README.md` must be consistent with the
+rules stated here.
+
+---
+
+## Identity
+
+Shubham Kaushal is an independent engineer and researcher working across three
+equal domains: code intelligence and static analysis, applied machine learning,
+and quantum computing. The work is characterized by shipped tooling — a
+Rust-based multi-language static analyzer (`zuit`), a local-first RAG pipeline
+over source code (`tell-me-why`), and a transformer-based quantum error
+correction decoder (`TransformerQEC`). The archetype is research-lab
+independent operator, not portfolio developer.
+
+---
+
+## Tagline
+
+> Parsers to qubits.
+
+This is the locked tagline. It appears verbatim in the `README.md` hero block.
+Do not paraphrase it. Do not change the punctuation. Do not expand it inline
+(the em-dash expansion "Code intelligence, ML, and quantum error correction"
+is a subtitle only, not part of the tagline itself).
+
+---
+
+## Engineering philosophy
+
+These three lines appear verbatim in `README.md` and on the site About page.
+Do not reword them under any circumstances.
+
+- Structure first, syntax second — work on the AST, the syndrome graph, the embedding, not the surface form.
+- Run local until proven otherwise — code, models, and quantum simulators belong on the operator's machine.
+- Reproducibility is the deliverable — fixtures, seeds, SARIF, `expected.json` — the artifact is the contract.
+
+---
+
+## Three pillars and bridge artifacts
+
+### Code intelligence
+
+Primary artifact: `zuit` — multi-language static-analysis CLI in Rust.
+Emits SARIF 2.1.0 with CWE and OWASP anchors.
+Correctness verified by `zuit-python-test-cases` fixture corpus.
+
+### Machine learning
+
+Primary artifact: `tell-me-why` — local-first RAG over source code.
+Multi-language parsing + Ollama inference + Chroma + sentence-transformers.
+All computation stays on the operator's machine.
+
+### Quantum computing
+
+Primary artifact: `TransformerQEC` — transformer-based decoder for surface-code QEC.
+Syndrome graph encoding, Stim simulation, PyTorch Lightning training.
+
+### Bridge artifacts
+
+- `TransformerQEC` bridges ML to Quantum: transformer sequence modeling applied to syndrome graph decoding.
+- `tell-me-why` bridges Code to ML: source code treated as a structured corpus for embedding and retrieval.
+
+---
+
+## Pin slate
+
+The GitHub profile shows 5 pinned repositories. The 6th slot is intentionally
+empty as a discipline signal — it will not be filled until `verbose-noodles`
+or another artifact ships with at least 30 meaningful commits, a real README,
+and real CI.
+
+| Slot | Repository | Rationale |
+|------|------------|-----------|
+| 1 | TransformerQEC | Quantum × ML flagship; bridge artifact; citation surface |
+| 2 | zuit | Code intelligence flagship; public Rust; most polished README |
+| 3 | tell-me-why | Code × ML bridge; local-first AI infrastructure |
+| 4 | qosf_excercises | Quantum credential (QOSF Cohort 9); peer-reviewed cohort |
+| 5 | codestick | Breadth proof; published TypeScript library; shows full-stack range |
+| 6 | *(empty)* | Intentionally empty — discipline signal; not a gap to fill reflexively |
+
+To change the pin slate, follow the procedure in `AGENTS.md` § Adding a new repo.
+
+---
+
+## Hard rules
+
+These are absolute constraints. Any output that violates them is incorrect.
+
+- No emoji anywhere in any file in this repository.
+- No badges in `README.md`. No shields.io, no GitHub stats widgets, no streak cards, no top-langs cards, no wakatime badges, no trophies, no profile-views counters, no skill-icons rows.
+- No GitHub stats widgets of any kind. Banned list: `github-readme-stats`, `streak-stats`, `top-langs`, `wakatime`, `metrics`, ASCII contribution charts, trophy badges, profile-views counters.
+- No HTML in `README.md` except `<sub>` for the forks footnote at the bottom.
+- No section headers deeper than H3 in `README.md`.
+- No tables-of-contents in `README.md`.
+- No invented facts: no fake star counts, no invented release dates, no fabricated metrics, no projects not listed in the approved spec.
+- No motivational language: no "passionate developer," no "love coding," no "always learning," no "excited about," no "dedicated to."
+- No hype language: no "bleeding edge," no "cutting-edge," no "revolutionary," no "world-class."
+- No co-author tags on commits. No `Co-Authored-By: Claude` lines.
+
+---
+
+## Voice rules
+
+Tone: calm, precise, technical. The register is engineering documentation, not
+a personal pitch. The model is `oilshell.org`, `nullprogram.com`, Stripe Press
+whitepaper — not a developer portfolio.
+
+What to write: declarative statements about what things are and what they do.
+What to avoid: first-person enthusiasm, rhetorical questions, forward-looking
+hype, vague capability claims, jargon used for signaling rather than precision.
+
+Sentences should be short enough to parse on first read. Paragraphs in the
+profile README are 2–3 sentences. Subsection prose does not exceed 4 sentences.
+
+---
+
+## Audience perception matrix
+
+| Audience | Desired action |
+|----------|----------------|
+| OSS maintainer | Stars zuit; opens an issue or sends a PR |
+| Quantum / ML researcher | Opens TransformerQEC; possibly cites the implementation |
+| Recruiter (staff IC search) | Sends outbound message |
+| Founder / VC | Reaches out about tell-me-why or codelens commercial story |
+| Hiring manager (skeptical) | Reads to the end without dropping off |
+
+The README is optimized for the researcher and the skeptical hiring manager.
+Density and precision serve both; hype and badges serve neither.
