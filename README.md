@@ -99,13 +99,13 @@ computing. Shipped: [TransformerQEC](https://github.com/shubhamkaushal765/Transf
 
 ## Writing
 
-Essays and technical posts are published at [shubhamkaushal765.github.io](https://shubhamkaushal765.github.io). The personal site is under active development; a custom domain and a structured writing section are forthcoming. Posts are drafted as MDX and versioned in the site build.
+Essays and technical posts are published at [shubhamkaushal765.github.io/shubhamkaushal765](https://shubhamkaushal765.github.io/shubhamkaushal765/). The personal site is under active development; a custom domain and a structured writing section are forthcoming. Posts are drafted as MDX and versioned in the site build.
 
 ---
 
 ## Connect
 
-- Site: [shubhamkaushal765.github.io](https://shubhamkaushal765.github.io)
+- Site: [shubhamkaushal765.github.io/shubhamkaushal765](https://shubhamkaushal765.github.io/shubhamkaushal765/)
 - Email: [kaushalshubham.ks@gmail.com](mailto:kaushalshubham.ks@gmail.com)
 - GitHub: [shubhamkaushal765](https://github.com/shubhamkaushal765)
 - LinkedIn: [kaushalshubham](https://linkedin.com/in/kaushalshubham)
