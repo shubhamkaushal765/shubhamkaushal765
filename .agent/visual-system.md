@@ -109,6 +109,22 @@ the light-mode accent here until tested.
 
 ---
 
+## Hero diagram
+
+The canonical ASCII pillar diagram is the single shared visual motif across the README and site Home/About. It is reproduced verbatim from `.agent/profile-system.md` § Personality motifs. Do not modify the characters, the spacing, or the case.
+
+### Implementation rules
+
+- Renders inside `<pre>` (site) or a `text`-language codefence (README).
+- Font: `var(--font-mono)` (Berkeley Mono → JetBrains Mono → Geist Mono fallback chain).
+- Line height: `1.2`.
+- No surrounding background, border, or box-shadow.
+- The `parsers -> qubits.` line is the single accent reveal: opacity 0 → 1 fade over 200ms on initial render, then static at `var(--color-accent)` (`#7dd3fc`). No hover state, no other animation.
+- ASCII only: `+`, `-`, `|`, `\`, `/`, `>`. No Unicode arrows. No box-drawing characters. No emoji.
+- Width is fixed at 60 characters between the `+` borders.
+
+---
+
 ## Link style
 
 - Underline: `1px solid currentColor` at `50%` opacity.

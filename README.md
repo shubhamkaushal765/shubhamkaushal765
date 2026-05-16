@@ -1,6 +1,16 @@
 ```text
-Shubham Kaushal — shubhamkaushal765
-Parsers to qubits.
++----------------------------------------------------------+
+|  shubham kaushal // shubhamkaushal765                    |
+|                                                          |
+|  parsers -> qubits.                                      |
+|                                                          |
+|     code intelligence ---bridge--- machine learning      |
+|              \                          /                |
+|               \                        /                 |
+|                +------ bridge ------> quantum computing  |
+|                                                          |
+|  rust at the bottom. python at the top.                  |
++----------------------------------------------------------+
 
 Independent engineer and researcher working across code intelligence, machine
 learning, and quantum computing — from Rust-based static analyzers at the
@@ -8,6 +18,8 @@ bottom of the stack to transformer-based quantum error correction at the top.
 The connecting thread is operating on symbolic structure: ASTs, code
 embeddings, syndrome graphs. The tooling is built to respect that structure.
 ```
+
+---
 
 ## What I work on
 
@@ -35,6 +47,8 @@ bit-flip and phase-flip errors from Stim-simulated circuits, trained under
 PyTorch Lightning. QOSF Cohort 9 work covers QAOA and adiabatic quantum
 computing. Shipped: [TransformerQEC](https://github.com/shubhamkaushal765/TransformerQEC).
 
+---
+
 ## Selected work
 
 **[TransformerQEC](https://github.com/shubhamkaushal765/TransformerQEC)** — Transformer-based decoder for surface-code QEC. Stim simulation, PyTorch Lightning training, syndrome-graph encoding. — Quantum · ML
@@ -47,17 +61,31 @@ computing. Shipped: [TransformerQEC](https://github.com/shubhamkaushal765/Transf
 
 **[codestick](https://github.com/shubhamkaushal765/codestick)** — Programmatic stick-figure animation library for TypeScript. Angular-skeleton system, 22 human poses, 10 animation clips, SVG export. — TypeScript · animation
 
+---
+
 ## Bridges
 
 [TransformerQEC](https://github.com/shubhamkaushal765/TransformerQEC) is the ML-to-Quantum bridge: it applies transformer sequence modeling — the same architecture that underlies code embeddings — to syndrome graph decoding, bringing ML methodology into quantum error correction directly.
 
 [tell-me-why](https://github.com/shubhamkaushal765/tell-me-why) is the Code-to-ML bridge: it treats source code as a corpus, runs multi-language parsing to extract structure, and feeds that structure into a local embedding and retrieval pipeline.
 
+---
+
 ## Engineering philosophy
 
 - Structure first, syntax second — work on the AST, the syndrome graph, the embedding, not the surface form.
 - Run local until proven otherwise — code, models, and quantum simulators belong on the operator's machine.
 - Reproducibility is the deliverable — fixtures, seeds, SARIF, `expected.json` — the artifact is the contract.
+
+---
+
+## How I work
+
+- Conventional Commits strict on every repo. Linear history on `main`.
+- Commits are GPG-signed. No Claude co-author tags.
+- Reproducibility is the deliverable: fixtures, seeds, SARIF, `expected.json`.
+
+---
 
 ## Current focus
 
@@ -67,15 +95,22 @@ computing. Shipped: [TransformerQEC](https://github.com/shubhamkaushal765/Transf
 - zuit 0.x to 1.0: stabilizing the SARIF schema, adding the first three Python rules with paper-grade rationale, preparing a crates.io release.
 - TransformerQEC reproduction on public datasets: releasing training weights and the full training script for independent verification.
 
+---
+
 ## Writing
 
 Essays and technical posts are published at [shubhamkaushal765.github.io](https://shubhamkaushal765.github.io). The personal site is under active development; a custom domain and a structured writing section are forthcoming. Posts are drafted as MDX and versioned in the site build.
 
+---
+
 ## Connect
 
-Email: [kaushalshubham.ks@gmail.com](mailto:kaushalshubham.ks@gmail.com)
-GitHub: [shubhamkaushal765](https://github.com/shubhamkaushal765)
-LinkedIn: [kaushalshubham](https://linkedin.com/in/kaushalshubham)
-ORCID: _coming_
+- Site: [shubhamkaushal765.github.io](https://shubhamkaushal765.github.io)
+- Email: [kaushalshubham.ks@gmail.com](mailto:kaushalshubham.ks@gmail.com)
+- GitHub: [shubhamkaushal765](https://github.com/shubhamkaushal765)
+- LinkedIn: [kaushalshubham](https://linkedin.com/in/kaushalshubham)
+- ORCID: _coming_
+
+<sub>~/lab  ·  asia/kolkata (utc+5:30)  ·  pgp 0xDEADBEEF</sub>
 
 <sub>Reads / contributes to the qBraid, openqaoa, QAOAKit, and qiskit-textbook ecosystems.</sub>

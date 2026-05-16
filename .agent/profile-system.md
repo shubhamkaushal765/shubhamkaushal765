@@ -93,7 +93,7 @@ These are absolute constraints. Any output that violates them is incorrect.
 - No emoji anywhere in any file in this repository.
 - No badges in `README.md`. No shields.io, no GitHub stats widgets, no streak cards, no top-langs cards, no wakatime badges, no trophies, no profile-views counters, no skill-icons rows.
 - No GitHub stats widgets of any kind. Banned list: `github-readme-stats`, `streak-stats`, `top-langs`, `wakatime`, `metrics`, ASCII contribution charts, trophy badges, profile-views counters.
-- No HTML in `README.md` except `<sub>` for the forks footnote at the bottom.
+- No HTML in `README.md` except `<sub>` tags. Two `<sub>` blocks are permitted: the footer signature (per `.agent/visual-system.md` § Hero diagram) and the forks footnote, in that order at the bottom of the file.
 - No section headers deeper than H3 in `README.md`.
 - No tables-of-contents in `README.md`.
 - No invented facts: no fake star counts, no invented release dates, no fabricated metrics, no projects not listed in the approved spec.
@@ -115,6 +115,51 @@ hype, vague capability claims, jargon used for signaling rather than precision.
 
 Sentences should be short enough to parse on first read. Paragraphs in the
 profile README are 2–3 sentences. Subsection prose does not exceed 4 sentences.
+
+---
+
+## Personality motifs
+
+Five recurring elements give the README and site a coherent visual flavor without violating the hard rules. These are binding; do not remove them, do not replace them with decoration.
+
+### Hero codefence with ASCII pillar diagram
+
+Shared between README and site Home/About. Canonical form (60 chars wide):
+
+`+----------------------------------------------------------+`
+`|  shubham kaushal // shubhamkaushal765                    |`
+`|                                                          |`
+`|  parsers -> qubits.                                      |`
+`|                                                          |`
+`|     code intelligence ---bridge--- machine learning      |`
+`|              \                          /                |`
+`|               \                        /                 |`
+`|                +------ bridge ------> quantum computing  |`
+`|                                                          |`
+`|  rust at the bottom. python at the top.                  |`
+`+----------------------------------------------------------+`
+
+ASCII only. Lowercase throughout. No Unicode arrows.
+
+### Section headers
+
+README: `---` horizontal rule above each H2. Site: 1px top-rule + small-caps Inter Display H2 via the `<SectionRule>` component. No numbered headers.
+
+### Numbered footnote citations
+
+Used on `/about`, `/now`, and all essays. Format: `[N] Author et al. "Title." Venue Year. URL`. Inline reference: `Transformer-QEC [1]` linking to `#fn-1`.
+
+### Single accent color
+
+`#7dd3fc` (sky-300). Used for inline `<code>` foreground, link underline (50% opacity at rest), and the one-time fade-in reveal of the `parsers -> qubits.` line in the home hero. Nothing else.
+
+### Footer signature
+
+Monospace line at the bottom of every site page and the README:
+
+`~/lab  ·  asia/kolkata (utc+5:30)  ·  pgp 0xDEADBEEF`
+
+PGP fingerprint is a placeholder until a real key is generated. Location and timezone are real.
 
 ---
 
