@@ -1,4 +1,4 @@
-name: Build site
+name: Build and deploy site
 
 on:
   push:
@@ -8,15 +8,20 @@ on:
       - '.github/workflows/site.yml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -26,13 +31,18 @@ jobs:
         working-directory: site
       - run: npm run build
         working-directory: site
-      - name: Commit rebuilt docs/ if changed
-        run: |
-          if [ -n "$(git status --porcelain docs)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add docs
-            git commit -m "chore: rebuild site from $GITHUB_SHA"
-            git pull --rebase origin main
-            git push
-          fi
+      - name: Ensure .nojekyll exists
+        run: touch site/out/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

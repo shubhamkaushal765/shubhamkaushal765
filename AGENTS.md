@@ -3,8 +3,10 @@
 This is the GitHub profile repository for `shubhamkaushal765`. The root
 `README.md` is the profile README rendered on the GitHub user page. The
 Next.js site that backs `https://shubhamkaushal765.github.io` lives under
-`site/` (source) and `docs/` (static export served by GitHub Pages). The
-`.agent/` directory holds the operating manual and conventions.
+`site/` (source). Build output is **not committed** — GitHub Actions builds
+the site on every push and deploys it directly to Pages via the Pages
+artifact API. The `.agent/` directory holds the operating manual and
+conventions.
 
 ## How to work here
 
@@ -13,8 +15,8 @@ Next.js site that backs `https://shubhamkaushal765.github.io` lives under
 - Writing strategy (topics, pipeline, voice, citation policy): `.agent/writing-strategy.md`
 - Visual system (design tokens, typography, color, spacing, hero diagram): `.agent/visual-system.md`
 - Site source: `site/` (Next.js, own `package.json` — run all npm commands from there)
-- Site build output: `docs/` (committed, served by GitHub Pages — never edit by hand)
-- Design specs: `superpowers/specs/` (NOT `docs/superpowers/`)
+- Site deploy: GitHub Actions workflow at `.github/workflows/site.yml` builds `site/` and uploads to Pages via `actions/deploy-pages`. Build output (`site/out/` or local `docs/`) is gitignored — do not commit it.
+- Design specs: `superpowers/specs/`
 - Implementation plans: `superpowers/plans/`
 
 Read `.agent/profile-system.md` before making any edit to `README.md`.
@@ -26,8 +28,7 @@ Read `.agent/profile-system.md` before making any edit to `README.md`.
 - No GitHub stats widgets of any kind in the profile README. Banned list: `github-readme-stats`, `streak-stats`, `top-langs`, `wakatime`, `metrics`, ASCII contribution charts, trophy badges.
 - The tagline is locked verbatim: `Parsers to qubits.` — do not paraphrase, do not punctuate differently, do not omit. The lowercase rendering `parsers -> qubits.` inside the hero diagram is the only permitted variant.
 - The three engineering-philosophy lines are locked verbatim (see `.agent/profile-system.md`). Do not reword them.
-- Never edit `docs/` by hand. Always regenerate via `cd site && npm run build`.
-- `docs/.nojekyll` must always exist after a build. If missing, the build is broken.
+- Do not commit build output. `site/out/`, `site/.next/`, and `docs/` are gitignored — Pages is deployed by the Actions workflow, not from in-tree files.
 
 ## Site work
 
@@ -36,18 +37,19 @@ The Next.js source lives in `site/`. All npm commands must be run from there:
     cd site
     npm install        # first-time setup
     npm run dev        # local preview at http://localhost:3000
-    npm run build      # static export to ../docs
+    npm run build      # static export to site/out/
     npm run lint       # ESLint
     npm run typecheck  # tsc --noEmit
 
-The build writes to `docs/` at the repo root. Commit `docs/` along with the
-source changes that produced it. CI will rebuild on push to `main` and commit
-a follow-up `chore: rebuild site from <sha>` commit if the output drifts.
+`npm run build` writes to `site/out/`. That directory is gitignored. To
+deploy, push to `main` and let `.github/workflows/site.yml` build and deploy
+to Pages via the artifact API.
 
 Pages settings (set once in repo Settings → Pages, not in code):
 
-- Source: Deploy from a branch
-- Branch: `main`, folder: `/docs`
+- Source: GitHub Actions
+- The workflow file is `.github/workflows/site.yml` — do not change to
+  "Deploy from a branch" or the workflow's artifact upload will be ignored.
 
 ## Scope boundaries
 

@@ -11,9 +11,14 @@
 # next.js
 /.next/
 /out/
+site/.next/
+site/out/
 
 # production
 /build
+
+# Pages build output — Actions builds and uploads as artifact; not in git
+/docs
 
 # misc
 .DS_Store
