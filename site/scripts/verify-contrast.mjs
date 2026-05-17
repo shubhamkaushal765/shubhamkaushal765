@@ -14,6 +14,9 @@ const TOKENS = {
     'text-muted': '#a3a3a3',
     'text-footnote': '#737373',
     'accent': '#7dd3fc',
+    'pillar-code': '#7dd3fc',
+    'pillar-ml': '#c4b5fd',
+    'pillar-quantum': '#6ee7b7',
   },
   light: {
     'surface-base': '#fafafa',
@@ -23,17 +26,33 @@ const TOKENS = {
     'text-muted': '#525252',
     'text-footnote': '#737373',
     'accent': '#0284c7',
+    'pillar-code': '#0284c7',
+    'pillar-ml': '#7c3aed',
+    'pillar-quantum': '#047857',
   },
 };
 
 const PAIRS = [
+  // Surface tokens (introduced in personality refresh I)
   { fg: 'text-body',     bg: 'surface-rail', threshold: 4.5, use: 'prose in rail asides' },
-  { fg: 'text-muted',    bg: 'surface-rail', threshold: 4.5, use: 'chip labels' },
+  { fg: 'text-muted',    bg: 'surface-rail', threshold: 4.5, use: 'chip labels (neutral)' },
   { fg: 'text-footnote', bg: 'surface-rail', threshold: 3.0, use: 'section-num on rail' },
   { fg: 'accent',        bg: 'surface-rail', threshold: 3.0, use: 'accent edge on rail' },
   { fg: 'accent',        bg: 'surface-card', threshold: 3.0, use: 'links inside cards' },
   { fg: 'text-body',     bg: 'surface-card', threshold: 4.5, use: 'card body prose' },
   { fg: 'text-footnote', bg: 'surface-card', threshold: 3.0, use: 'section-num inside topic cards' },
+  // Pillar dimension family (refresh II) -- each pillar on each surface it actually renders on.
+  // Threshold 3.0 (UI-element grade) because pillars appear as numbered prefixes, table
+  // key column, chip foreground, and SVG edge stroke -- not as body prose.
+  { fg: 'pillar-code',    bg: 'surface-base', threshold: 3.0, use: 'pillar-code edge on page bg + hero tagline' },
+  { fg: 'pillar-ml',      bg: 'surface-base', threshold: 3.0, use: 'pillar-ml on page bg (about H3 number)' },
+  { fg: 'pillar-quantum', bg: 'surface-base', threshold: 3.0, use: 'pillar-quantum on page bg + hero tagline' },
+  { fg: 'pillar-code',    bg: 'surface-card', threshold: 3.0, use: 'pillar-code on topic-card chrome' },
+  { fg: 'pillar-ml',      bg: 'surface-card', threshold: 3.0, use: 'pillar-ml on topic-card chrome' },
+  { fg: 'pillar-quantum', bg: 'surface-card', threshold: 3.0, use: 'pillar-quantum on topic-card chrome' },
+  { fg: 'pillar-code',    bg: 'surface-rail', threshold: 3.0, use: 'pillar-code on rail (diagram accent)' },
+  { fg: 'pillar-ml',      bg: 'surface-rail', threshold: 3.0, use: 'pillar-ml on rail (diagram accent)' },
+  { fg: 'pillar-quantum', bg: 'surface-rail', threshold: 3.0, use: 'pillar-quantum on rail (diagram accent)' },
 ];
 
 function hexToRgb(hex) {

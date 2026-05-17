@@ -60,7 +60,7 @@ export default function CvBaselineFlow() {
           refY="3"
           orient="auto"
         >
-          <path d="M0,0 L0,6 L8,3 z" fill="var(--color-accent)" />
+          <path d="M0,0 L0,6 L8,3 z" fill="var(--pillar-color, var(--color-accent))" />
         </marker>
       </defs>
 
@@ -140,7 +140,7 @@ export default function CvBaselineFlow() {
         y1={nodeYMid}
         x2={nodes[4]!.x - 2}
         y2={nodeYMid}
-        stroke="var(--color-accent)"
+        stroke="var(--pillar-color, var(--color-accent))"
         strokeWidth="1.75"
         strokeDasharray="6 3"
         markerEnd="url(#cv-arrow-accent)"

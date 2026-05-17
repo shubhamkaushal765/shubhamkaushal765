@@ -1,10 +1,15 @@
 import type { MDXComponents } from 'mdx/types';
 import type { ReactNode } from 'react';
 
-const PILLAR_NUMBERS: Record<string, string> = {
-  'Code intelligence': '01',
-  'Machine learning': '02',
-  'Quantum computing': '03',
+interface PillarEntry {
+  num: string;
+  pillar: 'code-int' | 'ml' | 'quantum';
+}
+
+const PILLAR_NUMBERS: Record<string, PillarEntry> = {
+  'Code intelligence': { num: '01', pillar: 'code-int' },
+  'Machine learning': { num: '02', pillar: 'ml' },
+  'Quantum computing': { num: '03', pillar: 'quantum' },
 };
 
 function extractText(children: ReactNode): string {
@@ -24,11 +29,11 @@ const DATE_H3 = /^\d{4}-\d{2}(-\d{2})?$/;
 
 function NumberedH3({ children, id }: { children?: ReactNode; id?: string }) {
   const text = extractText(children);
-  const num = PILLAR_NUMBERS[text];
-  if (num !== undefined) {
+  const entry = PILLAR_NUMBERS[text];
+  if (entry !== undefined) {
     return (
-      <h3 id={id}>
-        <span className="section-num" aria-hidden="true">{num}</span>
+      <h3 id={id} data-pillar={entry.pillar}>
+        <span className="section-num" aria-hidden="true">{entry.num}</span>
         {children}
       </h3>
     );

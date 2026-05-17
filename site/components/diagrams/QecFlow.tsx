@@ -44,7 +44,7 @@ export default function QecFlow() {
           refY="3"
           orient="auto"
         >
-          <path d="M0,0 L0,6 L8,3 z" fill="var(--color-accent)" />
+          <path d="M0,0 L0,6 L8,3 z" fill="var(--pillar-color, var(--color-accent))" />
         </marker>
       </defs>
 
@@ -86,7 +86,7 @@ export default function QecFlow() {
         y1="83"
         x2="118"
         y2="83"
-        stroke="var(--color-accent)"
+        stroke="var(--pillar-color, var(--color-accent))"
         strokeWidth="1.75"
         strokeDasharray="6 3"
         markerEnd="url(#qec-arrow-accent)"

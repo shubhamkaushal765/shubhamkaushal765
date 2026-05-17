@@ -21,8 +21,16 @@
   --color-text-muted: #a3a3a3;
   --color-text-footnote: #737373;
 
-  /* accent -- single use only (dark default) */
+  /* primary accent (dark default) -- used for links, inline code, focus rings,
+     hairlines, footnote markers; same hue as code-int pillar */
   --color-accent: #7dd3fc;
+
+  /* pillar dimension family (dark default) -- one hue per research pillar.
+     Used ONLY on pillar-coded elements (data-pillar attr or hero tagline).
+     See .agent/profile-system.md § Personality motifs § Pillar dimension family. */
+  --color-pillar-code:    #7dd3fc;  /* sky-300, alias of primary */
+  --color-pillar-ml:      #c4b5fd;  /* violet-300 */
+  --color-pillar-quantum: #6ee7b7;  /* emerald-300 */
 
   /* typography */
   --font-sans: "Inter", system-ui, sans-serif;
@@ -41,6 +49,11 @@
   --color-text-muted: #525252;
   --color-text-footnote: #737373;
   --color-accent: #0284c7;
+
+  /* pillar dimension family (light) -- WCAG verified on surface-base + card + rail */
+  --color-pillar-code:    #0284c7;  /* sky-600, alias of primary */
+  --color-pillar-ml:      #7c3aed;  /* violet-600 */
+  --color-pillar-quantum: #047857;  /* emerald-700 (deeper for AA on light surfaces) */
 }
 
 @layer base {
@@ -286,9 +299,14 @@
 }
 
 .hero-tagline {
-  color: var(--color-accent);
   animation: accent-fade-in 200ms ease-out;
 }
+
+/* tagline carries the bookend pillar hues: parsers (code-int) -> qubits (quantum).
+   Text content is the locked verbatim string "parsers -> qubits.". */
+.hero-tagline__pillar--code    { color: var(--color-pillar-code); }
+.hero-tagline__arrow           { color: var(--color-text-muted); }
+.hero-tagline__pillar--quantum { color: var(--color-pillar-quantum); }
 
 .stats-line {
   font-family: var(--font-mono);
@@ -322,9 +340,37 @@
   padding: var(--spacing-5);
   background: var(--color-surface-card);
   border-radius: 4px;
-  /* NO box-shadow, NO border — matches existing aside style */
+  /* NO box-shadow, NO border by default. Pillar variant below adds a left stripe + tint. */
   /* NO hover state — cards are static reference units, not nav. The existing .selected-work li uses hover; this is intentionally distinct. */
 }
+
+/* ── Pillar dimension family (data-pillar attr) ──
+   Sets a per-card --pillar-color; children that reference it (section-num,
+   chip, table key, diagram accent edge) inherit the pillar hue. Cards without
+   the attribute fall back to the neutral defaults above. */
+
+.topic-card[data-pillar="code-int"] { --pillar-color: var(--color-pillar-code); }
+.topic-card[data-pillar="ml"]       { --pillar-color: var(--color-pillar-ml); }
+.topic-card[data-pillar="quantum"]  { --pillar-color: var(--color-pillar-quantum); }
+
+.topic-card[data-pillar] {
+  background: color-mix(in oklab, var(--color-surface-card) 94%, var(--pillar-color) 6%);
+  box-shadow: inset 3px 0 0 var(--pillar-color);
+}
+
+.topic-card[data-pillar] .section-num {
+  color: var(--pillar-color);
+}
+
+.topic-card[data-pillar] .chip {
+  background: color-mix(in oklab, var(--pillar-color) 18%, var(--color-surface-card));
+  color: var(--pillar-color);
+}
+
+/* Pillar-coded H3 numbers on /about and "What I work on" on / */
+h3[data-pillar="code-int"] .section-num { color: var(--color-pillar-code); }
+h3[data-pillar="ml"]       .section-num { color: var(--color-pillar-ml); }
+h3[data-pillar="quantum"]  .section-num { color: var(--color-pillar-quantum); }
 
 .topic-card__head {
   display: flex;
@@ -389,6 +435,11 @@
   font-size: 0.85em;
   font-weight: 500;
   white-space: nowrap;
+}
+
+/* Pillar-tinted table key column when the parent card has a pillar */
+.topic-card[data-pillar] .topic-card__table th {
+  color: var(--pillar-color);
 }
 
 .topic-card__table td {

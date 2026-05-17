@@ -17,7 +17,11 @@ export default function Hero({ variant = 'full' }: { variant?: Variant }) {
     <header>
       <PillarDiagram />
       <p className="hero-tagline" style={{ fontFamily: 'var(--font-mono)', marginTop: 'var(--spacing-3)' }}>
-        parsers -&gt; qubits.
+        <span className="hero-tagline__pillar--code">parsers</span>
+        {' '}
+        <span className="hero-tagline__arrow">-&gt;</span>
+        {' '}
+        <span className="hero-tagline__pillar--quantum">qubits.</span>
       </p>
       <StatsLine />
       <Nav />

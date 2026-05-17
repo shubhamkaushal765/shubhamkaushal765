@@ -1,9 +1,12 @@
 import type { ReactNode } from 'react';
 
+type Pillar = 'code-int' | 'ml' | 'quantum';
+
 interface TopicCardProps {
   number: '01' | '02' | '03' | '04';
   title: string;
   tag: string;
+  pillar?: Pillar;
   table: { key: string; value: string }[];
   diagram: ReactNode;
   children: ReactNode;
@@ -20,6 +23,7 @@ export function TopicCard({
   number,
   title,
   tag,
+  pillar,
   table,
   diagram,
   children,
@@ -27,7 +31,7 @@ export function TopicCard({
   const headingId = `topic-${toKebabCase(title)}`;
 
   return (
-    <article className="topic-card" aria-labelledby={headingId}>
+    <article className="topic-card" data-pillar={pillar} aria-labelledby={headingId}>
       <div className="topic-card__head">
         <h3 id={headingId} className="topic-card__title">
           <span className="section-num" aria-hidden="true">
