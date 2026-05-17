@@ -95,11 +95,22 @@ The spacing system is Fibonacci-based on a `0.25rem` unit.
 
 ### Accent
 
-One accent color only. Do not introduce a second accent.
+One *primary* accent + a three-hue *pillar dimension family*. The primary accent governs all non-pillar UI; the pillar hues are used only on pillar-coded elements. See `.agent/profile-system.md` § Personality motifs § Pillar dimension family for the binding rule.
 
-| Token | Hex | Use |
-|-------|-----|-----|
-| `--accent` | `#7dd3fc` | Links, inline `code`, single reveal animation |
+| Token | Hex (dark) | Hex (light) | Use |
+|-------|------------|-------------|-----|
+| `--color-accent` | `#7dd3fc` | `#0284c7` | Links, inline `code`, focus rings, top-of-page hairline, footnote markers (`fn-ref`), status-dot pip, hero-tagline fade animation. Same value as `--color-pillar-code`. |
+| `--color-pillar-code` | `#7dd3fc` | `#0284c7` | Pillar-coded elements where the pillar is *code intelligence*. Aliased to `--color-accent`. |
+| `--color-pillar-ml` | `#c4b5fd` | `#7c3aed` | Pillar-coded elements where the pillar is *machine learning*. |
+| `--color-pillar-quantum` | `#6ee7b7` | `#047857` | Pillar-coded elements where the pillar is *quantum computing*. |
+
+Pillar hues appear in these locations only:
+
+- `mdx-components.tsx` sets `data-pillar` on the three pillar `<h3>`s (`Code intelligence`, `Machine learning`, `Quantum computing`); CSS scopes `.section-num` color via `h3[data-pillar="..."] .section-num`.
+- `<TopicCard pillar="...">` writes `data-pillar` on the `<article>`. CSS scopes the `[ NN ]` bracket, the `.chip` foreground + tinted background, the table key column, the SVG accent edge (via the `--pillar-color` custom property), and a 3px inset left stripe.
+- `Hero.tsx` splits the tagline into `<span class="hero-tagline__pillar--code">parsers</span>` + `<span class="hero-tagline__arrow">-></span>` + `<span class="hero-tagline__pillar--quantum">qubits.</span>`. Text content is exactly `parsers -> qubits.` per § Tagline lock.
+
+`color-mix(in oklab, var(--pillar-color) 18%, var(--color-surface-card))` is the standard recipe for "pillar-tinted chrome" (chip background, etc.). Pillar background mixes use `var(--color-surface-card)` as the base, not `var(--color-accent)`.
 
 ### Light mode
 
@@ -118,6 +129,9 @@ base.
 | `--color-text-muted` | `#525252` | Secondary labels |
 | `--color-text-footnote` | `#737373` | Footnotes |
 | `--color-accent` | `#0284c7` | Links, inline `code`, hero reveal (light variant of `#7dd3fc`) |
+| `--color-pillar-code` | `#0284c7` | Pillar: code intelligence (alias of primary accent) |
+| `--color-pillar-ml` | `#7c3aed` | Pillar: machine learning |
+| `--color-pillar-quantum` | `#047857` | Pillar: quantum computing |
 
 Defaults: `prefers-color-scheme` on first visit; user choice persists in
 `localStorage` key `theme` (values `light` | `dark`). An anti-flash inline

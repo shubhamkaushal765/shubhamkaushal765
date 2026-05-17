@@ -50,7 +50,7 @@ binding visual primitives — the binding visual rules live in
 
 - `PillarDiagram.tsx` — the canonical ASCII hero. Its string constant is
   locked verbatim; never edit it.
-- `Hero.tsx` — wraps `<PillarDiagram>`, the locked tagline reveal, and `<Nav>`.
+- `Hero.tsx` — wraps `<PillarDiagram>`, the tagline reveal (split into pillar-colored spans: `parsers` (sky/code-int) + muted arrow + `qubits.` (emerald/quantum); text content stays exactly `parsers -> qubits.` per the lock), `<StatsLine>`, and `<Nav>`.
 - `Nav.tsx` — primary nav with active-state in `var(--color-accent)`; embeds
   `<ThemeToggle>`.
 - `ThemeToggle.tsx` — client component; flips `[data-theme]` and persists to
@@ -63,7 +63,10 @@ binding visual primitives — the binding visual rules live in
   to render the four-topic highlights block between Selected work and Bridges.
   TopicCard renders its number prefix locally as `<span class="section-num">`
   — it does NOT route the `<h3>` through `mdx-components.tsx`, so the locked
-  three-key map in that file is unaffected.
+  three-key map in that file is unaffected. The optional `pillar` prop
+  (`'code-int' | 'ml' | 'quantum'`) writes `data-pillar` on the `<article>`;
+  CSS keys off it to set the bracket number, chip, table key column, left
+  stripe, and SVG accent edge color from the pillar family.
 - `diagrams/QecFlow.tsx`, `diagrams/CvBaselineFlow.tsx`, `diagrams/ZuitFlow.tsx`,
   `diagrams/TellMeWhyFlow.tsx` — inline-SVG server components, one per topic
   card. Hand-authored; theme via `currentColor`; one accent edge per diagram
@@ -81,7 +84,12 @@ on every page's `<main>`, `:focus-visible` outline in accent color,
 Bracket motif (`[ NN ]` prefix), `.chip` status pills, and the `.fn-ref`
 inline footnote marker are documented in `.agent/visual-system.md`
 § Bracket motif, § Status chips, and § Footnote markers respectively.
-These motifs are bound by the visual system, not by component code.
+The pillar dimension family (sky/violet/emerald) is documented in
+`.agent/profile-system.md` § Personality motifs § Pillar dimension family
+and `.agent/visual-system.md` § Accent. Pillar hues attach via the
+`data-pillar` attribute on `<TopicCard>` and the three locked `<h3>`s in
+`mdx-components.tsx`; CSS does the rest. These motifs are bound by the
+visual system, not by component code.
 
 ### Local preview note
 

@@ -149,9 +149,32 @@ README: `---` horizontal rule above each H2. Site: 1px top-rule + small-caps Int
 
 Used on `/about`, `/now`, and all essays. Format: `[N] Author et al. "Title." Venue Year. URL`. Inline reference: `Transformer-QEC [1]` linking to `#fn-1`.
 
-### Single accent color
+### Pillar dimension family
 
-`#7dd3fc` (sky-300). Used for inline `<code>` foreground, link underline (50% opacity at rest), and the one-time fade-in reveal of the `parsers -> qubits.` line in the home hero. Nothing else.
+The visual system carries one *primary accent* and a *pillar dimension family* of three hues — one per research pillar. The primary accent governs all non-pillar UI; the pillar hues are used only on pillar-coded elements.
+
+Primary accent (sky, doubles as the code-intelligence pillar hue):
+
+- `#7dd3fc` (dark) / `#0284c7` (light)
+- Used for inline `<code>` foreground, link underline (50% opacity at rest), focus rings, the top-of-page hairline, footnote markers, status-dot pip, and the one-time fade-in animation on the hero tagline.
+
+Pillar dimension family (sub-palette of the 10% accent layer, codelens precedent):
+
+| Pillar            | Dark      | Light     | Tailwind anchor             |
+|-------------------|-----------|-----------|-----------------------------|
+| Code intelligence | `#7dd3fc` | `#0284c7` | sky (aliased to primary)    |
+| Machine learning  | `#c4b5fd` | `#7c3aed` | violet                      |
+| Quantum computing | `#6ee7b7` | `#047857` | emerald                     |
+
+Pillar hues are used ONLY on pillar-coded elements:
+
+- The three pillar `<h3>`s on `/about` and Home § What I work on (`01 / 02 / 03` number prefix per pillar).
+- The four topic cards on Home (per-card `data-pillar` attribute drives the bracket number, table key column, chip foreground, 3px inset left stripe, and SVG accent edge).
+- The hero tagline split: `parsers` (sky) + `->` (muted) + `qubits.` (emerald). Text content stays verbatim per § Tagline.
+
+The pillar family is NOT used for general links, body prose, inline `code`, or any element without semantic pillar meaning. Decorative pillar coloring is forbidden.
+
+Adding a new hue (e.g., a fourth pillar) requires updating this section, the `--color-pillar-*` token table in `.agent/visual-system.md`, and the WCAG verifier `site/scripts/verify-contrast.mjs`.
 
 ### Footer signature
 
