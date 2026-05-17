@@ -29,13 +29,13 @@ export function TopicCard({
   return (
     <article className="topic-card" aria-labelledby={headingId}>
       <div className="topic-card__head">
-        <span className="topic-card__num section-num" aria-hidden="true">
-          {number}
-        </span>
         <h3 id={headingId} className="topic-card__title">
+          <span className="section-num" aria-hidden="true">
+            {`[ ${number} ] `}
+          </span>
           {title}
         </h3>
-        <span className="topic-card__tag">{tag}</span>
+        <span className="chip" aria-label={`Status: ${tag}`}>{tag}</span>
       </div>
 
       <div className="topic-card__blurb">{children}</div>
