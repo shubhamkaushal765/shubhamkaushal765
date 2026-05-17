@@ -81,8 +81,9 @@ The spacing system is Fibonacci-based on a `0.25rem` unit.
 | Token | Hex | Use |
 |-------|-----|-----|
 | `--surface-base` | `#0a0a0a` | Page background |
-| `--surface-card` | `#111111` | Card and aside backgrounds |
-| `--surface-hover` | `#161616` | Hover state for cards and interactive surfaces |
+| `--surface-card` | `#131318` | Card and aside backgrounds |
+| `--surface-hover` | `#1f1f27` | Hover state for cards and interactive surfaces |
+| `--surface-rail` | `#1b1b22` | Rail asides, card head rows, diagram node fills (the 30% layer) |
 
 ### Text
 
@@ -110,8 +111,9 @@ base.
 | Token | Light value | Use |
 |-------|-------------|-----|
 | `--color-surface-base` | `#fafafa` | Page background |
-| `--color-surface-card` | `#f5f5f5` | Card and aside backgrounds |
-| `--color-surface-hover` | `#ececec` | Hover state |
+| `--color-surface-card` | `#efeff3` | Card and aside backgrounds |
+| `--color-surface-hover` | `#dedee4` | Hover state |
+| `--color-surface-rail` | `#e6e6ec` | Rail asides, card head rows, diagram node fills |
 | `--color-text-body` | `#171717` | Primary body text |
 | `--color-text-muted` | `#525252` | Secondary labels |
 | `--color-text-footnote` | `#737373` | Footnotes |
@@ -120,6 +122,15 @@ base.
 Defaults: `prefers-color-scheme` on first visit; user choice persists in
 `localStorage` key `theme` (values `light` | `dark`). An anti-flash inline
 `<script>` in `<head>` sets the attribute synchronously before paint.
+
+### Border hairlines
+
+One neutral border token, expressed as alpha over the body text color so
+the line works at every surface step.
+
+| Token | Dark | Light | Use |
+|-------|------|-------|-----|
+| `--color-border-hair` | `rgba(255,255,255,0.06)` | `rgba(0,0,0,0.04)` | Hairline under `<SectionRule>` H2, the rule below the `.topic-card__head` row |
 
 ---
 
@@ -164,6 +175,59 @@ not announce it.
 This is implemented in `mdx-components.tsx` via an `h3` override that
 matches the three exact heading strings. No other H3 receives a number.
 Do not add numbers to other headings.
+
+---
+
+## Bracket motif
+
+`<SectionRule>` accepts an optional `number` prop. When set, the rendered
+H2 carries a monospace bracket prefix `[ NN ] ` styled by the existing
+`.section-num` class. The 1px hairline rule below the heading uses
+`var(--color-border-hair)`. The rule moved from above the heading
+(previous design) to below it.
+
+Numbering convention:
+
+- Major content sections on Home and About get a number (`01`, `02`, ...).
+- Footer-style sections (e.g., `Connect` on Home) render `<SectionRule>`
+  without a `number` prop.
+- The bracket prefix lives inside the H2 so the small-caps run continues
+  naturally across the prefix and heading text.
+
+---
+
+## Status chips
+
+`.chip` is a mono pill used to surface status/tag values without prose
+weight. Replaces inline trailing tag suffixes on Selected work and
+replaces `.topic-card__tag` on Highlights.
+
+- Background: `var(--color-surface-rail)`. Color: `var(--color-text-muted)`.
+- Padding `2px 6px`, radius `3px`, mono `0.8em`, letter-spacing `0.03em`.
+- No hover state. No border. No animation.
+- Wrapped in `<span class="chips">` when more than one chip follows the
+  same prose item (provides flex layout and gap).
+
+---
+
+## Footnote markers
+
+`.fn-ref` styles inline `[N]` superscript links to the bottom-of-page
+`<FootnoteList>`. Mono `0.8em`, color `var(--color-accent)`,
+vertical-align `0.3em`, no underline at rest. Underline appears on hover.
+
+---
+
+## Stats line
+
+A single monospace line under the home hero tagline reveal:
+
+`3 pillars  ·  5 repos  ·  rust + python + typescript  ·  last build YYYY-MM-DD`
+
+Server component `site/components/StatsLine.tsx` reads `BUILD_META` from
+`site/lib/build-meta.ts`. `BUILD_META.lastBuild` resolves at static-export
+build time via `new Date().toISOString().slice(0, 10)`. `build-meta.ts`
+is never imported from a client component. Rendered only on `/`.
 
 ---
 
@@ -229,8 +293,8 @@ introduction of new colors.
 | Share | Token | Used for |
 |-------|-------|----------|
 | 60% | `--color-surface-base` | Page background and section padding |
-| 30% | `--color-surface-card` + `--color-text-body` | Card surfaces, body prose, table values, diagram node fills |
-| 10% | `--color-accent` | Topic numbers, inline `code`, link underline, table key column, SVG accent edge |
+| 30% | `--color-surface-card` + `--color-surface-rail` + `--color-text-body` | Card chrome, rail asides, card head rows, diagram node fills, prose ink |
+| 10% | `--color-accent` | Section numbers, [N] markers, status chips when active, link underline, SVG accent edge, inline code foreground, table key column |
 
 ### Card layout
 
@@ -269,7 +333,7 @@ requires the same documentation step here.
 | Animation | Where | Duration | Easing | Behavior |
 |-----------|-------|----------|--------|----------|
 | Accent reveal | `.hero-tagline` on `/` | 200ms | ease-out | One play on initial paint |
-| Flow-dash | `.flow-edge--animated` inside topic-card diagrams | 1200ms | ease-out (200ms delay, single play) | Stroke-dashoffset travels from `var(--dash-len, 60)` to 0; both endpoints respect `prefers-reduced-motion: reduce` and resolve to a static line |
+| Flow-dash | `.flow-edge--animated` inside topic-card diagrams | 1200ms | ease-out | Stroke-dashoffset travels from var(--dash-len, 60) to 0; the delay reads var(--flow-delay, 200ms) set inline per diagram (200/350/500/650ms in card order). Both endpoints respect prefers-reduced-motion: reduce and resolve to a static line |
 
 Both animations are CSS-only. No `'use client'` anywhere in the chain.
 Reduced-motion overrides live in the single `@media (prefers-reduced-motion:
@@ -287,3 +351,16 @@ reduce)` block at the end of `globals.css`.
   screenshots). No JPEG for diagrams.
 - All images must have explicit `alt` text describing the diagram content
   technically, not aesthetically.
+
+---
+
+## Surface contrast verification
+
+`site/scripts/verify-contrast.mjs` enumerates the (foreground, background,
+theme) triples that the site renders and computes WCAG 2.1 relative-
+luminance contrast. The build fails if any pair drops below its threshold.
+Run via `npm run verify-contrast` (it is also wired as a pre-step of
+`npm run build`).
+
+Adding a new (fg, bg) combination anywhere on the site requires adding
+the corresponding row to the script's `PAIRS` array.

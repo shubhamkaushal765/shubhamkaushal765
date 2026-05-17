@@ -38,6 +38,7 @@ The Next.js source lives in `site/`. All npm commands must be run from there:
     npm install        # first-time setup
     npm run dev        # local preview at http://localhost:3000
     npm run build      # static export to site/out/
+    npm run verify-contrast   # WCAG gate over visual-system.md surface pairs
     npm run lint       # ESLint
     npm run typecheck  # tsc --noEmit
 
@@ -56,8 +57,7 @@ binding visual primitives — the binding visual rules live in
   `localStorage`. ASCII label `[ light ]` / `[ dark ]`, no icons.
 - `StatusDot.tsx` — small accent pip + monospace label; pulse animation is
   guarded by `prefers-reduced-motion`. Used inline with `<h1>` on `/now`.
-- `SectionRule.tsx` — `<hr>` + small-caps `<h2>`. Accepts optional `number`
-  prop for a monospace prefix above the heading.
+- `SectionRule.tsx` — `<h2>` with optional rail-bracket `[ NN ]` prefix when the `number` prop is set; 1px `var(--color-border-hair)` rule rendered BELOW the heading. The bracket prefix uses the existing `.section-num` class.
 - `Highlights.tsx` — server component. Exports `<Highlights>` (default,
   `<section>` wrapper) and named `<TopicCard>`. Used in `content/home.mdx`
   to render the four-topic highlights block between Selected work and Bridges.
@@ -69,11 +69,19 @@ binding visual primitives — the binding visual rules live in
   card. Hand-authored; theme via `currentColor`; one accent edge per diagram
   carries `className="flow-edge--animated"` for the stroke-dashoffset reveal.
   Source intent is documented in `site/diagrams/*.mmd` (mermaid flowcharts).
+- `StatsLine.tsx` — server component. Renders the monospace pillars/repos/stack/last-build line under the hero tagline on Home. Reads `BUILD_META` from `site/lib/build-meta.ts`. Never imported from a client component.
+- `lib/build-meta.ts` — build-time constants for `StatsLine`. `lastBuild` resolves at static-export time.
+- `scripts/verify-contrast.mjs` — WCAG contrast gate; runs as a pre-step of `npm run build` via `npm run verify-contrast`. Source of pair list: `.agent/visual-system.md` § Surface contrast verification.
 - `FootnoteList.tsx`, `FooterSignature.tsx`, `SkipLink.tsx` — supporting.
 
 A11y baselines that must be preserved: skip-link at `<body>` top, `id="main"`
 on every page's `<main>`, `:focus-visible` outline in accent color,
 `prefers-reduced-motion` honored for every animation.
+
+Bracket motif (`[ NN ]` prefix), `.chip` status pills, and the `.fn-ref`
+inline footnote marker are documented in `.agent/visual-system.md`
+§ Bracket motif, § Status chips, and § Footnote markers respectively.
+These motifs are bound by the visual system, not by component code.
 
 ### Local preview note
 
