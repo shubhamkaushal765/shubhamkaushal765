@@ -11,8 +11,10 @@
 
   /* surfaces (dark default) */
   --color-surface-base: #0a0a0a;
-  --color-surface-card: #111111;
-  --color-surface-hover: #161616;
+  --color-surface-card: #131318;    /* was #111111 */
+  --color-surface-hover: #1f1f27;   /* was #161616 */
+  --color-surface-rail: #1b1b22;
+  --color-border-hair: rgba(255, 255, 255, 0.06);
 
   /* text (dark default) */
   --color-text-body: #ededed;
@@ -31,8 +33,10 @@
 /* ── Light mode tokens ── */
 [data-theme="light"] {
   --color-surface-base: #fafafa;
-  --color-surface-card: #f5f5f5;
-  --color-surface-hover: #ececec;
+  --color-surface-card: #efeff3;    /* was #f5f5f5 */
+  --color-surface-hover: #dedee4;   /* was #ececec */
+  --color-surface-rail: #e6e6ec;
+  --color-border-hair: rgba(0, 0, 0, 0.04);
   --color-text-body: #171717;
   --color-text-muted: #525252;
   --color-text-footnote: #737373;
