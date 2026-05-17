@@ -290,6 +290,13 @@
   animation: accent-fade-in 200ms ease-out;
 }
 
+.stats-line {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  color: var(--color-text-muted);
+  margin: var(--spacing-2) 0 0 0;
+}
+
 /* ── Reduced motion overrides ── */
 @media (prefers-reduced-motion: reduce) {
   .hero-tagline {
