@@ -102,10 +102,24 @@ One accent color only. Do not introduce a second accent.
 
 ### Light mode
 
-Light mode is a toggle. When implemented, invert the surface and text tokens
-to a near-white base. The accent token (`#7dd3fc`) may need a hue-shift for
-contrast on light backgrounds — decide at implementation time; do not hardcode
-the light-mode accent here until tested.
+Light mode is implemented as a toggle wired through a `[data-theme="light"]`
+attribute on `<html>`. The tokens below are the tested set; the accent has
+been hue-preserved (sky family) and contrast-verified at 5.7:1 on the light
+base.
+
+| Token | Light value | Use |
+|-------|-------------|-----|
+| `--color-surface-base` | `#fafafa` | Page background |
+| `--color-surface-card` | `#f5f5f5` | Card and aside backgrounds |
+| `--color-surface-hover` | `#ececec` | Hover state |
+| `--color-text-body` | `#171717` | Primary body text |
+| `--color-text-muted` | `#525252` | Secondary labels |
+| `--color-text-footnote` | `#737373` | Footnotes |
+| `--color-accent` | `#0284c7` | Links, inline `code`, hero reveal (light variant of `#7dd3fc`) |
+
+Defaults: `prefers-color-scheme` on first visit; user choice persists in
+`localStorage` key `theme` (values `light` | `dark`). An anti-flash inline
+`<script>` in `<head>` sets the attribute synchronously before paint.
 
 ---
 
@@ -122,6 +136,34 @@ The canonical ASCII pillar diagram is the single shared visual motif across the 
 - The `parsers -> qubits.` line is the single accent reveal: opacity 0 → 1 fade over 200ms on initial render, then static at `var(--color-accent)` (`#7dd3fc`). No hover state, no other animation.
 - ASCII only: `+`, `-`, `|`, `\`, `/`, `>`. No Unicode arrows. No box-drawing characters. No emoji.
 - Width is fixed at 60 characters between the `+` borders.
+
+---
+
+## Top-of-page hairline
+
+Every page renders a 1px horizontal hairline at the very top of `<main>`,
+echoing the OG-image hairline motif. It is a personality motif, not
+decoration, and is binding.
+
+- Color: `color-mix(in oklab, var(--color-accent) 15%, transparent)`. Both
+  themes use the same token; opacity is the differentiator.
+- Implemented as a `main::before` pseudo-element. Spans the full width
+  inside the `<main>` container.
+- Pointer events disabled; the hairline never receives focus.
+
+---
+
+## Section numbering motif
+
+The three pillar headings on the About page — `Code intelligence`,
+`Machine learning`, `Quantum computing` — render with a small monospace
+prefix `01` / `02` / `03` in the footnote-color, 0.75em, 0.1em
+letter-spacing. The prefix is `aria-hidden="true"` so screen readers do
+not announce it.
+
+This is implemented in `mdx-components.tsx` via an `h3` override that
+matches the three exact heading strings. No other H3 receives a number.
+Do not add numbers to other headings.
 
 ---
 

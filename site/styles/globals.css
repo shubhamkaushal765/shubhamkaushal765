@@ -9,23 +9,34 @@
   --spacing-8: 2rem;
   --spacing-13: 3.25rem;
 
-  /* surfaces */
+  /* surfaces (dark default) */
   --color-surface-base: #0a0a0a;
   --color-surface-card: #111111;
   --color-surface-hover: #161616;
 
-  /* text */
+  /* text (dark default) */
   --color-text-body: #ededed;
   --color-text-muted: #a3a3a3;
   --color-text-footnote: #737373;
 
-  /* accent -- single use only */
+  /* accent -- single use only (dark default) */
   --color-accent: #7dd3fc;
 
   /* typography */
   --font-sans: "Inter", system-ui, sans-serif;
   --font-display: "Inter Display", "Inter", system-ui, sans-serif;
   --font-mono: "Berkeley Mono", "JetBrains Mono", "Geist Mono", ui-monospace, monospace;
+}
+
+/* ── Light mode tokens ── */
+[data-theme="light"] {
+  --color-surface-base: #fafafa;
+  --color-surface-card: #f5f5f5;
+  --color-surface-hover: #ececec;
+  --color-text-body: #171717;
+  --color-text-muted: #525252;
+  --color-text-footnote: #737373;
+  --color-accent: #0284c7;
 }
 
 @layer base {
@@ -41,10 +52,40 @@
     padding: 0;
   }
 
+  /* top-of-page hairline echoing the OG image motif */
   main {
+    position: relative;
     max-width: 68ch;
     margin: 0 auto;
     padding: var(--spacing-13) var(--spacing-5);
+  }
+
+  main::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: color-mix(in oklab, var(--color-accent) 15%, transparent);
+    pointer-events: none;
+  }
+
+  @media (max-width: 640px) {
+    main {
+      padding: var(--spacing-8) var(--spacing-5);
+    }
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-optical-sizing: auto;
+    margin-top: var(--spacing-13);
+    margin-bottom: var(--spacing-5);
   }
 
   /* h2 carries the section-rule motif; SectionRule.tsx renders the line + small-caps */
@@ -65,6 +106,14 @@
     margin-bottom: var(--spacing-3);
   }
 
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: normal;
+    margin-top: var(--spacing-5);
+    margin-bottom: var(--spacing-3);
+  }
+
   a {
     color: inherit;
     text-decoration: underline;
@@ -75,6 +124,14 @@
   }
   a:hover {
     text-decoration-color: currentColor;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
   }
 
   code {
@@ -98,9 +155,93 @@
     color: inherit;
     padding: 0;
   }
+
+  /* tabular numbers for time elements and .tabular class */
+  time,
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-accent) 30%, transparent);
+    color: var(--color-text-body);
+  }
 }
 
-/* one-time accent reveal for the home hero tagline */
+/* ── Skip link ── */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: var(--spacing-2);
+  background: var(--color-surface-card);
+  color: var(--color-accent);
+  padding: var(--spacing-2) var(--spacing-3);
+  z-index: 100;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+.skip-link:focus {
+  left: var(--spacing-5);
+}
+
+/* ── Selected-work list hover affordance ── */
+.selected-work li {
+  list-style: disc;
+  padding: var(--spacing-2) var(--spacing-3);
+  margin-inline: calc(-1 * var(--spacing-3));
+  border-radius: 4px;
+  transition: background-color 120ms ease-out;
+}
+.selected-work li:hover {
+  background-color: var(--color-surface-hover);
+}
+
+/* ── Section number prefix ── */
+.section-num {
+  font-family: var(--font-mono);
+  color: var(--color-text-footnote);
+  font-size: 0.75em;
+  letter-spacing: 0.1em;
+  padding-right: 0.5em;
+  vertical-align: baseline;
+}
+
+/* ── Status dot ── */
+.status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  color: var(--color-text-muted);
+}
+
+.status-dot__pip {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.status-dot__label {
+  color: var(--color-text-muted);
+}
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .status-dot__pip {
+    animation: status-pulse 2s ease-in-out infinite;
+  }
+}
+
+/* ── one-time accent reveal for the home hero tagline ── */
 @keyframes accent-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -109,4 +250,17 @@
 .hero-tagline {
   color: var(--color-accent);
   animation: accent-fade-in 200ms ease-out;
+}
+
+/* ── Reduced motion overrides ── */
+@media (prefers-reduced-motion: reduce) {
+  .hero-tagline {
+    animation: none;
+  }
+  .status-dot__pip {
+    animation: none;
+  }
+  a {
+    transition: none;
+  }
 }

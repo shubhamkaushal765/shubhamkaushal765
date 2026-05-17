@@ -41,6 +41,39 @@ The Next.js source lives in `site/`. All npm commands must be run from there:
     npm run lint       # ESLint
     npm run typecheck  # tsc --noEmit
 
+### Site components
+
+Components under `site/components/` are scoped to the site only. They are not
+binding visual primitives — the binding visual rules live in
+`.agent/visual-system.md`. Inventory:
+
+- `PillarDiagram.tsx` — the canonical ASCII hero. Its string constant is
+  locked verbatim; never edit it.
+- `Hero.tsx` — wraps `<PillarDiagram>`, the locked tagline reveal, and `<Nav>`.
+- `Nav.tsx` — primary nav with active-state in `var(--color-accent)`; embeds
+  `<ThemeToggle>`.
+- `ThemeToggle.tsx` — client component; flips `[data-theme]` and persists to
+  `localStorage`. ASCII label `[ light ]` / `[ dark ]`, no icons.
+- `StatusDot.tsx` — small accent pip + monospace label; pulse animation is
+  guarded by `prefers-reduced-motion`. Used inline with `<h1>` on `/now`.
+- `SectionRule.tsx` — `<hr>` + small-caps `<h2>`. Accepts optional `number`
+  prop for a monospace prefix above the heading.
+- `FootnoteList.tsx`, `FooterSignature.tsx`, `SkipLink.tsx` — supporting.
+
+A11y baselines that must be preserved: skip-link at `<body>` top, `id="main"`
+on every page's `<main>`, `:focus-visible` outline in accent color,
+`prefers-reduced-motion` honored for every animation.
+
+### Local preview note
+
+Dev mode (`npm run dev`) currently exhibits a `recentlyCreatedOwnerStacks`
+error from React 19's owner-stack instrumentation interacting with
+`@next/mdx`. The static export (`npm run build`) is unaffected and is the
+only artifact deployed. For local visual review, run `npm run build` and
+serve `site/out/` via a static file server, mounted under the basePath
+prefix `/shubhamkaushal765/` (e.g., symlink `out` to that name inside a
+preview directory).
+
 `npm run build` writes to `site/out/`. That directory is gitignored. To
 deploy, push to `main` and let `.github/workflows/site.yml` build and deploy
 to Pages via the artifact API.

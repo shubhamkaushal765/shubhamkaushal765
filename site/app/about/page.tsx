@@ -27,7 +27,7 @@ const FOOTNOTES = [
 
 export default function AboutPage() {
   return (
-    <main>
+    <main id="main">
       <Hero variant="compact" />
       <h1>About</h1>
       <Content />

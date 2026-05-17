@@ -3,7 +3,7 @@ import FooterSignature from '@/components/FooterSignature';
 
 export default function NotFound() {
   return (
-    <main>
+    <main id="main">
       <p style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-accent)' }}>
         parsers -&gt; qubits.
       </p>

@@ -37,7 +37,7 @@ const PIPELINE = [
 
 export default function WritingPage() {
   return (
-    <main>
+    <main id="main">
       <Hero variant="compact" />
       <h1>Writing</h1>
       <p>First essay shipping 2026-Q3. Pipeline:</p>
