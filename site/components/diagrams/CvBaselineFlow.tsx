@@ -2,7 +2,9 @@
  * CvBaselineFlow — inline SVG diagram for the computer vision foundation topic card.
  * Nodes: input -> conv·pool -> conv·pool -> fc -> softmax
  * Accent edge: fc -> softmax (animated dash flow)
+ * Stagger delay: 350ms via --flow-delay. Node fill --color-surface-rail.
  */
+import type { CSSProperties } from 'react';
 
 export default function CvBaselineFlow() {
   // 5 nodes across 320px viewBox, with consistent spacing
@@ -29,6 +31,7 @@ export default function CvBaselineFlow() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-labelledby="cv-title cv-desc"
+      style={{ '--flow-delay': '350ms' } as CSSProperties}
     >
       <title id="cv-title">CNN baseline data flow</title>
       <desc id="cv-desc">
@@ -71,8 +74,8 @@ export default function CvBaselineFlow() {
             height={nodeH}
             rx="3"
             stroke="currentColor"
-            strokeWidth="1.5"
-            fill="var(--color-surface-card)"
+            strokeWidth="1.75"
+            fill="var(--color-surface-rail)"
           />
           {label.length === 1 ? (
             <text
@@ -125,7 +128,7 @@ export default function CvBaselineFlow() {
             x2={toNode.x - 2}
             y2={nodeYMid}
             stroke="currentColor"
-            strokeWidth="1.5"
+            strokeWidth="1.75"
             markerEnd="url(#cv-arrow)"
           />
         );
@@ -138,7 +141,7 @@ export default function CvBaselineFlow() {
         x2={nodes[4]!.x - 2}
         y2={nodeYMid}
         stroke="var(--color-accent)"
-        strokeWidth="1.5"
+        strokeWidth="1.75"
         strokeDasharray="6 3"
         markerEnd="url(#cv-arrow-accent)"
         className="flow-edge--animated"

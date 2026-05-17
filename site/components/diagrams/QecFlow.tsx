@@ -2,7 +2,9 @@
  * QecFlow — inline SVG diagram for the TransformerQEC topic card.
  * Nodes: syndrome graph -> transformer encoder -> corrected bit
  * Accent edge: syndrome graph -> transformer encoder (animated dash flow)
+ * Stagger delay: 200ms via --flow-delay. Node fill --color-surface-rail.
  */
+import type { CSSProperties } from 'react';
 
 export default function QecFlow() {
   return (
@@ -13,6 +15,7 @@ export default function QecFlow() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-labelledby="qec-title qec-desc"
+      style={{ '--flow-delay': '200ms' } as CSSProperties}
     >
       <title id="qec-title">TransformerQEC data flow</title>
       <desc id="qec-desc">
@@ -53,8 +56,8 @@ export default function QecFlow() {
         height="36"
         rx="3"
         stroke="currentColor"
-        strokeWidth="1.5"
-        fill="var(--color-surface-card)"
+        strokeWidth="1.75"
+        fill="var(--color-surface-rail)"
       />
       <text
         x="56"
@@ -84,7 +87,7 @@ export default function QecFlow() {
         x2="118"
         y2="83"
         stroke="var(--color-accent)"
-        strokeWidth="1.5"
+        strokeWidth="1.75"
         strokeDasharray="6 3"
         markerEnd="url(#qec-arrow-accent)"
         className="flow-edge--animated"
@@ -98,8 +101,8 @@ export default function QecFlow() {
         height="56"
         rx="3"
         stroke="currentColor"
-        strokeWidth="1.5"
-        fill="var(--color-surface-card)"
+        strokeWidth="1.75"
+        fill="var(--color-surface-rail)"
       />
       <text
         x="168"
@@ -140,7 +143,7 @@ export default function QecFlow() {
         x2="238"
         y2="83"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.75"
         markerEnd="url(#qec-arrow)"
       />
 
@@ -152,8 +155,8 @@ export default function QecFlow() {
         height="36"
         rx="3"
         stroke="currentColor"
-        strokeWidth="1.5"
-        fill="var(--color-surface-card)"
+        strokeWidth="1.75"
+        fill="var(--color-surface-rail)"
       />
       <text
         x="272"

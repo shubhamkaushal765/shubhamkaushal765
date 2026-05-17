@@ -2,7 +2,9 @@
  * ZuitFlow — inline SVG diagram for the zuit code intelligence topic card.
  * Nodes: source -> parser -> AST -> analyzers -> SARIF
  * Accent edge: parser -> AST (animated dash flow)
+ * Stagger delay: 500ms via --flow-delay. Node fill --color-surface-rail.
  */
+import type { CSSProperties } from 'react';
 
 export default function ZuitFlow() {
   const nodeW = 52;
@@ -26,6 +28,7 @@ export default function ZuitFlow() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-labelledby="zuit-title zuit-desc"
+      style={{ '--flow-delay': '500ms' } as CSSProperties}
     >
       <title id="zuit-title">zuit static analysis pipeline</title>
       <desc id="zuit-desc">
@@ -70,8 +73,8 @@ export default function ZuitFlow() {
             height={nodeH}
             rx="3"
             stroke="currentColor"
-            strokeWidth="1.5"
-            fill="var(--color-surface-card)"
+            strokeWidth="1.75"
+            fill="var(--color-surface-rail)"
           />
           <text
             x={x + nodeW / 2}
@@ -105,7 +108,7 @@ export default function ZuitFlow() {
         x2={nodes[1]!.x - 2}
         y2={nodeYMid}
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.75"
         markerEnd="url(#zuit-arrow)"
       />
 
@@ -116,7 +119,7 @@ export default function ZuitFlow() {
         x2={nodes[2]!.x - 2}
         y2={nodeYMid}
         stroke="var(--color-accent)"
-        strokeWidth="1.5"
+        strokeWidth="1.75"
         strokeDasharray="6 3"
         markerEnd="url(#zuit-arrow-accent)"
         className="flow-edge--animated"
@@ -135,7 +138,7 @@ export default function ZuitFlow() {
             x2={toNode.x - 2}
             y2={nodeYMid}
             stroke="currentColor"
-            strokeWidth="1.5"
+            strokeWidth="1.75"
             markerEnd="url(#zuit-arrow)"
           />
         );

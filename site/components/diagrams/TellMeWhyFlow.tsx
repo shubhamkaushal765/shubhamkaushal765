@@ -4,7 +4,9 @@
  * Bottom row: query -> Ollama
  * Retrieval arc: Ollama curves up into Chroma
  * Accent edge: query -> Ollama (animated dash flow)
+ * Stagger delay: 650ms via --flow-delay. Node fill --color-surface-rail.
  */
+import type { CSSProperties } from 'react';
 
 export default function TellMeWhyFlow() {
   const nodeW = 56;
@@ -45,6 +47,7 @@ export default function TellMeWhyFlow() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-labelledby="tmw-title tmw-desc"
+      style={{ '--flow-delay': '650ms' } as CSSProperties}
     >
       <title id="tmw-title">tell-me-why RAG pipeline</title>
       <desc id="tmw-desc">
@@ -88,8 +91,8 @@ export default function TellMeWhyFlow() {
             height={nodeH}
             rx="3"
             stroke="currentColor"
-            strokeWidth="1.5"
-            fill="var(--color-surface-card)"
+            strokeWidth="1.75"
+            fill="var(--color-surface-rail)"
           />
           <text
             x={x + nodeW / 2}
@@ -117,7 +120,7 @@ export default function TellMeWhyFlow() {
             x2={to.x - 2}
             y2={topYMid}
             stroke="currentColor"
-            strokeWidth="1.5"
+            strokeWidth="1.75"
             markerEnd="url(#tmw-arrow)"
           />
         );
@@ -133,8 +136,8 @@ export default function TellMeWhyFlow() {
             height={nodeH}
             rx="3"
             stroke="currentColor"
-            strokeWidth="1.5"
-            fill="var(--color-surface-card)"
+            strokeWidth="1.75"
+            fill="var(--color-surface-rail)"
           />
           <text
             x={x + nodeW / 2}
@@ -156,7 +159,7 @@ export default function TellMeWhyFlow() {
         x2={botNodes[1]!.x - 2}
         y2={botYMid}
         stroke="var(--color-accent)"
-        strokeWidth="1.5"
+        strokeWidth="1.75"
         strokeDasharray="6 3"
         markerEnd="url(#tmw-arrow-accent)"
         className="flow-edge--animated"
@@ -167,7 +170,7 @@ export default function TellMeWhyFlow() {
       <path
         d={`M ${ollamaRightX} ${botYMid} C ${ollamaRightX + 60} ${botYMid} ${chromaCx} ${botYMid - 20} ${chromaCx} ${topY + nodeH + 2}`}
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.75"
         markerEnd="url(#tmw-arrow)"
       />
 
