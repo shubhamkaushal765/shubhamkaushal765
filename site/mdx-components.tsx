@@ -20,6 +20,8 @@ function extractText(children: ReactNode): string {
   return '';
 }
 
+const DATE_H3 = /^\d{4}-\d{2}(-\d{2})?$/;
+
 function NumberedH3({ children, id }: { children?: ReactNode; id?: string }) {
   const text = extractText(children);
   const num = PILLAR_NUMBERS[text];
@@ -28,6 +30,13 @@ function NumberedH3({ children, id }: { children?: ReactNode; id?: string }) {
       <h3 id={id}>
         <span className="section-num" aria-hidden="true">{num}</span>
         {children}
+      </h3>
+    );
+  }
+  if (DATE_H3.test(text)) {
+    return (
+      <h3 id={id}>
+        <span className="section-num" aria-label={text}>{`[ ${text} ]`}</span>
       </h3>
     );
   }
