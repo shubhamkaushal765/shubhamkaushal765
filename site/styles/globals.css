@@ -234,6 +234,40 @@
   color: var(--color-text-muted);
 }
 
+/* ── Status chips ── */
+.chip {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  padding: 2px 6px;
+  background: var(--color-surface-rail);
+  color: var(--color-text-muted);
+  border-radius: 3px;
+  letter-spacing: 0.03em;
+}
+
+.chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  margin-left: var(--spacing-2);
+  vertical-align: baseline;
+}
+
+/* ── Inline footnote markers ── */
+.fn-ref {
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  color: var(--color-accent);
+  vertical-align: 0.3em;
+  text-decoration: none;
+}
+.fn-ref:hover {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-underline-offset: 1px;
+}
+
 @keyframes status-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
@@ -385,7 +419,7 @@
 .flow-edge--animated {
   stroke-dasharray: var(--dash-len, 60);
   stroke-dashoffset: var(--dash-len, 60);
-  animation: flow-dash 1200ms ease-out 200ms both;
+  animation: flow-dash 1200ms ease-out var(--flow-delay, 200ms) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
