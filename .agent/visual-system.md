@@ -212,6 +212,71 @@ When OG images are needed:
 
 ---
 
+## Highlight cards
+
+The home page renders a four-topic "Highlights" section between Selected work
+and Bridges. The pattern is implemented in `site/components/Highlights.tsx`
+plus the four inline-SVG diagram components in
+`site/components/diagrams/`.
+
+### Pixel-coverage 60-30-10
+
+The single-accent rule is unchanged — there is still exactly one accent
+token (`--color-accent`). The 60-30-10 distribution is expressed as
+**pixel coverage** of the existing three-token surface system, not as
+introduction of new colors.
+
+| Share | Token | Used for |
+|-------|-------|----------|
+| 60% | `--color-surface-base` | Page background and section padding |
+| 30% | `--color-surface-card` + `--color-text-body` | Card surfaces, body prose, table values, diagram node fills |
+| 10% | `--color-accent` | Topic numbers, inline `code`, link underline, table key column, SVG accent edge |
+
+### Card layout
+
+- One column at all breakpoints (4 cards stack vertically inside the 68ch
+  reading column).
+- Internal sub-grid (`.topic-card__body`) is 2-column at ≥640px (`table |
+  diagram`), single column below.
+- Card padding `var(--spacing-5)`. Inter-card gap `var(--spacing-8)`.
+- Card background `var(--color-surface-card)`. **No hover state** — cards
+  read as static reference units. (Distinct from `.selected-work li` which
+  does carry a hover background; the difference is deliberate.)
+- No box-shadow, no border. The card stands by background contrast only.
+
+### Diagrams
+
+- Hand-authored inline `<svg>` per topic. Sources of intent committed as
+  mermaid `.mmd` files under `site/diagrams/`. Never `<img src>` — `currentColor`
+  cascading requires DOM-embedded SVG.
+- `viewBox="0 0 320 180"` consistent across all four diagrams.
+- Stroke width ≥ 1.5px so light-mode `--color-accent` (`#0284c7` at 5.7:1
+  on `#fafafa`) does not visually thin out.
+- Only geometric primitives (rect, line, path, text). No glyph icons, no
+  gears, no lightning bolts.
+- Each diagram has one accent edge, the data-flow edge, painted with
+  `stroke="var(--color-accent)"` directly. All other strokes use
+  `currentColor` and resolve against the body text color.
+- Each diagram carries `role="img"` + `<title>` + `<desc>` describing what
+  the diagram shows technically, per the photography policy below.
+
+### Allowed animations (updated)
+
+The previous single allowed site animation (the 200ms accent fade on the
+home hero tagline) is extended by exactly one rule. Any further addition
+requires the same documentation step here.
+
+| Animation | Where | Duration | Easing | Behavior |
+|-----------|-------|----------|--------|----------|
+| Accent reveal | `.hero-tagline` on `/` | 200ms | ease-out | One play on initial paint |
+| Flow-dash | `.flow-edge--animated` inside topic-card diagrams | 1200ms | ease-out (200ms delay, single play) | Stroke-dashoffset travels from `var(--dash-len, 60)` to 0; both endpoints respect `prefers-reduced-motion: reduce` and resolve to a static line |
+
+Both animations are CSS-only. No `'use client'` anywhere in the chain.
+Reduced-motion overrides live in the single `@media (prefers-reduced-motion:
+reduce)` block at the end of `globals.css`.
+
+---
+
 ## Photography and illustration policy
 
 - No stock photography anywhere on the site.

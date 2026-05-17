@@ -1,0 +1,10 @@
+%% Source for site/components/diagrams/CvBaselineFlow.tsx — hand-authored SVG is the source of truth.
+%% Note: @mermaid-js/mermaid-cli is NOT in devDependencies; regenerate SVG manually if needed.
+flowchart LR
+    A["input"] --> B["conv·pool"]
+    B --> C["conv·pool"]
+    C --> D["fc"]
+    D -->|"animated"| E:::accent
+    E["softmax"]
+
+    classDef accent stroke:#FF00FF,stroke-width:2px;

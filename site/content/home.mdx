@@ -1,3 +1,9 @@
+import Highlights, { TopicCard } from '@/components/Highlights';
+import QecFlow from '@/components/diagrams/QecFlow';
+import CvBaselineFlow from '@/components/diagrams/CvBaselineFlow';
+import ZuitFlow from '@/components/diagrams/ZuitFlow';
+import TellMeWhyFlow from '@/components/diagrams/TellMeWhyFlow';
+
 ## What I work on
 
 ### Code intelligence
@@ -23,6 +29,84 @@ Transformer-based decoding for surface-code quantum error correction. Syndrome g
 - **[codestick](https://github.com/shubhamkaushal765/codestick)** — Programmatic stick-figure animation library for TypeScript. Angular-skeleton system, 22 human poses, 10 animation clips, SVG export. TypeScript · animation
 
 </div>
+
+## Highlights
+
+<Highlights>
+
+<TopicCard
+  number="01"
+  title="Quantum computing"
+  tag="research"
+  table={[
+    { key: 'paper', value: 'Wang et al., ICCAD 2023' },
+    { key: 'decoder', value: 'transformer encoder' },
+    { key: 'simulator', value: 'Stim' },
+    { key: 'framework', value: 'PyTorch Lightning' },
+    { key: 'status', value: 'research' },
+  ]}
+  diagram={<QecFlow />}
+>
+
+Transformer-based decoder for surface-code QEC. Syndrome graphs are encoded as sequences; a transformer encoder learns bit-flip and phase-flip correction from Stim-simulated circuits, trained under PyTorch Lightning.
+
+</TopicCard>
+
+<TopicCard
+  number="02"
+  title="Computer vision"
+  tag="foundation"
+  table={[
+    { key: 'tasks', value: 'classification, autoencoders' },
+    { key: 'baseline', value: 'CNN + AE' },
+    { key: 'framework', value: 'PyTorch' },
+    { key: 'role', value: 'applied-ML foundation' },
+    { key: 'status', value: 'foundation' },
+  ]}
+  diagram={<CvBaselineFlow />}
+>
+
+Applied-ML foundations from earlier work — CNN image classification and autoencoder reconstruction. Not a current pillar. The structured-data instinct built here carries into the AST and syndrome-graph work above.
+
+</TopicCard>
+
+<TopicCard
+  number="03"
+  title="zuit"
+  tag="code intelligence"
+  table={[
+    { key: 'language', value: 'Python first, multi-lang roadmap' },
+    { key: 'output', value: 'SARIF 2.1.0' },
+    { key: 'anchors', value: 'CWE + OWASP' },
+    { key: 'fixtures', value: 'zuit-python-test-cases' },
+    { key: 'status', value: '0.x' },
+  ]}
+  diagram={<ZuitFlow />}
+>
+
+Multi-language static analysis in Rust. Structured findings across maintainability, security, complexity, and test-smell dimensions, emitted as SARIF 2.1.0 with CWE and OWASP anchors. Verified against a fixture corpus of vulnerable plus safe pairs.
+
+</TopicCard>
+
+<TopicCard
+  number="04"
+  title="tell-me-why"
+  tag="local-first RAG"
+  table={[
+    { key: 'parser', value: 'six language parsers' },
+    { key: 'embedding', value: 'sentence-transformers' },
+    { key: 'store', value: 'Chroma' },
+    { key: 'inference', value: 'Ollama' },
+    { key: 'status', value: 'alpha' },
+  ]}
+  diagram={<TellMeWhyFlow />}
+>
+
+Local-first RAG over source code. Code and embeddings never leave the operator's machine. The retrieval arc — query, embed, neighbours, generate — runs entirely on local hardware.
+
+</TopicCard>
+
+</Highlights>
 
 ## Bridges
 

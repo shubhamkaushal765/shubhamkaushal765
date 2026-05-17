@@ -58,6 +58,17 @@ binding visual primitives — the binding visual rules live in
   guarded by `prefers-reduced-motion`. Used inline with `<h1>` on `/now`.
 - `SectionRule.tsx` — `<hr>` + small-caps `<h2>`. Accepts optional `number`
   prop for a monospace prefix above the heading.
+- `Highlights.tsx` — server component. Exports `<Highlights>` (default,
+  `<section>` wrapper) and named `<TopicCard>`. Used in `content/home.mdx`
+  to render the four-topic highlights block between Selected work and Bridges.
+  TopicCard renders its number prefix locally as `<span class="section-num">`
+  — it does NOT route the `<h3>` through `mdx-components.tsx`, so the locked
+  three-key map in that file is unaffected.
+- `diagrams/QecFlow.tsx`, `diagrams/CvBaselineFlow.tsx`, `diagrams/ZuitFlow.tsx`,
+  `diagrams/TellMeWhyFlow.tsx` — inline-SVG server components, one per topic
+  card. Hand-authored; theme via `currentColor`; one accent edge per diagram
+  carries `className="flow-edge--animated"` for the stroke-dashoffset reveal.
+  Source intent is documented in `site/diagrams/*.mmd` (mermaid flowcharts).
 - `FootnoteList.tsx`, `FooterSignature.tsx`, `SkipLink.tsx` — supporting.
 
 A11y baselines that must be preserved: skip-link at `<body>` top, `id="main"`
@@ -77,6 +88,31 @@ preview directory).
 `npm run build` writes to `site/out/`. That directory is gitignored. To
 deploy, push to `main` and let `.github/workflows/site.yml` build and deploy
 to Pages via the artifact API.
+
+### Diagrams workflow
+
+The four topic-card diagrams in `site/components/diagrams/*Flow.tsx` are
+hand-authored inline SVG. Source intent for each diagram is committed
+alongside as a mermaid `.mmd` file under `site/diagrams/` — these are
+documentation only; nothing builds them.
+
+To revise a diagram:
+
+1. Edit the TSX source directly in `site/components/diagrams/<Topic>Flow.tsx`.
+2. Update the matching `.mmd` file under `site/diagrams/` so symbolic intent
+   stays in sync with the rendered SVG.
+3. Re-run `npm run build` to confirm.
+
+Rules for any new diagram:
+
+- Inline `<svg>` only — never `<img src>`. `currentColor` only resolves when
+  the SVG is in the DOM cascade.
+- `viewBox="0 0 320 180"` for consistency across all topic cards.
+- `stroke-width` ≥ 1.5 so light-mode accent does not visually thin out.
+- Geometric primitives only; no glyph icons.
+- One accent edge maximum per diagram (the data-flow edge).
+- Tag the accent edge with `className="flow-edge--animated"` for the
+  stroke-dashoffset reveal — CSS handles `prefers-reduced-motion`.
 
 Pages settings (set once in repo Settings → Pages, not in code):
 

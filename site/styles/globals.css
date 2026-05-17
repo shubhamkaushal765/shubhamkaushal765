@@ -264,3 +264,129 @@
     transition: none;
   }
 }
+
+/* ── Highlights section ── */
+
+.highlights {
+  display: grid;
+  gap: var(--spacing-8);
+  margin-top: var(--spacing-5);
+}
+
+.topic-card {
+  padding: var(--spacing-5);
+  background: var(--color-surface-card);
+  border-radius: 4px;
+  /* NO box-shadow, NO border — matches existing aside style */
+  /* NO hover state — cards are static reference units, not nav. The existing .selected-work li uses hover; this is intentionally distinct. */
+}
+
+.topic-card__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-3);
+}
+
+.topic-card__head h3 {
+  /* override the existing h3 top margin since the head row sets its own spacing */
+  margin: 0;
+  flex: 1;
+}
+
+.topic-card__tag {
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+  font-size: 0.8em;
+  letter-spacing: 0.05em;
+}
+
+.topic-card__blurb {
+  color: var(--color-text-body);
+  margin: 0 0 var(--spacing-5) 0;
+}
+
+.topic-card__body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-5);
+  align-items: start;
+}
+
+@media (min-width: 640px) {
+  .topic-card__body {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.topic-card__table {
+  width: 100%;
+}
+
+.topic-card__table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.topic-card__table th,
+.topic-card__table td {
+  text-align: left;
+  padding: var(--spacing-2) var(--spacing-3);
+  border-bottom: 1px solid color-mix(in oklab, var(--color-text-footnote) 30%, transparent);
+  vertical-align: top;
+}
+
+.topic-card__table tr:last-child th,
+.topic-card__table tr:last-child td {
+  border-bottom: none;
+}
+
+.topic-card__table th {
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.topic-card__table td {
+  color: var(--color-text-body);
+}
+
+.topic-card__diagram {
+  /* color cascade: SVG paths use stroke="currentColor" which resolves to this */
+  color: var(--color-text-body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topic-card__diagram svg {
+  width: 100%;
+  height: auto;
+  max-height: 18em;
+}
+
+@keyframes flow-dash {
+  from {
+    stroke-dashoffset: var(--dash-len, 60);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.flow-edge--animated {
+  stroke-dasharray: var(--dash-len, 60);
+  stroke-dashoffset: var(--dash-len, 60);
+  animation: flow-dash 1200ms ease-out 200ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-edge--animated {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
