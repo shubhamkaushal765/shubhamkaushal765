@@ -1,10 +1,12 @@
-## Identity
+import SectionRule from '@/components/SectionRule';
+
+<SectionRule number="01">Identity</SectionRule>
 
 Independent engineer and researcher working across code intelligence, machine learning, and quantum computing — from Rust-based static analyzers at the bottom of the stack to transformer-based quantum error correction at the top.
 
 The connecting thread is operating on *symbolic structure* — ASTs, code embeddings, syndrome graphs — and building tooling that respects the structure. Rust at the bottom for compiler-grade tooling. Python at the top for research code. The senior pattern, not a portfolio juxtaposition.
 
-## Three pillars
+<SectionRule number="02">Three pillars</SectionRule>
 
 ### Code intelligence
 
@@ -18,26 +20,26 @@ The connecting thread is operating on *symbolic structure* — ASTs, code embedd
 
 `TransformerQEC` is a transformer-based decoder for surface-code quantum error correction. The architecture encodes syndrome graphs as sequences and trains a custom transformer encoder under PyTorch Lightning, with Stim providing the noisy-circuit simulation. The implementation follows the *Transformer-QEC* paper [2]. The adjacent `qosf_excercises` repo holds the QOSF Cohort 9 Task 4 solutions on QAOA and adiabatic-to-QAOA mapping [3].
 
-## Bridge artifacts
+<SectionRule number="03">Bridge artifacts</SectionRule>
 
 `TransformerQEC` is the ML-to-Quantum bridge. The transformer architecture that underlies code embeddings turns out to be the right structural prior for syndrome graphs: both are sparse, both have local correlations, both reward learning a low-dimensional structural representation rather than a surface-form one.
 
 `tell-me-why` is the Code-to-ML bridge. Source code is the structured corpus; multi-language parsing is the structure-extraction step; local embedding + retrieval is the model layer. The pipeline respects program structure — it does not flatten a function into a string of tokens before embedding.
 
-## Engineering philosophy
+<SectionRule number="04">Engineering philosophy</SectionRule>
 
 - Structure first, syntax second — work on the AST, the syndrome graph, the embedding, not the surface form.
 - Run local until proven otherwise — code, models, and quantum simulators belong on the operator's machine.
 - Reproducibility is the deliverable — fixtures, seeds, SARIF, `expected.json` — the artifact is the contract.
 
-## How I work
+<SectionRule number="05">How I work</SectionRule>
 
 - Conventional Commits strict on every owned repository. Linear history on `main`. GPG-signed.
 - No Claude co-author tags. Commits are authored by the human operator.
 - Releases ship a `CHANGELOG.md`. Research repos (`TransformerQEC`) ship a `CITATION.cff`.
 - Project READMEs follow a fixed skeleton: install, usage, architecture, **status**, license. The status section is mandatory.
 
-## 12-month direction
+<SectionRule number="06">12-month direction</SectionRule>
 
 ### Q1
 

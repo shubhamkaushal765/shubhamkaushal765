@@ -3,8 +3,9 @@ import QecFlow from '@/components/diagrams/QecFlow';
 import CvBaselineFlow from '@/components/diagrams/CvBaselineFlow';
 import ZuitFlow from '@/components/diagrams/ZuitFlow';
 import TellMeWhyFlow from '@/components/diagrams/TellMeWhyFlow';
+import SectionRule from '@/components/SectionRule';
 
-## What I work on
+<SectionRule number="01">What I work on</SectionRule>
 
 ### Code intelligence
 
@@ -18,19 +19,19 @@ Local-first RAG over source code. Models and embeddings stay on the operator's m
 
 Transformer-based decoding for surface-code quantum error correction. Syndrome graphs encoded as sequences; a custom transformer encoder learns to correct bit-flip and phase-flip errors from Stim-simulated circuits, trained under PyTorch Lightning. QOSF Cohort 9 work covers QAOA and adiabatic quantum computing. Shipped: [TransformerQEC](https://github.com/shubhamkaushal765/TransformerQEC).
 
-## Selected work
+<SectionRule number="02">Selected work</SectionRule>
 
 <div className="selected-work">
 
-- **[TransformerQEC](https://github.com/shubhamkaushal765/TransformerQEC)** — Transformer-based decoder for surface-code QEC. Stim simulation, PyTorch Lightning training, syndrome-graph encoding. Quantum · ML
-- **[zuit](https://github.com/shubhamkaushal765/zuit)** — Multi-language static-analysis CLI in Rust. Structured findings across five quality dimensions. SARIF 2.1.0 + CWE/OWASP taxonomy. Rust · static analysis
-- **[tell-me-why](https://github.com/shubhamkaushal765/tell-me-why)** — Local-first RAG over your codebase. Multi-language. Ollama + Chroma + sentence-transformers — code and embeddings never leave the machine. RAG · local-first
-- **[qosf_excercises](https://github.com/shubhamkaushal765/qosf_excercises)** — QOSF Cohort 9, Task 4: QAOA and adiabatic quantum computing solutions. Variational ansatz, adiabatic-to-QAOA mapping. QAOA · quantum
-- **[codestick](https://github.com/shubhamkaushal765/codestick)** — Programmatic stick-figure animation library for TypeScript. Angular-skeleton system, 22 human poses, 10 animation clips, SVG export. TypeScript · animation
+- **[TransformerQEC](https://github.com/shubhamkaushal765/TransformerQEC)** — Transformer-based decoder for surface-code QEC. Stim simulation, PyTorch Lightning training, syndrome-graph encoding. <span className="chips"><span className="chip">quantum</span><span className="chip">ml</span></span>
+- **[zuit](https://github.com/shubhamkaushal765/zuit)** — Multi-language static-analysis CLI in Rust. Structured findings across five quality dimensions. SARIF 2.1.0 + CWE/OWASP taxonomy. <span className="chips"><span className="chip">rust</span><span className="chip">static analysis</span></span>
+- **[tell-me-why](https://github.com/shubhamkaushal765/tell-me-why)** — Local-first RAG over your codebase. Multi-language. Ollama + Chroma + sentence-transformers — code and embeddings never leave the machine. <span className="chips"><span className="chip">rag</span><span className="chip">local-first</span></span>
+- **[qosf_excercises](https://github.com/shubhamkaushal765/qosf_excercises)** — QOSF Cohort 9, Task 4: QAOA and adiabatic quantum computing solutions. Variational ansatz, adiabatic-to-QAOA mapping. <span className="chips"><span className="chip">qaoa</span><span className="chip">quantum</span></span>
+- **[codestick](https://github.com/shubhamkaushal765/codestick)** — Programmatic stick-figure animation library for TypeScript. Angular-skeleton system, 22 human poses, 10 animation clips, SVG export. <span className="chips"><span className="chip">typescript</span><span className="chip">animation</span></span>
 
 </div>
 
-## Highlights
+<SectionRule number="03">Highlights</SectionRule>
 
 <Highlights>
 
@@ -108,19 +109,19 @@ Local-first RAG over source code. Code and embeddings never leave the operator's
 
 </Highlights>
 
-## Bridges
+<SectionRule number="04">Bridges</SectionRule>
 
 [TransformerQEC](https://github.com/shubhamkaushal765/TransformerQEC) is the ML-to-Quantum bridge: it applies transformer sequence modeling — the same architecture that underlies code embeddings — to syndrome graph decoding, bringing ML methodology into quantum error correction directly.
 
 [tell-me-why](https://github.com/shubhamkaushal765/tell-me-why) is the Code-to-ML bridge: source code as a structured corpus, multi-language parsing for structure extraction, local embedding and retrieval over the result.
 
-## Engineering philosophy
+<SectionRule number="05">Engineering philosophy</SectionRule>
 
 - Structure first, syntax second — work on the AST, the syndrome graph, the embedding, not the surface form.
 - Run local until proven otherwise — code, models, and quantum simulators belong on the operator's machine.
 - Reproducibility is the deliverable — fixtures, seeds, SARIF, `expected.json` — the artifact is the contract.
 
-## Current focus
+<SectionRule number="06">Current focus</SectionRule>
 
 ### 2026-Q2
 
@@ -128,7 +129,7 @@ Local-first RAG over source code. Code and embeddings never leave the operator's
 - `zuit` 0.x to 1.0: stabilizing the SARIF schema, adding the first three Python rules with paper-grade rationale, preparing a crates.io release.
 - `TransformerQEC` reproduction on public datasets: releasing training weights and the full training script for independent verification.
 
-## Connect
+<SectionRule>Connect</SectionRule>
 
 - Email: [kaushalshubham.ks@gmail.com](mailto:kaushalshubham.ks@gmail.com)
 - GitHub: [shubhamkaushal765](https://github.com/shubhamkaushal765)
