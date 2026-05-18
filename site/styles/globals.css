@@ -71,18 +71,45 @@
     margin: 0;
     padding: 0;
     background:
+      /* Dot grid — graph-paper / notebook texture */
+      radial-gradient(circle at 1px 1px,
+        color-mix(in oklab, var(--color-text-body) 6%, transparent) 1px,
+        transparent 0),
+      /* Faint scanline — gives the page a CRT-monitor hum without screaming about it */
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 3px,
+        color-mix(in oklab, var(--color-text-body) 1.2%, transparent) 3px,
+        color-mix(in oklab, var(--color-text-body) 1.2%, transparent) 4px
+      ),
       radial-gradient(ellipse 80% 50% at 50% -10%,
-        color-mix(in oklab, var(--color-pillar-code) 8%, transparent),
+        color-mix(in oklab, var(--color-pillar-code) 10%, transparent),
         transparent 70%),
       radial-gradient(ellipse 70% 40% at 90% 20%,
-        color-mix(in oklab, var(--color-pillar-quantum) 5%, transparent),
+        color-mix(in oklab, var(--color-pillar-quantum) 6%, transparent),
         transparent 70%),
       radial-gradient(ellipse 70% 40% at 10% 30%,
-        color-mix(in oklab, var(--color-pillar-ml) 5%, transparent),
-        transparent 70%),
-      var(--color-surface-base);
+        color-mix(in oklab, var(--color-pillar-ml) 6%, transparent),
+        transparent 70%);
+    background-size:
+      24px 24px,
+      auto,
+      auto,
+      auto,
+      auto;
+    background-color: var(--color-surface-base);
     background-attachment: fixed;
     min-height: 100vh;
+  }
+
+  [data-theme="light"] body {
+    background-size:
+      28px 28px,
+      auto,
+      auto,
+      auto,
+      auto;
   }
 
   main {
@@ -396,6 +423,99 @@
   color: var(--color-text-muted);
   max-width: 50ch;
   margin: 0;
+}
+
+/* ── Personality bits ── */
+
+/* Blinking terminal cursor — square block that announces a live prompt. */
+.blink-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-left: 0.15em;
+  background: var(--color-accent);
+  vertical-align: -0.12em;
+  animation: cursor-blink 1.05s steps(1, end) infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blink-cursor { animation: none; opacity: 0.85; }
+}
+
+/* Dry-wit aside — italic, slightly muted, set off by a small bracket glyph. */
+.aside {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  color: var(--color-text-muted);
+  font-style: italic;
+  letter-spacing: -0.005em;
+  display: block;
+  margin-top: var(--spacing-2);
+  position: relative;
+  padding-left: 1.4em;
+}
+
+.aside::before {
+  content: "//";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: color-mix(in oklab, var(--color-accent) 70%, transparent);
+  font-style: normal;
+  letter-spacing: 0;
+}
+
+/* Console-style prompt prefix. */
+.prompt-glyph {
+  color: var(--color-pillar-quantum);
+  font-family: var(--font-mono);
+  user-select: none;
+  margin-right: 0.4em;
+}
+
+/* Keyboard-key chip — for the witty footer hint. */
+.kbd {
+  font-family: var(--font-mono);
+  font-size: 0.72em;
+  padding: 1px 6px;
+  background: var(--color-surface-elevated);
+  color: var(--color-text-body);
+  border: 1px solid var(--color-border-strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+  vertical-align: 0.05em;
+}
+
+/* Stats-line extras: a "mood" pill that picks up the photonics colour. */
+.stats-line__item--mood {
+  color: var(--color-pillar-photonics);
+  border-color: color-mix(in oklab, var(--color-pillar-photonics) 30%, var(--color-border-hair));
+}
+
+/* Footer signature — let the segments stand apart and add a subtle hover Easter egg. */
+.footer-signature__segment {
+  display: inline-block;
+  margin: 0 0.4em;
+  transition: color 200ms ease-out, transform 200ms ease-out;
+}
+
+.footer-signature__segment:hover {
+  color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.footer-signature__quip {
+  display: block;
+  margin-top: var(--spacing-2);
+  font-style: italic;
+  color: color-mix(in oklab, var(--color-text-footnote) 80%, var(--color-text-muted));
+  opacity: 0.85;
 }
 
 .stats-line {
