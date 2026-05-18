@@ -13,5 +13,12 @@ const DIAGRAM = `+----------------------------------------------------------+
 +----------------------------------------------------------+`;
 
 export default function PillarDiagram() {
-  return <pre aria-label="Three pillars: code intelligence, machine learning, quantum computing, connected by bridges">{DIAGRAM}</pre>;
+  return (
+    <pre
+      className="hero__diagram"
+      aria-label="Three pillars: code intelligence, machine learning, quantum computing, connected by bridges"
+    >
+      {DIAGRAM}
+    </pre>
+  );
 }

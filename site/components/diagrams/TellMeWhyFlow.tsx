@@ -1,26 +1,23 @@
 /**
- * TellMeWhyFlow — inline SVG diagram for the tell-me-why RAG topic card.
- * Top row:    corpus -> parser -> embed -> Chroma
- * Bottom row: query -> Ollama
- * Retrieval arc: Ollama curves up into Chroma
- * Accent edge: query -> Ollama (animated dash flow)
- * Stagger delay: 650ms via --flow-delay. Node fill --color-surface-rail.
+ * TellMeWhyFlow — inline SVG diagram for the tell-me-why RAG card.
+ *
+ * Top row: corpus -> parser -> embed -> Chroma (ingestion). Bottom row:
+ * query -> Ollama. A curved retrieval arc returns from Chroma to Ollama.
+ * The embed node shows a vector ripple, Chroma shows nearest-neighbour
+ * dots, and a particle travels the retrieval arc.
  */
 import type { CSSProperties } from 'react';
 
 export default function TellMeWhyFlow() {
   const nodeW = 56;
-  const nodeH = 30;
+  const nodeH = 28;
 
-  // Top row y
-  const topY = 40;
-  const topYMid = topY + nodeH / 2; // 55
+  const topY = 36;
+  const topYMid = topY + nodeH / 2;
 
-  // Bottom row y
-  const botY = 112;
-  const botYMid = botY + nodeH / 2; // 127
+  const botY = 116;
+  const botYMid = botY + nodeH / 2;
 
-  // Top row nodes
   const topNodes = [
     { x: 8, label: 'corpus' },
     { x: 80, label: 'parser' },
@@ -28,16 +25,10 @@ export default function TellMeWhyFlow() {
     { x: 224, label: 'Chroma' },
   ];
 
-  // Bottom row nodes — left-aligned under corpus/parser area
   const botNodes = [
     { x: 8, label: 'query' },
     { x: 80, label: 'Ollama' },
   ];
-
-  // Chroma node center x
-  const chromaCx = 224 + nodeW / 2; // 252
-  // Ollama node right edge x
-  const ollamaRightX = 80 + nodeW; // 136
 
   return (
     <svg
@@ -47,42 +38,26 @@ export default function TellMeWhyFlow() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-labelledby="tmw-title tmw-desc"
-      style={{ '--flow-delay': '650ms' } as CSSProperties}
+      style={{ '--flow-delay': '450ms' } as CSSProperties}
     >
       <title id="tmw-title">tell-me-why RAG pipeline</title>
       <desc id="tmw-desc">
-        Two rows of nodes. Top row from left to right: corpus, parser, embed,
-        Chroma — the ingestion pipeline. Bottom row: query feeds into Ollama.
-        A curved arc connects Ollama up to the Chroma vector store, representing
-        the retrieval path. The edge from query to Ollama is highlighted as the
-        animated accent data-flow path.
+        Top row: corpus, parser, embed, Chroma — the ingestion pipeline.
+        Bottom row: query feeds Ollama. A curved arc connects Chroma back
+        down to Ollama for retrieval.
       </desc>
 
       <defs>
-        <marker
-          id="tmw-arrow"
-          markerWidth="8"
-          markerHeight="8"
-          refX="6"
-          refY="3"
-          orient="auto"
-        >
+        <marker id="tmw-arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
           <path d="M0,0 L0,6 L8,3 z" fill="currentColor" />
         </marker>
-        <marker
-          id="tmw-arrow-accent"
-          markerWidth="8"
-          markerHeight="8"
-          refX="6"
-          refY="3"
-          orient="auto"
-        >
+        <marker id="tmw-arrow-accent" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
           <path d="M0,0 L0,6 L8,3 z" fill="var(--pillar-color, var(--color-accent))" />
         </marker>
       </defs>
 
       {/* Top row nodes */}
-      {topNodes.map(({ x, label }) => (
+      {topNodes.map(({ x, label }, i) => (
         <g key={`top-${label}`}>
           <rect
             x={x}
@@ -91,12 +66,14 @@ export default function TellMeWhyFlow() {
             height={nodeH}
             rx="3"
             stroke="currentColor"
-            strokeWidth="1.75"
+            strokeWidth="1.5"
             fill="var(--color-surface-rail)"
+            className="flow-node--pulse"
+            style={{ animationDelay: `${i * 200}ms` } as CSSProperties}
           />
           <text
             x={x + nodeW / 2}
-            y={topY + nodeH / 2 + 4}
+            y={topY + nodeH / 2 + 3}
             textAnchor="middle"
             fontFamily="var(--font-mono)"
             fontSize="9"
@@ -107,11 +84,39 @@ export default function TellMeWhyFlow() {
         </g>
       ))}
 
-      {/* Top row plain edges: corpus->parser, parser->embed, embed->Chroma */}
-      {[0, 1, 2].map((i) => {
-        const from = topNodes[i];
-        const to = topNodes[i + 1];
-        if (!from || !to) return null;
+      {/* Vector ripple inside embed node */}
+      <g transform={`translate(${152 + nodeW / 2}, ${topYMid})`}>
+        <circle r="6" stroke="var(--pillar-color, var(--color-accent))" strokeWidth="0.75" fill="none" opacity="0.6">
+          <animate attributeName="r" values="2;10;2" dur="2.4s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.8;0;0.8" dur="2.4s" repeatCount="indefinite" />
+        </circle>
+        <circle r="2" fill="var(--pillar-color, var(--color-accent))" />
+      </g>
+
+      {/* Nearest-neighbour dots inside Chroma */}
+      {[
+        { dx: -16, dy: -6 },
+        { dx: -8, dy: 4 },
+        { dx: 4, dy: -3 },
+        { dx: 12, dy: 5 },
+        { dx: 16, dy: -4 },
+      ].map((d, i) => (
+        <circle
+          key={`nn-${i}`}
+          cx={224 + nodeW / 2 + d.dx}
+          cy={topYMid + d.dy}
+          r="1.5"
+          fill={i === 2 ? 'var(--pillar-color, var(--color-accent))' : 'currentColor'}
+          opacity={i === 2 ? 1 : 0.5}
+          className={i === 2 ? 'flow-node--pulse' : ''}
+          style={i === 2 ? { animationDelay: '1200ms' } as CSSProperties : undefined}
+        />
+      ))}
+
+      {/* Top row plain edges */}
+      {[0, 1].map((i) => {
+        const from = topNodes[i]!;
+        const to = topNodes[i + 1]!;
         return (
           <line
             key={`top-edge-${i}`}
@@ -120,14 +125,31 @@ export default function TellMeWhyFlow() {
             x2={to.x - 2}
             y2={topYMid}
             stroke="currentColor"
-            strokeWidth="1.75"
+            strokeWidth="1.5"
+            strokeDasharray="4 2"
             markerEnd="url(#tmw-arrow)"
+            className="flow-edge--animated"
+            style={{ '--dash-len': 18, '--flow-delay': `${300 + i * 200}ms` } as CSSProperties}
           />
         );
       })}
 
+      {/* embed -> Chroma (accent) */}
+      <line
+        x1={topNodes[2]!.x + nodeW}
+        y1={topYMid}
+        x2={topNodes[3]!.x - 2}
+        y2={topYMid}
+        stroke="var(--pillar-color, var(--color-accent))"
+        strokeWidth="1.75"
+        strokeDasharray="5 3"
+        markerEnd="url(#tmw-arrow-accent)"
+        className="flow-edge--animated"
+        style={{ '--dash-len': 20, '--flow-delay': '700ms' } as CSSProperties}
+      />
+
       {/* Bottom row nodes */}
-      {botNodes.map(({ x, label }) => (
+      {botNodes.map(({ x, label }, i) => (
         <g key={`bot-${label}`}>
           <rect
             x={x}
@@ -136,12 +158,14 @@ export default function TellMeWhyFlow() {
             height={nodeH}
             rx="3"
             stroke="currentColor"
-            strokeWidth="1.75"
+            strokeWidth="1.5"
             fill="var(--color-surface-rail)"
+            className="flow-node--pulse"
+            style={{ animationDelay: `${800 + i * 200}ms` } as CSSProperties}
           />
           <text
             x={x + nodeW / 2}
-            y={botY + nodeH / 2 + 4}
+            y={botY + nodeH / 2 + 3}
             textAnchor="middle"
             fontFamily="var(--font-mono)"
             fontSize="9"
@@ -160,30 +184,50 @@ export default function TellMeWhyFlow() {
         y2={botYMid}
         stroke="var(--pillar-color, var(--color-accent))"
         strokeWidth="1.75"
-        strokeDasharray="6 3"
+        strokeDasharray="5 3"
         markerEnd="url(#tmw-arrow-accent)"
         className="flow-edge--animated"
+        style={{ '--dash-len': 18, '--flow-delay': '1100ms' } as CSSProperties}
       />
 
-      {/* Retrieval arc: Ollama -> Chroma (curved path going right and up) */}
-      {/* Start: right edge of Ollama (136, botYMid=127), End: bottom of Chroma (chromaCx=252, topY+nodeH=70) */}
+      {/* Retrieval arc: Chroma -> Ollama (down + left) */}
       <path
-        d={`M ${ollamaRightX} ${botYMid} C ${ollamaRightX + 60} ${botYMid} ${chromaCx} ${botYMid - 20} ${chromaCx} ${topY + nodeH + 2}`}
+        d={`M ${224 + nodeW / 2} ${topY + nodeH} C ${224 + nodeW / 2} ${100} ${80 + nodeW} ${100} ${80 + nodeW} ${botYMid}`}
         stroke="currentColor"
-        strokeWidth="1.75"
+        strokeWidth="1.5"
+        strokeDasharray="4 2"
         markerEnd="url(#tmw-arrow)"
+        className="flow-edge--animated"
+        style={{ '--dash-len': 200, '--flow-delay': '1300ms' } as CSSProperties}
       />
 
-      {/* Label for retrieval arc */}
+      {/* Traveling retrieval particle */}
+      <circle
+        r="2"
+        className="flow-particle"
+        style={{
+          offsetPath: `path("M ${224 + nodeW / 2} ${topY + nodeH} C ${224 + nodeW / 2} ${100} ${80 + nodeW} ${100} ${80 + nodeW} ${botYMid}")`,
+          offsetDistance: '0%',
+          '--particle-delay': '1300ms',
+        } as CSSProperties}
+      />
+
+      {/* Retrieval label */}
       <text
-        x="200"
-        y="103"
+        x="180"
+        y="102"
         textAnchor="middle"
         fontFamily="var(--font-mono)"
-        fontSize="8"
+        fontSize="7.5"
         fill="var(--color-text-footnote)"
       >
         retrieval
+      </text>
+
+      {/* "local-first" badge */}
+      <rect x="160" y="158" width="68" height="14" rx="7" stroke="var(--pillar-color, var(--color-accent))" strokeWidth="0.75" fill="none" />
+      <text x="194" y="168" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="7" fill="var(--pillar-color, var(--color-accent))">
+        local-first
       </text>
     </svg>
   );

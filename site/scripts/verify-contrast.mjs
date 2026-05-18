@@ -7,9 +7,9 @@
 
 const TOKENS = {
   dark: {
-    'surface-base': '#0a0a0a',
-    'surface-card': '#131318',
-    'surface-rail': '#1b1b22',
+    'surface-base': '#0a0a0f',
+    'surface-card': '#131320',
+    'surface-rail': '#1b1b28',
     'text-body': '#ededed',
     'text-muted': '#a3a3a3',
     'text-footnote': '#737373',
