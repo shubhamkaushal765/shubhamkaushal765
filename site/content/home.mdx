@@ -5,9 +5,9 @@ import ZuitFlow from '@/components/diagrams/ZuitFlow';
 import TellMeWhyFlow from '@/components/diagrams/TellMeWhyFlow';
 import SectionRule from '@/components/SectionRule';
 
-<SectionRule number="01">The house special</SectionRule>
+<SectionRule number="01">Three pillars</SectionRule>
 
-> Three pillars. One operator. One promise — ship structure-aware tooling that respects what the data actually is: ASTs, syndrome graphs, embeddings. Never the surface form.
+Structure-aware tooling across three domains. The unifying thread is operating on symbolic structure — ASTs, syndrome graphs, embeddings — not the surface form.
 
 <div className="pillar-grid">
 
@@ -18,7 +18,7 @@ import SectionRule from '@/components/SectionRule';
   </div>
   <h3 className="pillar-tile__title">Code intelligence</h3>
   <div className="pillar-tile__body">
-    Multi-language static analysis in Rust. Structured findings across maintainability, security, complexity, and test-smell dimensions, emitted as SARIF 2.1.0 with CWE and OWASP anchors.
+    Multi-language static analysis in Rust. Findings across maintainability, security, complexity, and test-smell dimensions, emitted as SARIF 2.1.0 with CWE and OWASP anchors.
   </div>
   <a className="pillar-tile__link" href="https://github.com/shubhamkaushal765/zuit">→ zuit</a>
 </div>
@@ -30,7 +30,7 @@ import SectionRule from '@/components/SectionRule';
   </div>
   <h3 className="pillar-tile__title">Machine learning</h3>
   <div className="pillar-tile__body">
-    Local-first RAG over source code. Ollama inference, Chroma vector store, sentence-transformers encoding, six language parsers — nothing leaves the operator&apos;s machine.
+    Local-first RAG over source code. Ollama for inference, Chroma for the vector store, sentence-transformers for encoding, six language parsers. Nothing leaves the operator&apos;s machine.
   </div>
   <a className="pillar-tile__link" href="https://github.com/shubhamkaushal765/tell-me-why">→ tell-me-why</a>
 </div>
@@ -49,23 +49,19 @@ import SectionRule from '@/components/SectionRule';
 
 </div>
 
-<SectionRule number="02">The menu</SectionRule>
-
-> Five sliders. No filler. Each one shipped, fixtured, reproducible.
+<SectionRule number="02">Selected work</SectionRule>
 
 <div className="selected-work">
 
 - **[TransformerQEC](https://github.com/shubhamkaushal765/TransformerQEC)** — Transformer-based decoder for surface-code QEC. Stim simulation, PyTorch Lightning training, syndrome-graph encoding. <span className="chips"><span className="chip">quantum</span><span className="chip">ml</span></span>
-- **[zuit](https://github.com/shubhamkaushal765/zuit)** — Multi-language static-analysis CLI in Rust. Structured findings across five quality dimensions. SARIF 2.1.0 + CWE/OWASP taxonomy. <span className="chips"><span className="chip">rust</span><span className="chip">static analysis</span></span>
-- **[tell-me-why](https://github.com/shubhamkaushal765/tell-me-why)** — Local-first RAG over your codebase. Multi-language. Ollama + Chroma + sentence-transformers — code and embeddings never leave the machine. <span className="chips"><span className="chip">rag</span><span className="chip">local-first</span></span>
-- **[qosf_excercises](https://github.com/shubhamkaushal765/qosf_excercises)** — QOSF Cohort 9, Task 4: QAOA and adiabatic quantum computing solutions. Variational ansatz, adiabatic-to-QAOA mapping. <span className="chips"><span className="chip">qaoa</span><span className="chip">quantum</span></span>
-- **[codestick](https://github.com/shubhamkaushal765/codestick)** — Programmatic stick-figure animation library for TypeScript. Angular-skeleton system, 22 human poses, 10 animation clips, SVG export. <span className="chips"><span className="chip">typescript</span><span className="chip">animation</span></span>
+- **[zuit](https://github.com/shubhamkaushal765/zuit)** — Multi-language static-analysis CLI in Rust. Findings across five quality dimensions. SARIF 2.1.0 + CWE/OWASP taxonomy. <span className="chips"><span className="chip">rust</span><span className="chip">static analysis</span></span>
+- **[tell-me-why](https://github.com/shubhamkaushal765/tell-me-why)** — Local-first RAG over a codebase. Multi-language. Ollama + Chroma + sentence-transformers; code and embeddings stay local. <span className="chips"><span className="chip">rag</span><span className="chip">local-first</span></span>
+- **[qosf_excercises](https://github.com/shubhamkaushal765/qosf_excercises)** — QOSF Cohort 9, Task 4: QAOA and adiabatic quantum computing. Variational ansatz, adiabatic-to-QAOA mapping. <span className="chips"><span className="chip">qaoa</span><span className="chip">quantum</span></span>
+- **[codestick](https://github.com/shubhamkaushal765/codestick)** — Programmatic stick-figure animation library for TypeScript. Angular-skeleton system, 22 poses, 10 clips, SVG export. <span className="chips"><span className="chip">typescript</span><span className="chip">animation</span></span>
 
 </div>
 
-<SectionRule number="03">The deep cuts</SectionRule>
-
-> Four cards. The work behind the menu.
+<SectionRule number="03">Highlights</SectionRule>
 
 <Highlights>
 
@@ -103,7 +99,7 @@ Transformer-based decoder for surface-code QEC. Syndrome graphs are encoded as s
   diagram={<CvBaselineFlow />}
 >
 
-Applied-ML foundations from earlier work — CNN image classification and autoencoder reconstruction. Not a current pillar. The structured-data instinct built here carries into the AST and syndrome-graph work above.
+Applied-ML foundations from earlier work — CNN image classification and autoencoder reconstruction. Not a current pillar. The structured-data instinct built here carries into the AST and syndrome-graph work.
 
 </TopicCard>
 
@@ -122,7 +118,7 @@ Applied-ML foundations from earlier work — CNN image classification and autoen
   diagram={<ZuitFlow />}
 >
 
-Multi-language static analysis in Rust. Structured findings across maintainability, security, complexity, and test-smell dimensions, emitted as SARIF 2.1.0 with CWE and OWASP anchors. Verified against a fixture corpus of vulnerable plus safe pairs.
+Multi-language static analysis in Rust. Findings across maintainability, security, complexity, and test-smell dimensions, emitted as SARIF 2.1.0 with CWE and OWASP anchors. Verified against a fixture corpus of vulnerable plus safe pairs.
 
 </TopicCard>
 
@@ -147,28 +143,26 @@ Local-first RAG over source code. Code and embeddings never leave the operator&a
 
 </Highlights>
 
-<SectionRule number="04">Pairings</SectionRule>
-
-> Some bridges are obvious. Some you build.
+<SectionRule number="04">Bridge artifacts</SectionRule>
 
 <div className="bridge">
-  <div className="bridge__title">[ ML → Quantum bridge ]</div>
+  <div className="bridge__title">[ ML → Quantum ]</div>
   <div className="bridge__body">
-    [TransformerQEC](https://github.com/shubhamkaushal765/TransformerQEC) applies transformer sequence modeling — the same architecture that underlies code embeddings — to syndrome graph decoding, bringing ML methodology into quantum error correction directly.
+    [TransformerQEC](https://github.com/shubhamkaushal765/TransformerQEC) applies transformer sequence modeling — the same architecture that underlies code embeddings — to syndrome-graph decoding.
   </div>
 </div>
 
 <div className="bridge">
-  <div className="bridge__title">[ Code → ML bridge ]</div>
+  <div className="bridge__title">[ Code → ML ]</div>
   <div className="bridge__body">
-    [tell-me-why](https://github.com/shubhamkaushal765/tell-me-why) treats source code as a structured corpus, multi-language parsing for structure extraction, local embedding and retrieval over the result.
+    [tell-me-why](https://github.com/shubhamkaushal765/tell-me-why) treats source code as a structured corpus. Multi-language parsing extracts the structure; local embedding and retrieval operate on it end-to-end.
   </div>
 </div>
 
-<SectionRule number="05">Reservations</SectionRule>
+<SectionRule number="05">Contact</SectionRule>
 
-> Open for research collaboration, structured-tooling work, and a long conversation about anything on the menu.
+Open for research collaboration and structured-tooling work.
 
-- Email: [kaushalshubham.ks@gmail.com](mailto:kaushalshubham.ks@gmail.com)
-- GitHub: [shubhamkaushal765](https://github.com/shubhamkaushal765)
-- LinkedIn: [kaushalshubham](https://linkedin.com/in/kaushalshubham)
+- Email — [kaushalshubham.ks@gmail.com](mailto:kaushalshubham.ks@gmail.com)
+- GitHub — [shubhamkaushal765](https://github.com/shubhamkaushal765)
+- LinkedIn — [kaushalshubham](https://linkedin.com/in/kaushalshubham)
