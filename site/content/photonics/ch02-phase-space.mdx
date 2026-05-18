@@ -8,26 +8,26 @@ export const meta = {
 
 # Phase space and the Wigner picture.
 
-<p className="chapter-lede">A single optical mode is a quantum harmonic oscillator, and its state is most usefully drawn as a shape in a two-dimensional (x, p) plane. The Wigner function makes that drawing precise, and its sign structure is what separates classically simulable photonics from genuinely quantum photonics.</p>
+<p className="chapter-lede">A single optical mode is a quantum harmonic oscillator, and the most useful way to think about its state isn't as a matrix — it's as a shape drawn on a two-dimensional (x, p) plane. The Wigner function makes that shape mathematically honest. And here's the punchline: whether that shape ever dips below zero is what separates photonics a laptop can simulate from photonics that's genuinely doing something quantum.</p>
 
 ## Physical intuition
 
-A bosonic mode — one polarization, one frequency, one spatial profile of the electromagnetic field — is mathematically a quantum harmonic oscillator. Its Hilbert space is infinite-dimensional, spanned by Fock states &#123;|0⟩, |1⟩, |2⟩, ...&#125; of definite photon number. Any pure or mixed state of that mode can be represented by a density operator ρ̂ on this space.
+A bosonic mode — one polarization, one frequency, one spatial profile of the electromagnetic field — is, mathematically, a quantum harmonic oscillator. Its Hilbert space is infinite-dimensional, spanned by Fock states &#123;|0⟩, |1⟩, |2⟩, ...&#125; of definite photon number. Any state of the mode, pure or mixed, can be packaged into a density operator ρ̂ on this space.
 
-Carrying ρ̂ around as a matrix is awkward for reasoning about experiments. A more useful object is a real-valued function W(x, p) on the plane of the two field quadratures, normalized so that ∫∫ W(x, p) dx dp = 1. This is the Wigner function<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>, and it contains the same information as ρ̂.
+Lugging ρ̂ around as a matrix is a chore when what you actually want is intuition. The friendlier object is a real-valued function W(x, p) painted on the plane of the two field quadratures, normalized so that ∫∫ W(x, p) dx dp = 1. This is the Wigner function<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>, and it carries exactly as much information as ρ̂ — same content, easier to look at.
 
-The quadratures x̂ and p̂ are the real and imaginary parts of the mode's complex amplitude — physically, the two orthogonal components of the optical electric field at a given frequency. Classical electrodynamics describes the field by a single point in (x, p). Quantum mechanics forbids that, and a state must instead occupy a region of nonzero area set by [x̂, p̂] = i (using the ℏ = 1, vacuum-variance = 1/2 convention used throughout this chapter).
+The quadratures x̂ and p̂ are the real and imaginary parts of the mode's complex amplitude — physically, the two orthogonal components of the optical electric field at a given frequency. Classical electrodynamics gets away with describing the field as one tidy point in (x, p). Quantum mechanics will not let you do that; a state has to smear out over a region of nonzero area set by [x̂, p̂] = i (we use ℏ = 1, vacuum-variance = 1/2 throughout this chapter — your favorite convention may vary).
 
 ## Analogy: phase space as a fog map
 
-Think of (x, p) as a map and the state as a patch of fog above it. A classical coherent oscillation is a sharp pin at one location moving in a circle around the origin at the optical frequency. A quantum state replaces the pin with a fog blob whose shape, orientation, and position encode every measurable property of the field.
+Think of (x, p) as a map and the state as a patch of fog hovering above it. A classical coherent oscillation would be a sharp pin tracing a circle around the origin at the optical frequency — neat, exact, very Newton. Quantum mechanics replaces that pin with a blob of fog. Its shape, orientation, and position encode every measurable property of the field; that's it, that's the state.
 
-Displacing the blob rigidly across the plane corresponds to driving the mode with a classical laser. Stretching the blob along one axis and squashing it along the orthogonal axis — preserving area — corresponds to squeezing. Rotating the blob corresponds to free evolution at the mode frequency or to a phase shift in an interferometer.
+Sliding the blob rigidly across the plane is what a laser does — it's called a displacement, and it just means "drive the mode with a classical wave." Stretching the blob along one axis and squashing it along the perpendicular one — while keeping its area the same — is squeezing (yes, named exactly what it looks like). Rotating the blob is what time evolution at the mode frequency does, or what a phase shifter in an interferometer does.
 
 **Where the analogy breaks:**
 
 <ul>
-  <li>The Wigner function can take negative values for non-Gaussian states, so it is a quasi-probability, not a probability. No literal fog has negative density.</li>
+  <li>The Wigner function can dip into negative values for non-Gaussian states, so it's a *quasi*-probability, not a probability. No literal fog has negative density; quantum fog does, and that's where the interesting things happen.</li>
   <li>Marginals of W along any quadrature axis are true probability densities, but joint values W(x, p) are not jointly measurable — the uncertainty relation forbids it.</li>
   <li>Measurement is not a passive look at the fog. A homodyne measurement of x̂ collapses the state to (approximately) a thin vertical strip, destroying the prior p-structure.</li>
   <li>Two different states can have the same coarse blob shape but differ in fine interference fringes that carry the quantum content.</li>
@@ -119,9 +119,9 @@ Photon-number-resolving (PNR) detection projects onto Fock states |n⟩. Superco
 
 ## Practical implications
 
-States with everywhere-nonnegative Wigner functions and Gaussian measurements can be simulated classically in polynomial time. This is the content of the Mari–Eisert and Veitch–Ferrie–Gross–Emerson results, which formalize earlier observations going back to Bartlett, Sanders, Braunstein, and de Guise<sup className="fn-ref"><a href="#fn-5">[5]</a></sup>. Linear optics, squeezing, displacement, homodyne, and heterodyne on Gaussian inputs all stay within this efficiently simulable class.
+If your Wigner function is non-negative everywhere and your measurements are Gaussian, a classical computer can simulate the whole experiment in polynomial time. That's the punchline of Mari–Eisert and Veitch–Ferrie–Gross–Emerson, which formalize earlier observations going back to Bartlett, Sanders, Braunstein, and de Guise<sup className="fn-ref"><a href="#fn-5">[5]</a></sup>. Linear optics, squeezing, displacement, homodyne, heterodyne — applied to Gaussian inputs, all of it stays inside the "your laptop could have done that" club.
 
-Wigner negativity is therefore a necessary resource for any photonic quantum-computational advantage. It is not sufficient — negativity must be combined with sufficient interference, low loss, and high-fidelity adaptive control — but no demonstrated, simulated, proposed, or theoretical scheme for photonic quantum advantage avoids it<sup className="fn-ref"><a href="#fn-6">[6]</a></sup>. Gaussian Boson Sampling generates its hardness from the non-Gaussian PNR measurement at the output rather than from a non-Gaussian input state, but the same accounting applies: negativity must enter somewhere.
+Wigner negativity is therefore the entry fee for any photonic quantum advantage. It's not the *only* fee — you still need enough interference, low loss, and accurate adaptive control — but no demonstrated, simulated, proposed, or theoretical scheme for photonic quantum advantage avoids paying it<sup className="fn-ref"><a href="#fn-6">[6]</a></sup>. Gaussian Boson Sampling looks like a counterexample at first glance, since its inputs are Gaussian; but it sneaks the negativity in through the photon-counting measurement at the output. The accounting is the same: somebody, somewhere in the circuit, has to bring negative Wigner values to the table.
 
 This framing sets up the next two chapters. Chapter 03 takes the Gaussian sector seriously as a building block — Gottesman–Kitaev–Preskill encoding, cluster states, and measurement-based CV computation. Chapter 04 examines the non-Gaussian resources — heralded photon subtraction, cat-state breeding, and GKP state preparation — that supply the negativity those architectures consume.
 
