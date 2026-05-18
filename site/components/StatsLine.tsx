@@ -17,6 +17,13 @@ export default function StatsLine() {
       <span className="stats-line__item">
         last build <time dateTime={lastBuild}>{lastBuild}</time>
       </span>
+      <span
+        className="stats-line__item stats-line__item--mood"
+        title="self-reported, no warranty"
+        aria-label="Operator mood: caffeinated, mildly curious"
+      >
+        mood: caffeinated, mildly curious
+      </span>
     </p>
   );
 }

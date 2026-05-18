@@ -10,7 +10,7 @@
   --spacing-13: 3.25rem;
   --spacing-21: 5.25rem;
 
-  /* surfaces (dark default) */
+  /* surfaces (dark default) — warmer ink than pure neutral; reads less corporate */
   --color-surface-base: #0a0a0f;
   --color-surface-card: #131320;
   --color-surface-hover: #1f1f2e;
@@ -19,44 +19,47 @@
   --color-border-hair: rgba(255, 255, 255, 0.07);
   --color-border-strong: rgba(255, 255, 255, 0.12);
 
-  /* text (dark default) */
-  --color-text-body: #ededed;
-  --color-text-muted: #a3a3a3;
-  --color-text-footnote: #737373;
+  /* text (dark default) — body is now a touch warm-white, like newsprint under lamp */
+  --color-text-body: #f0ede5;
+  --color-text-muted: #a3a098;
+  --color-text-footnote: #757269;
 
-  /* primary accent (dark default) */
-  --color-accent: #7dd3fc;
+  /* primary accent (dark default) — leans toward riso cyan, more printed-feeling */
+  --color-accent: #22d3ee;
 
-  /* pillar dimension family (dark default) */
-  --color-pillar-code:      #7dd3fc;  /* sky-300 */
-  --color-pillar-ml:        #c4b5fd;  /* violet-300 */
-  --color-pillar-quantum:   #6ee7b7;  /* emerald-300 */
-  --color-pillar-photonics: #fcd34d;  /* amber-300 */
+  /* pillar dimension family (dark) — bumped to -400 jewel tones with more presence */
+  --color-pillar-code:      #22d3ee;  /* cyan-400  — circuits */
+  --color-pillar-ml:        #a78bfa;  /* violet-400 — embeddings */
+  --color-pillar-quantum:   #34d399;  /* emerald-400 — superposition */
+  --color-pillar-photonics: #fbbf24;  /* amber-400 — light */
 
-  /* typography */
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-display: "Inter Display", "Inter", system-ui, sans-serif;
-  --font-mono: "Berkeley Mono", "JetBrains Mono", "Geist Mono", ui-monospace, monospace;
+  /* typography — serif display vs. neutral sans vs. mono terminal.
+     The variable fallbacks pick up the next/font-injected face when available. */
+  --font-sans: var(--font-sans-var), "Inter", system-ui, sans-serif;
+  --font-display: var(--font-display-var), "Fraunces", "Iowan Old Style",
+    "Apple Garamond", "Baskerville", "Georgia", serif;
+  --font-mono: var(--font-mono-var), "Berkeley Mono", "JetBrains Mono",
+    "Geist Mono", ui-monospace, monospace;
 }
 
-/* Light mode tokens */
+/* Light mode tokens — slightly warm paper, deeper pillar inks */
 [data-theme="light"] {
-  --color-surface-base: #fafafa;
-  --color-surface-card: #efeff3;
-  --color-surface-hover: #dedee4;
-  --color-surface-rail: #e6e6ec;
-  --color-surface-elevated: #f3f3f7;
-  --color-border-hair: rgba(0, 0, 0, 0.06);
-  --color-border-strong: rgba(0, 0, 0, 0.12);
-  --color-text-body: #171717;
+  --color-surface-base: #faf7f2;
+  --color-surface-card: #f1ede5;
+  --color-surface-hover: #e3ddd1;
+  --color-surface-rail: #ebe6db;
+  --color-surface-elevated: #f5f2eb;
+  --color-border-hair: rgba(0, 0, 0, 0.07);
+  --color-border-strong: rgba(0, 0, 0, 0.14);
+  --color-text-body: #1a1a1a;
   --color-text-muted: #525252;
-  --color-text-footnote: #737373;
-  --color-accent: #0284c7;
+  --color-text-footnote: #6b6b6b;
+  --color-accent: #0369a1;
 
-  --color-pillar-code:      #0284c7;
-  --color-pillar-ml:        #7c3aed;
-  --color-pillar-quantum:   #047857;
-  --color-pillar-photonics: #b45309;
+  --color-pillar-code:      #0369a1;  /* sky-700  */
+  --color-pillar-ml:        #6d28d9;  /* violet-700 */
+  --color-pillar-quantum:   #047857;  /* emerald-700 */
+  --color-pillar-photonics: #b45309;  /* amber-700 */
 }
 
 @layer base {
@@ -71,18 +74,45 @@
     margin: 0;
     padding: 0;
     background:
+      /* Dot grid — graph-paper / notebook texture */
+      radial-gradient(circle at 1px 1px,
+        color-mix(in oklab, var(--color-text-body) 6%, transparent) 1px,
+        transparent 0),
+      /* Faint scanline — gives the page a CRT-monitor hum without screaming about it */
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 3px,
+        color-mix(in oklab, var(--color-text-body) 1.2%, transparent) 3px,
+        color-mix(in oklab, var(--color-text-body) 1.2%, transparent) 4px
+      ),
       radial-gradient(ellipse 80% 50% at 50% -10%,
-        color-mix(in oklab, var(--color-pillar-code) 8%, transparent),
+        color-mix(in oklab, var(--color-pillar-code) 10%, transparent),
         transparent 70%),
       radial-gradient(ellipse 70% 40% at 90% 20%,
-        color-mix(in oklab, var(--color-pillar-quantum) 5%, transparent),
+        color-mix(in oklab, var(--color-pillar-quantum) 6%, transparent),
         transparent 70%),
       radial-gradient(ellipse 70% 40% at 10% 30%,
-        color-mix(in oklab, var(--color-pillar-ml) 5%, transparent),
-        transparent 70%),
-      var(--color-surface-base);
+        color-mix(in oklab, var(--color-pillar-ml) 6%, transparent),
+        transparent 70%);
+    background-size:
+      24px 24px,
+      auto,
+      auto,
+      auto,
+      auto;
+    background-color: var(--color-surface-base);
     background-attachment: fixed;
     min-height: 100vh;
+  }
+
+  [data-theme="light"] body {
+    background-size:
+      28px 28px,
+      auto,
+      auto,
+      auto,
+      auto;
   }
 
   main {
@@ -131,30 +161,37 @@
 
   h1 {
     font-family: var(--font-display);
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    font-size: clamp(2rem, 5vw, 3rem);
+    /* Fraunces variable axes: opsz (auto via font-optical-sizing), SOFT (rounded
+       terminals), and a hint of WONK to lend a printed-not-templated character. */
+    font-weight: 540;
+    letter-spacing: -0.025em;
+    font-size: clamp(2.25rem, 5.5vw, 3.4rem);
     font-optical-sizing: auto;
-    line-height: 1.05;
+    font-variation-settings: "SOFT" 60, "WONK" 1;
+    line-height: 1.02;
     margin-top: var(--spacing-13);
     margin-bottom: var(--spacing-5);
+    color: var(--color-text-body);
   }
 
   h2 {
     font-family: var(--font-display);
-    font-weight: 600;
-    font-variant: small-caps;
+    font-weight: 500;
+    font-style: italic;
+    font-variation-settings: "SOFT" 80, "WONK" 0, "opsz" 24;
     letter-spacing: -0.01em;
-    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+    font-size: clamp(1.4rem, 2.8vw, 1.75rem);
     margin-top: var(--spacing-13);
     margin-bottom: var(--spacing-5);
+    color: var(--color-text-body);
   }
 
   h3 {
     font-family: var(--font-display);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    font-size: 1.125rem;
+    font-weight: 560;
+    font-variation-settings: "SOFT" 50, "opsz" 18;
+    letter-spacing: -0.015em;
+    font-size: 1.2rem;
     margin-top: var(--spacing-8);
     margin-bottom: var(--spacing-3);
   }
@@ -162,6 +199,7 @@
   h4 {
     font-family: var(--font-display);
     font-weight: 500;
+    font-style: italic;
     letter-spacing: normal;
     margin-top: var(--spacing-5);
     margin-bottom: var(--spacing-3);
@@ -379,16 +417,48 @@
   margin: 0;
   letter-spacing: -0.01em;
   animation: accent-fade-in 400ms ease-out;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35em;
+}
+
+/* Pillar words break out of the monospace voice and into the serif — the
+   tagline reads as: terminal prompt, then a thought, then a cursor. */
+.hero-tagline__pillar--code,
+.hero-tagline__pillar--quantum {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-variation-settings: "SOFT" 80, "WONK" 1, "opsz" 36;
+  letter-spacing: -0.015em;
+  font-size: 1.15em;
+  padding-bottom: 0.05em;
 }
 
 .hero-tagline__pillar--code    {
   color: var(--color-pillar-code);
-  border-bottom: 1px dashed color-mix(in oklab, var(--color-pillar-code) 40%, transparent);
+  border-bottom: 1px dashed color-mix(in oklab, var(--color-pillar-code) 50%, transparent);
 }
 .hero-tagline__arrow           { color: var(--color-text-muted); }
 .hero-tagline__pillar--quantum {
   color: var(--color-pillar-quantum);
-  border-bottom: 1px dashed color-mix(in oklab, var(--color-pillar-quantum) 40%, transparent);
+  border-bottom: 1px dashed color-mix(in oklab, var(--color-pillar-quantum) 50%, transparent);
+}
+
+/* Drop cap — only on opted-in elements. Pulls the eye into the first
+   paragraph and quietly signals "this was edited, not generated." */
+.drop-cap::first-letter {
+  font-family: var(--font-display);
+  font-weight: 540;
+  font-variation-settings: "SOFT" 60, "WONK" 1, "opsz" 144;
+  font-style: normal;
+  float: left;
+  font-size: 3.2em;
+  line-height: 0.85;
+  padding: 0.08em 0.12em 0 0;
+  margin-right: 0.05em;
+  color: var(--color-accent);
 }
 
 .hero__lede {
@@ -396,6 +466,99 @@
   color: var(--color-text-muted);
   max-width: 50ch;
   margin: 0;
+}
+
+/* ── Personality bits ── */
+
+/* Blinking terminal cursor — square block that announces a live prompt. */
+.blink-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-left: 0.15em;
+  background: var(--color-accent);
+  vertical-align: -0.12em;
+  animation: cursor-blink 1.05s steps(1, end) infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blink-cursor { animation: none; opacity: 0.85; }
+}
+
+/* Dry-wit aside — italic, slightly muted, set off by a small bracket glyph. */
+.aside {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  color: var(--color-text-muted);
+  font-style: italic;
+  letter-spacing: -0.005em;
+  display: block;
+  margin-top: var(--spacing-2);
+  position: relative;
+  padding-left: 1.4em;
+}
+
+.aside::before {
+  content: "//";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: color-mix(in oklab, var(--color-accent) 70%, transparent);
+  font-style: normal;
+  letter-spacing: 0;
+}
+
+/* Console-style prompt prefix. */
+.prompt-glyph {
+  color: var(--color-pillar-quantum);
+  font-family: var(--font-mono);
+  user-select: none;
+  margin-right: 0.4em;
+}
+
+/* Keyboard-key chip — for the witty footer hint. */
+.kbd {
+  font-family: var(--font-mono);
+  font-size: 0.72em;
+  padding: 1px 6px;
+  background: var(--color-surface-elevated);
+  color: var(--color-text-body);
+  border: 1px solid var(--color-border-strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+  vertical-align: 0.05em;
+}
+
+/* Stats-line extras: a "mood" pill that picks up the photonics colour. */
+.stats-line__item--mood {
+  color: var(--color-pillar-photonics);
+  border-color: color-mix(in oklab, var(--color-pillar-photonics) 30%, var(--color-border-hair));
+}
+
+/* Footer signature — let the segments stand apart and add a subtle hover Easter egg. */
+.footer-signature__segment {
+  display: inline-block;
+  margin: 0 0.4em;
+  transition: color 200ms ease-out, transform 200ms ease-out;
+}
+
+.footer-signature__segment:hover {
+  color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.footer-signature__quip {
+  display: block;
+  margin-top: var(--spacing-2);
+  font-style: italic;
+  color: color-mix(in oklab, var(--color-text-footnote) 80%, var(--color-text-muted));
+  opacity: 0.85;
 }
 
 .stats-line {
@@ -516,9 +679,37 @@
 
 .section-rule__hr {
   border: none;
-  border-top: 1px solid var(--color-border-hair);
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    var(--color-border-strong) 0,
+    var(--color-border-hair) 8rem,
+    transparent
+  );
   margin: var(--spacing-3) 0 0;
+  position: relative;
 }
+
+/* Ornament: a centred typographic glyph sitting on the rule itself.
+   Two variants: §  (default, scholarly) and ❦ (book pages). */
+.section-rule__ornament {
+  position: absolute;
+  right: 0;
+  top: -0.55em;
+  background: var(--color-surface-base);
+  padding: 0 var(--spacing-3);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--color-text-footnote);
+  letter-spacing: 0;
+  user-select: none;
+}
+
+.section-rule__ornament[data-glyph="fleuron"]::before { content: "❦"; }
+.section-rule__ornament[data-glyph="pilcrow"]::before { content: "¶"; }
+.section-rule__ornament[data-glyph="section"]::before { content: "§"; }
+.section-rule__ornament[data-glyph="asterism"]::before { content: "⁂"; }
 
 /* ── Highlights ── */
 .highlights {
