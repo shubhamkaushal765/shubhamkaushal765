@@ -17,6 +17,7 @@ const TOKENS = {
     'pillar-code': '#7dd3fc',
     'pillar-ml': '#c4b5fd',
     'pillar-quantum': '#6ee7b7',
+    'pillar-photonics': '#fcd34d',
   },
   light: {
     'surface-base': '#fafafa',
@@ -29,6 +30,7 @@ const TOKENS = {
     'pillar-code': '#0284c7',
     'pillar-ml': '#7c3aed',
     'pillar-quantum': '#047857',
+    'pillar-photonics': '#b45309',
   },
 };
 
@@ -53,6 +55,9 @@ const PAIRS = [
   { fg: 'pillar-code',    bg: 'surface-rail', threshold: 3.0, use: 'pillar-code on rail (diagram accent)' },
   { fg: 'pillar-ml',      bg: 'surface-rail', threshold: 3.0, use: 'pillar-ml on rail (diagram accent)' },
   { fg: 'pillar-quantum', bg: 'surface-rail', threshold: 3.0, use: 'pillar-quantum on rail (diagram accent)' },
+  { fg: 'pillar-photonics', bg: 'surface-base', threshold: 3.0, use: 'pillar-photonics on page bg (blog chapter num)' },
+  { fg: 'pillar-photonics', bg: 'surface-card', threshold: 3.0, use: 'pillar-photonics on card chrome' },
+  { fg: 'pillar-photonics', bg: 'surface-rail', threshold: 3.0, use: 'pillar-photonics on rail (diagram accent)' },
 ];
 
 function hexToRgb(hex) {

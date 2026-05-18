@@ -4,10 +4,10 @@ import FooterSignature from '@/components/FooterSignature';
 
 export const metadata: Metadata = {
   title: 'Blog — Shubham Kaushal',
-  description: 'Essays across code intelligence, machine learning, and quantum computing.',
+  description: 'Essays and working notebooks across code intelligence, machine learning, quantum computing, and photonics.',
 };
 
-type Pillar = 'code-int' | 'ml' | 'quantum';
+type Pillar = 'code-int' | 'ml' | 'quantum' | 'photonics';
 
 type Post = {
   title: string;
@@ -16,9 +16,25 @@ type Post = {
   pillarLabel: string;
   date: string;
   status: 'upcoming' | 'draft' | 'published';
+  chapters?: string[];
 };
 
 const POSTS: Post[] = [
+  {
+    title: 'Photonics',
+    summary: 'A working notebook on photonic quantum computing — continuous-variable encoding, Gaussian operations, measurement-induced nonlinearity, and where the architecture diverges from gate-model superconducting qubits.',
+    pillar: 'photonics',
+    pillarLabel: 'photonics',
+    date: '2026-Q3',
+    status: 'upcoming',
+    chapters: [
+      'Chapter 1',
+      'Chapter 2',
+      'Chapter 3',
+      'Chapter 4',
+      'Chapter 5',
+    ],
+  },
   {
     title: 'Why your static analyzer should emit SARIF — and what most authors get wrong about it',
     summary: 'SARIF 2.1.0 schema, CWE/OWASP anchoring, and the implementation mistakes that make findings non-portable.',
@@ -66,7 +82,7 @@ export default function WritingPage() {
     <main id="main">
       <Hero variant="compact" />
       <h1>Blog</h1>
-      <p>Essays across code intelligence, machine learning, and quantum computing. Primary sources cited directly (arXiv permalinks, not commentary); every code sample runs as written; pseudocode is labeled as pseudocode.</p>
+      <p>Essays and working notebooks across code intelligence, machine learning, quantum computing, and photonics. Primary sources cited directly (arXiv permalinks, not commentary); every code sample runs as written; pseudocode is labeled as pseudocode. Multi-chapter books appear with their chapter list inline.</p>
       <ol className="blog-list">
         {POSTS.map((post, i) => (
           <li key={i} className="blog-entry" data-pillar={post.pillar}>
@@ -77,6 +93,16 @@ export default function WritingPage() {
             </div>
             <h3 className="blog-entry__title">{post.title}</h3>
             <p className="blog-entry__summary">{post.summary}</p>
+            {post.chapters && post.chapters.length > 0 && (
+              <ol className="blog-entry__chapters">
+                {post.chapters.map((chapter, j) => (
+                  <li key={j} className="blog-entry__chapter">
+                    <span className="blog-entry__chapter-num">{`[ ${String(j + 1).padStart(2, '0')} ]`}</span>
+                    <span className="blog-entry__chapter-title">{chapter}</span>
+                  </li>
+                ))}
+              </ol>
+            )}
           </li>
         ))}
       </ol>
