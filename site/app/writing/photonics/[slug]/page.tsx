@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import ChapterSidebar from '@/components/ChapterSidebar';
 import FooterSignature from '@/components/FooterSignature';
 import { CHAPTERS } from '../chapters';
 
@@ -63,9 +64,18 @@ export default async function PhotonicsChapterPage({
         <span aria-hidden="true"> · </span>
         <span>{chapter.reading}</span>
       </p>
-      <article className="chapter-article">
-        <Body />
-      </article>
+      <div className="chapter-layout">
+        <ChapterSidebar
+          bookLabel="Photonic QC"
+          bookHref="/writing/photonics/"
+          basePath="/writing/photonics/"
+          chapters={CHAPTERS}
+          currentSlug={slug}
+        />
+        <article className="chapter-article">
+          <Body />
+        </article>
+      </div>
       <nav className="chapter-nav" aria-label="Chapter navigation">
         {prev !== undefined ? (
           <Link href={`/writing/photonics/${prev.slug}/`} className="chapter-nav__prev">

@@ -137,6 +137,80 @@ The first row is the cheap demo. The last three rows are why a thirty-year-old i
 
 The pipeline is not a strict left-to-right waterfall in production tools — incremental parsers reuse old tree fragments, and language servers cache symbol tables between keystrokes — but the layers exist and the dependencies point in this direction. Chapters 02 through 04 walk each transition in detail.
 
+<figure className="chapter-figure">
+  <svg viewBox="0 0 820 360" width="100%" role="img" aria-labelledby="ast-title ast-desc" xmlns="http://www.w3.org/2000/svg" style={{color: 'currentColor'}}>
+    <title id="ast-title">An AST for total = price + quantity * discount</title>
+    <desc id="ast-desc">A tree diagram of the assignment expression total = price + quantity * discount. The root is an Assignment node with two children: the identifier total and a BinaryOp plus, which itself has price on the left and a BinaryOp times on the right, whose children are quantity and discount.</desc>
+
+    <g stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.55">
+      <line x1="410" y1="70" x2="240" y2="140" />
+      <line x1="410" y1="70" x2="580" y2="140" />
+      <line x1="580" y1="170" x2="440" y2="240" />
+      <line x1="580" y1="170" x2="720" y2="240" />
+      <line x1="720" y1="270" x2="600" y2="330" />
+      <line x1="720" y1="270" x2="800" y2="330" />
+    </g>
+
+    <g>
+      <g transform="translate(410 70)">
+        <rect x="-90" y="-22" width="180" height="44" rx="6" fill="var(--pillar-color, currentColor)" fillOpacity="0.18" stroke="currentColor" strokeWidth="1.5" />
+        <text x="0" y="-2" textAnchor="middle" fontSize="13" fontWeight="600" fill="currentColor">Assignment</text>
+        <text x="0" y="15" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.7">target = value</text>
+      </g>
+
+      <g transform="translate(240 160)">
+        <rect x="-70" y="-22" width="140" height="44" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="0" y="-2" textAnchor="middle" fontSize="12" fontWeight="600" fill="currentColor">Identifier</text>
+        <text x="0" y="14" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace" fill="var(--pillar-color, currentColor)">total</text>
+      </g>
+
+      <g transform="translate(580 160)">
+        <rect x="-70" y="-22" width="140" height="44" rx="6" fill="var(--pillar-color, currentColor)" fillOpacity="0.08" stroke="currentColor" strokeWidth="1.5" />
+        <text x="0" y="-2" textAnchor="middle" fontSize="12" fontWeight="600" fill="currentColor">BinaryOp</text>
+        <text x="0" y="14" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace" fill="var(--pillar-color, currentColor)">+</text>
+      </g>
+
+      <g transform="translate(440 260)">
+        <rect x="-70" y="-22" width="140" height="44" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="0" y="-2" textAnchor="middle" fontSize="12" fontWeight="600" fill="currentColor">Identifier</text>
+        <text x="0" y="14" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace" fill="var(--pillar-color, currentColor)">price</text>
+      </g>
+
+      <g transform="translate(720 260)">
+        <rect x="-70" y="-22" width="140" height="44" rx="6" fill="var(--pillar-color, currentColor)" fillOpacity="0.08" stroke="currentColor" strokeWidth="1.5" />
+        <text x="0" y="-2" textAnchor="middle" fontSize="12" fontWeight="600" fill="currentColor">BinaryOp</text>
+        <text x="0" y="14" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace" fill="var(--pillar-color, currentColor)">*</text>
+      </g>
+
+      <g transform="translate(600 340)">
+        <rect x="-60" y="-18" width="120" height="34" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="0" y="4" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace" fill="var(--pillar-color, currentColor)">quantity</text>
+      </g>
+
+      <g transform="translate(800 340)">
+        <rect x="-60" y="-18" width="120" height="34" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="0" y="4" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace" fill="var(--pillar-color, currentColor)">discount</text>
+      </g>
+    </g>
+
+    <g transform="translate(40 70)">
+      <text x="0" y="0" fontSize="11" fontFamily="ui-monospace, monospace" fill="currentColor" opacity="0.7">source</text>
+      <text x="0" y="22" fontSize="13" fontFamily="ui-monospace, monospace" fill="currentColor">total =</text>
+      <text x="0" y="42" fontSize="13" fontFamily="ui-monospace, monospace" fill="currentColor">  price +</text>
+      <text x="0" y="62" fontSize="13" fontFamily="ui-monospace, monospace" fill="currentColor">  quantity</text>
+      <text x="0" y="82" fontSize="13" fontFamily="ui-monospace, monospace" fill="currentColor">  * discount</text>
+      <line x1="180" y1="50" x2="220" y2="50" stroke="currentColor" strokeWidth="1.4" markerEnd="url(#ast-arrow)" />
+    </g>
+
+    <defs>
+      <marker id="ast-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+        <path d="M0,0 L7,3.5 L0,7 z" fill="currentColor" />
+      </marker>
+    </defs>
+  </svg>
+  <figcaption>The same five-token expression as a tree. Operator precedence (* binds tighter than +) is now structural rather than implicit; you can ask "what is the right-hand side of the assignment?" with a single field access. The text says nothing about precedence — the tree settles it once.</figcaption>
+</figure>
+
 ## What shipped tooling actually uses
 
 The pipeline is not abstract. You can name the projects that implement each stage.

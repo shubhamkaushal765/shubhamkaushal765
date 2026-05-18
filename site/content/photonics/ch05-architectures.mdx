@@ -144,6 +144,62 @@ A useful mental model: each fusion attempt is a bond on the resource-state graph
 
 **Quandela / Quix / boson-sampling lineage**. Quantum-dot single-photon sources (Quandela) or SPDC pair sources feeding programmable interferometer chips (Quix, others). Demonstrated: small-scale BosonSampling, variational photonic algorithms, six-photon GHZ generation. Proposed: integrated MBQC, near-term variational photonic computing, and modular linear-optical processors as building blocks for future fault-tolerant systems.
 
+<figure className="chapter-figure">
+  <svg viewBox="0 0 820 320" width="100%" role="img" aria-labelledby="cluster-title cluster-desc" xmlns="http://www.w3.org/2000/svg" style={{color: 'currentColor'}}>
+    <title id="cluster-title">A 2D cluster state and the MBQC measurement schedule</title>
+    <desc id="cluster-desc">A 6 by 4 lattice of circles connected by horizontal and vertical edges, representing entangled qubits. Time arrows from left to right show successive columns being measured, with measurement results feeding adaptively into the basis chosen for the next column.</desc>
+
+    <g transform="translate(40 50)">
+      <text x="360" y="-20" textAnchor="middle" fontSize="14" fontWeight="600" fill="currentColor">2D cluster state — entangle once, measure column by column</text>
+
+      <g stroke="currentColor" strokeWidth="1.2" opacity="0.55">
+        <line x1="40" y1="20" x2="680" y2="20" />
+        <line x1="40" y1="80" x2="680" y2="80" />
+        <line x1="40" y1="140" x2="680" y2="140" />
+        <line x1="40" y1="200" x2="680" y2="200" />
+
+        <line x1="40" y1="20" x2="40" y2="200" />
+        <line x1="160" y1="20" x2="160" y2="200" />
+        <line x1="280" y1="20" x2="280" y2="200" />
+        <line x1="400" y1="20" x2="400" y2="200" />
+        <line x1="520" y1="20" x2="520" y2="200" />
+        <line x1="640" y1="20" x2="640" y2="200" />
+      </g>
+
+      <g fill="var(--color-surface-card, white)" stroke="currentColor" strokeWidth="1.6">
+        <circle cx="40" cy="20" r="9" /><circle cx="160" cy="20" r="9" /><circle cx="280" cy="20" r="9" /><circle cx="400" cy="20" r="9" /><circle cx="520" cy="20" r="9" /><circle cx="640" cy="20" r="9" />
+        <circle cx="40" cy="80" r="9" /><circle cx="160" cy="80" r="9" /><circle cx="280" cy="80" r="9" /><circle cx="400" cy="80" r="9" /><circle cx="520" cy="80" r="9" /><circle cx="640" cy="80" r="9" />
+        <circle cx="40" cy="140" r="9" /><circle cx="160" cy="140" r="9" /><circle cx="280" cy="140" r="9" /><circle cx="400" cy="140" r="9" /><circle cx="520" cy="140" r="9" /><circle cx="640" cy="140" r="9" />
+        <circle cx="40" cy="200" r="9" /><circle cx="160" cy="200" r="9" /><circle cx="280" cy="200" r="9" /><circle cx="400" cy="200" r="9" /><circle cx="520" cy="200" r="9" /><circle cx="640" cy="200" r="9" />
+      </g>
+
+      <g fill="var(--pillar-color, currentColor)" fillOpacity="0.55">
+        <circle cx="40" cy="20" r="7" />
+        <circle cx="40" cy="80" r="7" />
+        <circle cx="40" cy="140" r="7" />
+        <circle cx="40" cy="200" r="7" />
+      </g>
+
+      <line x1="100" y1="245" x2="700" y2="245" stroke="currentColor" strokeWidth="1.2" markerEnd="url(#cl-arrow)" />
+      <text x="40" y="250" fontSize="11" fill="currentColor" opacity="0.75">measure</text>
+      <text x="710" y="250" fontSize="11" fill="currentColor" opacity="0.75">time →</text>
+
+      <text x="40" y="232" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.7">m₁</text>
+      <text x="160" y="232" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.7">m₂(m₁)</text>
+      <text x="280" y="232" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.7">m₃(m₁,₂)</text>
+
+      <text x="640" y="232" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.7">logical out</text>
+    </g>
+
+    <defs>
+      <marker id="cl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+        <path d="M0,0 L7,3.5 L0,7 z" fill="currentColor" />
+      </marker>
+    </defs>
+  </svg>
+  <figcaption>A two-dimensional cluster state: nodes are qubits, edges are CZ entanglement bonds. The computation proceeds by measuring columns from left to right; each measurement basis depends adaptively on outcomes already gathered to the left. Logical information flows horizontally; gates are realized by the pattern of measurement bases. The leftmost column highlighted in pillar colour is the next slated for measurement.</figcaption>
+</figure>
+
 ## The loss problem
 
 Per-component loss budgets dominate every scaling estimate. Representative numbers for current silicon photonic platforms at telecom wavelengths: chip-to-fiber coupling 0.5–1 dB per facet, on-chip waveguide propagation around 0.1 dB/cm, on-chip components (MZIs, filters) a few tenths of a dB each, and superconducting nanowire single-photon detector efficiency around 95%. End-to-end loss of 1–3 dB per photon is typical for current integrated chips, corresponding to 20–50% per-photon survival probabilities.
