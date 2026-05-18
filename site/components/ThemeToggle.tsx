@@ -33,19 +33,20 @@ export default function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+      className="site-nav__link"
       style={{
-        background: 'none',
-        border: 'none',
+        background: 'var(--color-surface-rail)',
+        border: '1px solid var(--color-border-hair)',
         cursor: 'pointer',
         fontFamily: 'var(--font-mono)',
-        fontSize: '0.85em',
+        fontSize: '0.78em',
         color: 'var(--color-text-muted)',
-        padding: '0',
-        marginLeft: 'var(--spacing-5)',
+        padding: '4px 10px',
+        borderRadius: '999px',
       }}
     >
       <span aria-hidden="true">
-        {theme === 'dark' ? '[ light ]' : '[ dark ]'}
+        {theme === 'dark' ? 'light' : 'dark'}
       </span>
     </button>
   );

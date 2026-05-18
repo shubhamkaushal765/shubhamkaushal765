@@ -27,12 +27,23 @@ function extractText(children: ReactNode): string {
 
 const DATE_H3 = /^\d{4}-\d{2}(-\d{2})?$/;
 
-function NumberedH3({ children, id }: { children?: ReactNode; id?: string }) {
+interface NumberedH3Props {
+  children?: ReactNode;
+  id?: string;
+  className?: string;
+}
+
+function NumberedH3({ children, id, className, ...rest }: NumberedH3Props) {
+  // If the h3 already has styling/structure applied (className), don't inject
+  // a prefix — that's a JSX-authored h3 inside a panel (pillar-tile, topic-card).
+  if (className !== undefined) {
+    return <h3 id={id} className={className} {...rest}>{children}</h3>;
+  }
   const text = extractText(children);
   const entry = PILLAR_NUMBERS[text];
   if (entry !== undefined) {
     return (
-      <h3 id={id} data-pillar={entry.pillar}>
+      <h3 id={id} data-pillar={entry.pillar} {...rest}>
         <span className="section-num" aria-hidden="true">{entry.num}</span>
         {children}
       </h3>
@@ -40,12 +51,12 @@ function NumberedH3({ children, id }: { children?: ReactNode; id?: string }) {
   }
   if (DATE_H3.test(text)) {
     return (
-      <h3 id={id}>
+      <h3 id={id} {...rest}>
         <span className="section-num" aria-label={text}>{`[ ${text} ]`}</span>
       </h3>
     );
   }
-  return <h3 id={id}>{children}</h3>;
+  return <h3 id={id} {...rest}>{children}</h3>;
 }
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {

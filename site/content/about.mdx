@@ -8,29 +8,66 @@ The connecting thread is operating on *symbolic structure* — ASTs, code embedd
 
 <SectionRule number="02">Three pillars</SectionRule>
 
-### Code intelligence
+<div className="pillar-grid">
 
-`zuit` is a multi-language static-analysis CLI in Rust. The work centers on a five-dimension finding taxonomy (maintainability, security, complexity, documentation, test smells) emitted as SARIF 2.1.0 with CWE and OWASP anchors. Correctness is held to a contract: the `zuit-python-test-cases` fixture corpus pairs vulnerable and safe Python with `expected.json` files, so every Python rule has both a positive and negative example checked into git. SARIF [1] is the deliverable, not a logging side effect.
+<div className="pillar-tile" data-pillar="code-int">
+  <div className="pillar-tile__header">
+    <span className="pillar-tile__num">[ 01 ]</span>
+    <span className="pillar-tile__chip">rust · sarif</span>
+  </div>
+  <h3 className="pillar-tile__title">Code intelligence</h3>
+  <div className="pillar-tile__body">
+    `zuit` — five-dimension finding taxonomy (maintainability, security, complexity, documentation, test smells) emitted as SARIF 2.1.0 with CWE and OWASP anchors. The `zuit-python-test-cases` fixture corpus pairs vulnerable and safe Python with `expected.json` files. SARIF [1] is the deliverable, not a logging side effect.
+  </div>
+</div>
 
-### Machine learning
+<div className="pillar-tile" data-pillar="ml">
+  <div className="pillar-tile__header">
+    <span className="pillar-tile__num">[ 02 ]</span>
+    <span className="pillar-tile__chip">rag · local-first</span>
+  </div>
+  <h3 className="pillar-tile__title">Machine learning</h3>
+  <div className="pillar-tile__body">
+    `tell-me-why` is local-first RAG over source code. Multi-language parsing — Python, Rust, C#, Java, JS/TS, Go — extracts structural units before embedding. Ollama for inference; Chroma for the vector store; sentence-transformers for encoding. Nothing leaves the operator&apos;s machine.
+  </div>
+</div>
 
-`tell-me-why` is local-first RAG over source code. Multi-language parsing — Python, Rust, C#, Java, JS/TS, Go — extracts structural units before embedding. The model layer is Ollama; the vector store is Chroma; embeddings come from sentence-transformers. Nothing leaves the operator's machine. The earlier ML fundamentals (autoencoders, sentiment classification, MNIST, EDA) established the applied baseline; the current focus is benchmark methodology at fixed memory budget across embedding models.
+<div className="pillar-tile" data-pillar="quantum">
+  <div className="pillar-tile__header">
+    <span className="pillar-tile__num">[ 03 ]</span>
+    <span className="pillar-tile__chip">qec · transformer</span>
+  </div>
+  <h3 className="pillar-tile__title">Quantum computing</h3>
+  <div className="pillar-tile__body">
+    `TransformerQEC` is a transformer-based decoder for surface-code QEC. Syndrome graphs are encoded as sequences; a custom encoder is trained under PyTorch Lightning, with Stim providing the noisy-circuit simulation. Implementation follows the *Transformer-QEC* paper [2]. `qosf_excercises` holds the QOSF Cohort 9 Task 4 solutions [3].
+  </div>
+</div>
 
-### Quantum computing
-
-`TransformerQEC` is a transformer-based decoder for surface-code quantum error correction. The architecture encodes syndrome graphs as sequences and trains a custom transformer encoder under PyTorch Lightning, with Stim providing the noisy-circuit simulation. The implementation follows the *Transformer-QEC* paper [2]. The adjacent `qosf_excercises` repo holds the QOSF Cohort 9 Task 4 solutions on QAOA and adiabatic-to-QAOA mapping [3].
+</div>
 
 <SectionRule number="03">Bridge artifacts</SectionRule>
 
-`TransformerQEC` is the ML-to-Quantum bridge. The transformer architecture that underlies code embeddings turns out to be the right structural prior for syndrome graphs: both are sparse, both have local correlations, both reward learning a low-dimensional structural representation rather than a surface-form one.
+<div className="bridge">
+  <div className="bridge__title">[ ML → Quantum ]</div>
+  <div className="bridge__body">
+    `TransformerQEC`. The transformer architecture that underlies code embeddings turns out to be the right structural prior for syndrome graphs: both are sparse, both have local correlations, both reward learning a low-dimensional structural representation rather than a surface-form one.
+  </div>
+</div>
 
-`tell-me-why` is the Code-to-ML bridge. Source code is the structured corpus; multi-language parsing is the structure-extraction step; local embedding + retrieval is the model layer. The pipeline respects program structure — it does not flatten a function into a string of tokens before embedding.
+<div className="bridge">
+  <div className="bridge__title">[ Code → ML ]</div>
+  <div className="bridge__body">
+    `tell-me-why`. Source code is the structured corpus; multi-language parsing is the structure-extraction step; local embedding + retrieval is the model layer. The pipeline respects program structure — it does not flatten a function into a string of tokens before embedding.
+  </div>
+</div>
 
 <SectionRule number="04">Engineering philosophy</SectionRule>
 
-- Structure first, syntax second — work on the AST, the syndrome graph, the embedding, not the surface form.
-- Run local until proven otherwise — code, models, and quantum simulators belong on the operator's machine.
-- Reproducibility is the deliverable — fixtures, seeds, SARIF, `expected.json` — the artifact is the contract.
+<ol className="house-rules">
+  <li>Structure first, syntax second — work on the AST, the syndrome graph, the embedding, not the surface form.</li>
+  <li>Run local until proven otherwise — code, models, and quantum simulators belong on the operator&apos;s machine.</li>
+  <li>Reproducibility is the deliverable — fixtures, seeds, SARIF, `expected.json` — the artifact is the contract.</li>
+</ol>
 
 <SectionRule number="05">How I work</SectionRule>
 
@@ -41,18 +78,29 @@ The connecting thread is operating on *symbolic structure* — ASTs, code embedd
 
 <SectionRule number="06">12-month direction</SectionRule>
 
-### Q1
-
-`zuit` to 1.0: SARIF schema stabilization, first three Python rules with paper-grade rationale, submission to `awesome-static-analysis`.
-
-### Q2
-
-`tell-me-why` benchmark suite vs. cursor / continue / claude-projects at fixed memory budget.
-
-### Q3
-
-`TransformerQEC` reproduction on public datasets; release of training weights and full training script.
-
-### Q4
-
-Synthesis writeup — *Three projects, one thesis* — formalizing the parsers-to-qubits framing as a single coherent research program.
+<div className="timeline">
+  <div className="timeline__item">
+    <span className="timeline__date">Q1 · zuit 1.0</span>
+    <div className="timeline__body">
+      SARIF schema stabilization, first three Python rules with paper-grade rationale, submission to `awesome-static-analysis`.
+    </div>
+  </div>
+  <div className="timeline__item">
+    <span className="timeline__date">Q2 · tell-me-why benchmarks</span>
+    <div className="timeline__body">
+      Benchmark suite vs. cursor / continue / claude-projects at fixed memory budget.
+    </div>
+  </div>
+  <div className="timeline__item">
+    <span className="timeline__date">Q3 · TransformerQEC reproduction</span>
+    <div className="timeline__body">
+      Reproduction on public datasets; release of training weights and full training script.
+    </div>
+  </div>
+  <div className="timeline__item">
+    <span className="timeline__date">Q4 · synthesis writeup</span>
+    <div className="timeline__body">
+      *Three projects, one thesis* — formalizing the parsers-to-qubits framing as a single coherent research program.
+    </div>
+  </div>
+</div>

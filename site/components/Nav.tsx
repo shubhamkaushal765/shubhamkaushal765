@@ -14,51 +14,38 @@ const ITEMS = [
 export default function Nav() {
   const pathname = usePathname();
 
-  // Strip basePath prefix for comparison — Next.js exposes the path without basePath.
-  // The href values in ITEMS already omit the basePath.
   function isActive(href: string): boolean {
     if (href === '/') return pathname === '/';
     return pathname === href || pathname.startsWith(href);
   }
 
   return (
-    <nav
-      style={{
-        fontFamily: 'var(--font-mono)',
-        color: 'var(--color-text-muted)',
-        fontSize: '0.95em',
-        marginTop: 'var(--spacing-5)',
-        display: 'flex',
-        alignItems: 'center',
-      }}
-      aria-label="Primary"
-    >
-      <span>
-        <span aria-hidden="true">[ </span>
-        {ITEMS.map((item, i) => {
+    <nav className="site-nav" aria-label="Primary">
+      <div className="site-nav__items">
+        <Link
+          href="/"
+          className="site-nav__link"
+          style={{ fontWeight: 600, color: 'var(--color-text-body)' }}
+        >
+          <span aria-hidden="true" style={{ color: 'var(--color-pillar-code)' }}>~/</span>
+          sk
+        </Link>
+        <span aria-hidden="true" style={{ color: 'var(--color-border-strong)' }}>|</span>
+        {ITEMS.map((item) => {
           const active = isActive(item.href);
           return (
-            <span key={item.href}>
-              <Link
-                href={item.href}
-                style={
-                  active
-                    ? {
-                        color: 'var(--color-accent)',
-                        textDecorationColor: 'var(--color-accent)',
-                      }
-                    : undefined
-                }
-                aria-current={active ? 'page' : undefined}
-              >
-                {item.label}
-              </Link>
-              {i < ITEMS.length - 1 && <span aria-hidden="true">  ·  </span>}
-            </span>
+            <Link
+              key={item.href}
+              href={item.href}
+              className="site-nav__link"
+              data-active={active ? 'true' : 'false'}
+              aria-current={active ? 'page' : undefined}
+            >
+              {item.label}
+            </Link>
           );
         })}
-        <span aria-hidden="true"> ]</span>
-      </span>
+      </div>
       <ThemeToggle />
     </nav>
   );
