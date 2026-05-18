@@ -135,6 +135,70 @@ Five dataflow analyses cover most of what shipped linters compute. Each picks a 
   <figcaption>A toy CFG. Two assignments to <code>x</code> reach the join block along different paths; the join takes the union, so the entry to the next block holds both definitions. The highlighted edge is one of the two join edges where dataflow facts merge.</figcaption>
 </figure>
 
+<figure className="chapter-figure">
+  <svg viewBox="0 0 820 360" width="100%" role="img" aria-labelledby="lat-title lat-desc" xmlns="http://www.w3.org/2000/svg" style={{color: 'currentColor'}}>
+    <title id="lat-title">Constant-propagation lattice</title>
+    <desc id="lat-desc">A Hasse diagram. Top element is ⊤ meaning unknown or not-a-constant. Below it is an unbounded row of concrete integer values labeled with five examples 0, 1, 2, 3, 4, dot dot dot. Below them is ⊥ meaning unreachable. Lines connect ⊥ to each concrete value, and each concrete value to ⊤. The join of any two distinct concrete values is ⊤; the join of any concrete value with itself is itself; the join with ⊥ is the other operand.</desc>
+
+    <g transform="translate(410 50)" fill="currentColor">
+      <circle cx="0" cy="0" r="22" fill="var(--pillar-color, currentColor)" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.6" />
+      <text x="0" y="5" textAnchor="middle" fontSize="18" fontWeight="600">⊤</text>
+      <text x="40" y="5" fontSize="11" fill="currentColor" opacity="0.65">unknown / not a constant</text>
+    </g>
+
+    <g stroke="currentColor" strokeWidth="1.2" opacity="0.55">
+      <line x1="410" y1="72" x2="120" y2="170" />
+      <line x1="410" y1="72" x2="260" y2="170" />
+      <line x1="410" y1="72" x2="410" y2="170" />
+      <line x1="410" y1="72" x2="560" y2="170" />
+      <line x1="410" y1="72" x2="700" y2="170" />
+
+      <line x1="120" y1="200" x2="410" y2="300" />
+      <line x1="260" y1="200" x2="410" y2="300" />
+      <line x1="410" y1="200" x2="410" y2="300" />
+      <line x1="560" y1="200" x2="410" y2="300" />
+      <line x1="700" y1="200" x2="410" y2="300" />
+    </g>
+
+    <g fill="currentColor">
+      <g transform="translate(120 185)">
+        <rect x="-26" y="-18" width="52" height="36" rx="6" fill="var(--color-surface-card, white)" stroke="currentColor" strokeWidth="1.4" />
+        <text x="0" y="5" textAnchor="middle" fontSize="14" fontFamily="ui-monospace, monospace">0</text>
+      </g>
+      <g transform="translate(260 185)">
+        <rect x="-26" y="-18" width="52" height="36" rx="6" fill="var(--color-surface-card, white)" stroke="currentColor" strokeWidth="1.4" />
+        <text x="0" y="5" textAnchor="middle" fontSize="14" fontFamily="ui-monospace, monospace">1</text>
+      </g>
+      <g transform="translate(410 185)">
+        <rect x="-26" y="-18" width="52" height="36" rx="6" fill="var(--color-surface-card, white)" stroke="currentColor" strokeWidth="1.4" />
+        <text x="0" y="5" textAnchor="middle" fontSize="14" fontFamily="ui-monospace, monospace">2</text>
+      </g>
+      <g transform="translate(560 185)">
+        <rect x="-26" y="-18" width="52" height="36" rx="6" fill="var(--color-surface-card, white)" stroke="currentColor" strokeWidth="1.4" />
+        <text x="0" y="5" textAnchor="middle" fontSize="14" fontFamily="ui-monospace, monospace">3</text>
+      </g>
+      <g transform="translate(700 185)">
+        <rect x="-26" y="-18" width="52" height="36" rx="6" fill="var(--color-surface-card, white)" stroke="currentColor" strokeWidth="1.4" />
+        <text x="0" y="5" textAnchor="middle" fontSize="14" fontFamily="ui-monospace, monospace">⋯</text>
+      </g>
+    </g>
+
+    <g transform="translate(410 310)" fill="currentColor">
+      <circle cx="0" cy="0" r="22" fill="var(--pillar-color, currentColor)" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.6" />
+      <text x="0" y="5" textAnchor="middle" fontSize="18" fontWeight="600">⊥</text>
+      <text x="40" y="5" fontSize="11" fill="currentColor" opacity="0.65">unreachable / no information</text>
+    </g>
+
+    <g transform="translate(20 145)" fill="currentColor" opacity="0.7" fontSize="11">
+      <text x="0" y="0">join rule</text>
+      <text x="0" y="18">⊥ ⊔ a = a</text>
+      <text x="0" y="36">a ⊔ a = a</text>
+      <text x="0" y="54">a ⊔ b = ⊤  (a ≠ b)</text>
+    </g>
+  </svg>
+  <figcaption>The constant-propagation lattice. Concrete integer values sit in an antichain in the middle. ⊥ means "I have not learned anything yet"; ⊤ means "this variable is provably not constant." The join operator at a branch confluence collapses any two distinct concrete values to ⊤, which is why this analysis loses precision the moment two different definitions reach the same point.</figcaption>
+</figure>
+
 ## Path-sensitivity, context-sensitivity, and the cost
 
 The dataflow framework above is *flow-sensitive* — it respects the order of statements — but *path-insensitive*, meaning it joins facts from all paths into a branch into a single fact-set. A **path-sensitive** analysis tracks facts separately along each path, so it can keep "if `flag` is true then `x = 2`" as a single correlated fact instead of conservatively merging. A **context-sensitive** analysis, often called k-CFA after Shivers's dissertation<sup className="fn-ref"><a href="#fn-6">[6]</a></sup>, distinguishes facts at each call site rather than merging them at the function entry.

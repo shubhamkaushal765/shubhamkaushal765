@@ -46,6 +46,68 @@ The same photon can carry information in surprisingly different ways, and every 
 
 The first three are qubit encodings: each logical qubit lives in a tiny two-dimensional slice of a much larger Hilbert space, and the rest of the space is either wasted or feared as "leakage." The fourth treats the entire infinite-dimensional space of the mode as the resource — no slicing, no leftover. That's the qumode picture, and it's what flips the cost model on its head.
 
+<figure className="chapter-figure">
+  <svg viewBox="0 0 880 220" width="100%" role="img" aria-labelledby="enc-title enc-desc" xmlns="http://www.w3.org/2000/svg" style={{color: 'currentColor'}}>
+    <title id="enc-title">Four photonic encodings at a glance</title>
+    <desc id="enc-desc">Four small icons in a row showing dual-rail (two parallel waveguides with a photon in the upper rail), polarization (an arrow on the Bloch-style equator between horizontal and vertical), time-bin (two pulse envelopes separated in time), and continuous-variable (a Wigner blob in the x-p plane).</desc>
+
+    <g transform="translate(20 30)">
+      <text x="100" y="0" textAnchor="middle" fontSize="13" fontWeight="600" fill="currentColor">Dual-rail</text>
+      <line x1="10" y1="60" x2="190" y2="60" stroke="currentColor" strokeWidth="2" />
+      <line x1="10" y1="110" x2="190" y2="110" stroke="currentColor" strokeWidth="2" />
+      <circle cx="80" cy="60" r="8" fill="var(--pillar-color, currentColor)" />
+      <text x="100" y="155" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">|1⟩<tspan dx="2">=</tspan> photon in upper rail</text>
+      <text x="100" y="172" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">|0⟩<tspan dx="2">=</tspan> photon in lower rail</text>
+    </g>
+
+    <line x1="230" y1="30" x2="230" y2="200" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 4" opacity="0.35" />
+
+    <g transform="translate(250 30)">
+      <text x="80" y="0" textAnchor="middle" fontSize="13" fontWeight="600" fill="currentColor">Polarization</text>
+      <circle cx="80" cy="85" r="42" fill="none" stroke="currentColor" strokeWidth="1.2" />
+      <line x1="80" y1="43" x2="80" y2="127" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+      <line x1="38" y1="85" x2="122" y2="85" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+      <line x1="80" y1="85" x2="115" y2="65" stroke="var(--pillar-color, currentColor)" strokeWidth="2.5" markerEnd="url(#enc-arrow)" />
+      <text x="80" y="37" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">|V⟩</text>
+      <text x="130" y="89" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">|H⟩</text>
+      <text x="80" y="172" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">superposition</text>
+    </g>
+
+    <line x1="410" y1="30" x2="410" y2="200" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 4" opacity="0.35" />
+
+    <g transform="translate(430 30)">
+      <text x="100" y="0" textAnchor="middle" fontSize="13" fontWeight="600" fill="currentColor">Time-bin</text>
+      <line x1="10" y1="100" x2="190" y2="100" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M 40 100 Q 55 60, 70 100" fill="none" stroke="var(--pillar-color, currentColor)" strokeWidth="2.5" />
+      <path d="M 130 100 Q 145 60, 160 100" fill="none" stroke="currentColor" strokeWidth="2.5" opacity="0.45" />
+      <text x="55" y="125" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">early</text>
+      <text x="145" y="125" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">late</text>
+      <text x="100" y="160" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">early bin = |0⟩,</text>
+      <text x="100" y="174" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">late bin = |1⟩</text>
+    </g>
+
+    <line x1="640" y1="30" x2="640" y2="200" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 4" opacity="0.35" />
+
+    <g transform="translate(660 30)">
+      <text x="100" y="0" textAnchor="middle" fontSize="13" fontWeight="600" fill="currentColor">Continuous-variable</text>
+      <line x1="20" y1="120" x2="180" y2="120" stroke="currentColor" strokeWidth="1" />
+      <line x1="100" y1="40" x2="100" y2="160" stroke="currentColor" strokeWidth="1" />
+      <text x="180" y="135" fontSize="11" fill="currentColor" opacity="0.7">x</text>
+      <text x="105" y="46" fontSize="11" fill="currentColor" opacity="0.7">p</text>
+      <ellipse cx="130" cy="95" rx="26" ry="14" fill="var(--pillar-color, currentColor)" opacity="0.25" />
+      <ellipse cx="130" cy="95" rx="18" ry="9" fill="var(--pillar-color, currentColor)" opacity="0.55" />
+      <text x="100" y="180" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">quadratures in phase space</text>
+    </g>
+
+    <defs>
+      <marker id="enc-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 z" fill="var(--pillar-color, currentColor)" />
+      </marker>
+    </defs>
+  </svg>
+  <figcaption>The same photon, four ways. Dual-rail and polarization are flat two-level slices; time-bin trades flat for sequenced; CV abandons the slice entirely and uses the whole oscillator. The first three are qubits with a single photon as the carrier; the fourth is a qumode and counts photons.</figcaption>
+</figure>
+
 ## Mathematical structure
 
 A single mode of the field is, mathematically, just a quantum harmonic oscillator — a spring with a quantum mechanic's union card. Its algebra is generated by the bosonic annihilation and creation operators *a* and *a*<sup>†</sup>, satisfying [*a*, *a*<sup>†</sup>] = 1. The number operator n̂ = *a*<sup>†</sup>*a* has eigenstates |n⟩ for non-negative integers *n* — the Fock basis — which is just a fancy way of counting how many photons are in the mode.

@@ -86,6 +86,85 @@ Success rates are stubbornly low — the heralding probability scales with |r|²
 
 Outside the optical domain, cat and GKP states have been prepared and stabilised in superconducting microwave cavities coupled to transmon ancillas, by groups at Yale and elsewhere.<sup className="fn-ref"><a href="#fn-7">[7]</a></sup> These demonstrations confirm the bosonic-code playbook works in hardware, but they do not transfer directly to room-temperature integrated optics: the microwave non-Gaussianity is supplied by the transmon's anharmonicity, which has no native optical analogue.
 
+<figure className="chapter-figure">
+  <svg viewBox="0 0 820 280" width="100%" role="img" aria-labelledby="zoo-title zoo-desc" xmlns="http://www.w3.org/2000/svg" style={{color: 'currentColor'}}>
+    <title id="zoo-title">Four non-Gaussian Wigner functions side by side</title>
+    <desc id="zoo-desc">Four phase-space panels: a Fock state ring with a negative-valued center, an even cat state with two Gaussian lobes and interference fringes between them, a cubic-phase distortion of a vacuum Gaussian, and a GKP state shown as a grid of small Gaussian peaks.</desc>
+
+    <defs>
+      <radialGradient id="ng-fock" cx="0.5" cy="0.5" r="0.55">
+        <stop offset="0%" stopColor="var(--pillar-color, currentColor)" stopOpacity="0" />
+        <stop offset="40%" stopColor="var(--pillar-color, currentColor)" stopOpacity="0" />
+        <stop offset="55%" stopColor="var(--pillar-color, currentColor)" stopOpacity="0.55" />
+        <stop offset="100%" stopColor="var(--pillar-color, currentColor)" stopOpacity="0" />
+      </radialGradient>
+      <radialGradient id="ng-blob" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0%" stopColor="var(--pillar-color, currentColor)" stopOpacity="0.7" />
+        <stop offset="100%" stopColor="var(--pillar-color, currentColor)" stopOpacity="0" />
+      </radialGradient>
+    </defs>
+
+    <g transform="translate(20 30)">
+      <text x="90" y="0" textAnchor="middle" fontSize="13" fontWeight="600" fill="currentColor">Fock |1⟩</text>
+      <rect x="20" y="15" width="140" height="140" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+      <line x1="20" y1="85" x2="160" y2="85" stroke="currentColor" strokeWidth="0.6" opacity="0.4" />
+      <line x1="90" y1="15" x2="90" y2="155" stroke="currentColor" strokeWidth="0.6" opacity="0.4" />
+      <circle cx="90" cy="85" r="55" fill="url(#ng-fock)" />
+      <circle cx="90" cy="85" r="14" fill="currentColor" fillOpacity="0.55" />
+      <text x="90" y="190" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.75">W(0,0) &lt; 0</text>
+      <text x="90" y="206" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.6">single photon</text>
+    </g>
+
+    <line x1="200" y1="30" x2="200" y2="260" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 4" opacity="0.35" />
+
+    <g transform="translate(220 30)">
+      <text x="90" y="0" textAnchor="middle" fontSize="13" fontWeight="600" fill="currentColor">Cat |α⟩+|−α⟩</text>
+      <rect x="20" y="15" width="140" height="140" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+      <line x1="20" y1="85" x2="160" y2="85" stroke="currentColor" strokeWidth="0.6" opacity="0.4" />
+      <line x1="90" y1="15" x2="90" y2="155" stroke="currentColor" strokeWidth="0.6" opacity="0.4" />
+      <circle cx="50" cy="85" r="22" fill="url(#ng-blob)" />
+      <circle cx="130" cy="85" r="22" fill="url(#ng-blob)" />
+      <g stroke="currentColor" strokeWidth="1.2" opacity="0.45">
+        <line x1="80" y1="75" x2="100" y2="75" />
+        <line x1="75" y1="85" x2="105" y2="85" />
+        <line x1="80" y1="95" x2="100" y2="95" />
+      </g>
+      <text x="90" y="190" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.75">two lobes + fringes</text>
+      <text x="90" y="206" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.6">interference = negativity</text>
+    </g>
+
+    <line x1="400" y1="30" x2="400" y2="260" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 4" opacity="0.35" />
+
+    <g transform="translate(420 30)">
+      <text x="90" y="0" textAnchor="middle" fontSize="13" fontWeight="600" fill="currentColor">Cubic phase</text>
+      <rect x="20" y="15" width="140" height="140" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+      <line x1="20" y1="85" x2="160" y2="85" stroke="currentColor" strokeWidth="0.6" opacity="0.4" />
+      <line x1="90" y1="15" x2="90" y2="155" stroke="currentColor" strokeWidth="0.6" opacity="0.4" />
+      <path d="M 30 85 Q 60 30 90 85 T 150 85" fill="var(--pillar-color, currentColor)" fillOpacity="0.35" stroke="currentColor" strokeWidth="1" />
+      <path d="M 30 85 Q 60 130 90 85 T 150 85" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.45" strokeDasharray="3 3" />
+      <text x="90" y="190" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.75">e<tspan dy="-3" fontSize="9">iγx̂³</tspan></text>
+      <text x="90" y="206" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.6">deterministic but hard</text>
+    </g>
+
+    <line x1="600" y1="30" x2="600" y2="260" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 4" opacity="0.35" />
+
+    <g transform="translate(620 30)">
+      <text x="90" y="0" textAnchor="middle" fontSize="13" fontWeight="600" fill="currentColor">GKP</text>
+      <rect x="20" y="15" width="140" height="140" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+      <line x1="20" y1="85" x2="160" y2="85" stroke="currentColor" strokeWidth="0.6" opacity="0.4" />
+      <line x1="90" y1="15" x2="90" y2="155" stroke="currentColor" strokeWidth="0.6" opacity="0.4" />
+      <g fill="var(--pillar-color, currentColor)" fillOpacity="0.55">
+        <circle cx="50" cy="55" r="5" /><circle cx="90" cy="55" r="5" /><circle cx="130" cy="55" r="5" />
+        <circle cx="50" cy="85" r="5" /><circle cx="90" cy="85" r="6" /><circle cx="130" cy="85" r="5" />
+        <circle cx="50" cy="115" r="5" /><circle cx="90" cy="115" r="5" /><circle cx="130" cy="115" r="5" />
+      </g>
+      <text x="90" y="190" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.75">peak lattice</text>
+      <text x="90" y="206" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.6">built-in error correction</text>
+    </g>
+  </svg>
+  <figcaption>The non-Gaussian zoo. Fock states have a negative-valued center; even cat states have two Gaussian lobes with interference fringes between them; the cubic-phase gate skews the vacuum Gaussian into a non-quadratic surface; GKP states approximate a comb of delta peaks on a phase-space lattice. All four supply Wigner negativity — the resource Gaussian-only chips lack.</figcaption>
+</figure>
+
 ## Hardware today
 
 Heralded single photons from spontaneous parametric down-conversion and from semiconductor quantum dots: demonstrated and routinely used. Kitten states from photon subtraction on squeezed vacuum: demonstrated in many labs. Optical GKP states: proposed, simulated, and partially benchmarked, but no full end-to-end optical demonstration at the time of writing.
