@@ -10,27 +10,27 @@ const TOKENS = {
     'surface-base': '#0a0a0f',
     'surface-card': '#131320',
     'surface-rail': '#1b1b28',
-    'text-body': '#ededed',
-    'text-muted': '#a3a3a3',
-    'text-footnote': '#737373',
-    'accent': '#7dd3fc',
-    'pillar-code': '#7dd3fc',
-    'pillar-ml': '#c4b5fd',
-    'pillar-quantum': '#6ee7b7',
-    'pillar-photonics': '#fcd34d',
+    'text-body': '#f0ede5',
+    'text-muted': '#a3a098',
+    'text-footnote': '#757269',
+    'accent': '#22d3ee',
+    'pillar-code': '#22d3ee',       // cyan-400
+    'pillar-ml': '#a78bfa',         // violet-400
+    'pillar-quantum': '#34d399',    // emerald-400
+    'pillar-photonics': '#fbbf24',  // amber-400
   },
   light: {
-    'surface-base': '#fafafa',
-    'surface-card': '#efeff3',
-    'surface-rail': '#e6e6ec',
-    'text-body': '#171717',
+    'surface-base': '#faf7f2',
+    'surface-card': '#f1ede5',
+    'surface-rail': '#ebe6db',
+    'text-body': '#1a1a1a',
     'text-muted': '#525252',
-    'text-footnote': '#737373',
-    'accent': '#0284c7',
-    'pillar-code': '#0284c7',
-    'pillar-ml': '#7c3aed',
-    'pillar-quantum': '#047857',
-    'pillar-photonics': '#b45309',
+    'text-footnote': '#6b6b6b',
+    'accent': '#0369a1',
+    'pillar-code': '#0369a1',       // sky-700
+    'pillar-ml': '#6d28d9',         // violet-700
+    'pillar-quantum': '#047857',    // emerald-700
+    'pillar-photonics': '#b45309',  // amber-700
   },
 };
 
