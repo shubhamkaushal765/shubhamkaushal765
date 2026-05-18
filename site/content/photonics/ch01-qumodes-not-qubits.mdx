@@ -1,0 +1,138 @@
+export const meta = {
+  number: '01',
+  slug: 'qumodes-not-qubits',
+  title: 'Why photonics? Qumodes, not qubits.',
+  summary: 'Why light is an attractive carrier of quantum information, and why photonic platforms reach beyond the qubit into the infinite-dimensional state space of a bosonic mode.',
+  reading: '8 min',
+};
+
+# Why photonics? Qumodes, not qubits.
+
+<p className="chapter-lede">Photonic quantum computing is not just "qubits, but with light." The native degree of freedom is a mode of the electromagnetic field, an infinite-dimensional harmonic oscillator whose state space is strictly larger than a qubit's. The cost model that follows — room-temperature operation, optical fiber as a native interconnect, photon loss as the dominant error — is what distinguishes the platform.</p>
+
+## Physical intuition
+
+A photon in this book is a single quantum of excitation of a mode of the electromagnetic field. A mode is a spatiotemporal solution of Maxwell's equations: a fixed wavevector, polarization, transverse profile, and frequency window. The mode is the container; the photon number is its occupation. Saying "a photon" without naming its mode is incomplete in the same sense as naming a charge without naming the particle that carries it.
+
+Light is attractive as a carrier of quantum information for three reasons that fall out of the physics. First, photons do not interact appreciably with each other or with most of their environment, which gives long coherence times even at room temperature. Second, the same optical fibers and waveguides that move classical telecom signals move quantum states with low loss in the 1550 nm band. Third, the dominant error is not thermal decoherence but photon loss — an erasure channel with a known location, which is friendlier to error correction than depolarizing noise<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>.
+
+The flip side is that the same weak interaction that protects photons makes deterministic two-photon gates hard. Most photonic architectures sidestep this either by using measurement-induced nonlinearity (KLM-style linear optics with ancillas and feed-forward) or by encoding information in continuous variables where Gaussian operations are cheap and a single non-Gaussian resource state supplies the nonlinearity.
+
+## Analogy: pipes and droplets
+
+Picture a network of pipes carrying water. Each pipe is a mode — a defined path with a defined cross-section. The water droplets travelling inside are photons: discrete, countable excitations of that pipe. A beam splitter is a Y-junction that mixes the contents of two pipes into two new pipes, and a phase shifter is a length of pipe that delays one stream relative to another.
+
+**Where the analogy breaks:**
+- Droplets are classical and distinguishable; photons in the same mode are indistinguishable bosons that bunch (Hong–Ou–Mandel interference has no fluid analog).
+- Pipes can be entangled — the joint state of two modes can be non-separable in a way two water pipes never are.
+- A pipe can hold a superposition of "zero droplets" and "one droplet" simultaneously; a real pipe cannot.
+- Measurement destroys droplets in a way draining a pipe does not — photon-number-resolving detection is itself the nonlinear primitive in many architectures.
+
+## Encodings: dual-rail, polarization, time-bin, continuous-variable
+
+The same photon can encode information in very different ways. Each choice fixes which operations are easy in hardware and which are expensive.
+
+<table className="encoding-table">
+  <thead>
+    <tr><th>Encoding</th><th>Logical 0 / 1</th><th>Easy</th><th>Hard</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Dual-rail</td><td>Photon in mode A vs mode B</td><td>Single-qubit gates via beam splitters and phase shifters</td><td>Deterministic two-qubit gates; requires ancillas and post-selection</td></tr>
+    <tr><td>Polarization</td><td>Horizontal vs vertical</td><td>Waveplates, compact bench optics</td><td>Integration on chip; polarization-maintaining routing</td></tr>
+    <tr><td>Time-bin</td><td>Early vs late temporal mode</td><td>Long-distance fiber transmission; phase-stable</td><td>Fast switching; precise delay lines</td></tr>
+    <tr><td>Continuous-variable (qumode)</td><td>Quadrature amplitudes of the oscillator</td><td>Gaussian operations (squeezing, displacement, beam splitting) are deterministic</td><td>Non-Gaussian resources (cubic phase, photon subtraction, GKP states)</td></tr>
+  </tbody>
+</table>
+
+The first three are qubit encodings: each logical qubit lives in a two-dimensional subspace of a larger Hilbert space, and the rest of the space is either wasted or treated as leakage. The fourth treats the full infinite-dimensional space of the mode as the computational resource. That is the qumode picture, and it is what changes the cost model.
+
+## Mathematical structure
+
+A single mode of the field is a quantum harmonic oscillator. Its algebra is generated by the bosonic annihilation and creation operators *a* and *a*<sup>†</sup>, satisfying [*a*, *a*<sup>†</sup>] = 1. The number operator n̂ = *a*<sup>†</sup>*a* has eigenstates |n⟩ for non-negative integers *n* — the Fock basis — which counts how many photons occupy the mode.
+
+Coherent states |α⟩ are eigenstates of *a* with complex eigenvalue α, and they are the closest quantum analog of a classical laser field: *a*|α⟩ = α|α⟩. Expanded in Fock states, |α⟩ = exp(−|α|²/2) Σ<sub>n</sub> α<sup>n</sup>/√(n!) |n⟩, a Poissonian distribution over photon number. Coherent states are Gaussian and classical-like; they cannot by themselves do anything a classical computer cannot simulate efficiently.
+
+Phase-space coordinates x̂ = (*a* + *a*<sup>†</sup>)/√2 and p̂ = (*a* − *a*<sup>†</sup>)/(i√2) are the position-like and momentum-like quadratures of the field, obeying [x̂, p̂] = i. Continuous-variable quantum information is encoded in these quadratures. Universal CV computation requires at least one non-Gaussian element — for example, a cubic phase gate, a photon-number measurement, or a Gottesman–Kitaev–Preskill (GKP) state — to escape the Gaussian regime that is classically simulable<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>.
+
+<figure className="chapter-figure">
+  <svg id="qubit-vs-qumode" viewBox="0 0 800 360" width="100%" role="img" aria-labelledby="qvm-title qvm-desc" style={{color: 'currentColor'}}>
+    <title id="qvm-title">Qubit two-level system contrasted with a qumode Fock ladder</title>
+    <desc id="qvm-desc">On the left, two horizontal energy levels labelled ket 0 and ket 1 representing a qubit. On the right, an infinite ladder of evenly spaced Fock levels ket 0, ket 1, ket 2, ket 3, with dots indicating continuation, representing a qumode.</desc>
+
+    <g className="panel-qubit">
+      <text x="160" y="36" textAnchor="middle" fontSize="18" fill="currentColor" fontWeight="600">Qubit: two-level system</text>
+      <line x1="60" y1="320" x2="60" y2="80" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="60" y1="320" x2="280" y2="320" stroke="currentColor" strokeWidth="1.5" />
+      <text x="40" y="80" fontSize="12" fill="currentColor" textAnchor="end">E</text>
+      <text x="280" y="340" fontSize="12" fill="currentColor" textAnchor="end">state</text>
+
+      <g className="level ground">
+        <line x1="90" y1="270" x2="250" y2="270" stroke="currentColor" strokeWidth="2.5" />
+        <text x="265" y="275" fontSize="14" fill="currentColor">|0⟩</text>
+      </g>
+      <g className="level excited">
+        <line x1="90" y1="150" x2="250" y2="150" stroke="currentColor" strokeWidth="2.5" />
+        <text x="265" y="155" fontSize="14" fill="currentColor">|1⟩</text>
+      </g>
+
+      <text x="160" y="345" fontSize="11" fill="currentColor" textAnchor="middle" opacity="0.7">dim H = 2</text>
+    </g>
+
+    <line x1="400" y1="60" x2="400" y2="330" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 4" opacity="0.4" />
+
+    <g className="panel-qumode">
+      <text x="600" y="36" textAnchor="middle" fontSize="18" fill="currentColor" fontWeight="600">Qumode: harmonic oscillator</text>
+      <line x1="450" y1="320" x2="450" y2="60" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="450" y1="320" x2="760" y2="320" stroke="currentColor" strokeWidth="1.5" />
+      <text x="430" y="60" fontSize="12" fill="currentColor" textAnchor="end">E</text>
+      <text x="760" y="340" fontSize="12" fill="currentColor" textAnchor="end">n</text>
+
+      <g className="fock-ladder" stroke="currentColor" strokeWidth="2">
+        <line x1="475" y1="290" x2="615" y2="290" />
+        <line x1="475" y1="240" x2="615" y2="240" />
+        <line x1="475" y1="190" x2="615" y2="190" />
+        <line x1="475" y1="140" x2="615" y2="140" />
+        <line x1="475" y1="90" x2="615" y2="90" strokeOpacity="0.55" />
+      </g>
+      <g fontSize="14" fill="currentColor">
+        <text x="630" y="295">|0⟩</text>
+        <text x="630" y="245">|1⟩</text>
+        <text x="630" y="195">|2⟩</text>
+        <text x="630" y="145">|3⟩</text>
+        <text x="630" y="95" opacity="0.55">|4⟩</text>
+      </g>
+      <text x="545" y="55" fontSize="20" fill="currentColor" textAnchor="middle">⋮</text>
+
+      <g className="accent-highlight" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="3">
+        <line x1="475" y1="240" x2="615" y2="240" />
+      </g>
+
+      <text x="600" y="345" fontSize="11" fill="currentColor" textAnchor="middle" opacity="0.7">dim H = ∞ (Fock basis)</text>
+    </g>
+  </svg>
+  <figcaption>A qubit lives in a two-dimensional Hilbert space spanned by |0⟩ and |1⟩. A qumode is a quantum harmonic oscillator whose Fock basis |n⟩ is countably infinite; the highlighted |1⟩ level shows the single-photon subspace that dual-rail and polarization encodings restrict to.</figcaption>
+</figure>
+
+## Hardware today
+
+Three hardware lanes are worth distinguishing. Linear-optical photonic chips combine on-chip squeezers, programmable interferometers, and photon-number-resolving detectors; Xanadu's Borealis demonstrated Gaussian boson sampling at programmable scale<sup className="fn-ref"><a href="#fn-3">[3]</a></sup>, and PsiQuantum has proposed a fusion-based architecture targeting fault tolerance from small entangled resource states<sup className="fn-ref"><a href="#fn-4">[4]</a></sup>. Quandela builds single-photon sources based on quantum dots and operates a cloud-accessible linear-optical processor.
+
+Integrated silicon photonics — the same CMOS-compatible fabrication that ships classical transceivers — provides waveguides, ring resonators, and Mach–Zehnder meshes that are reused for quantum protocols. Trapped-photon resonators (high-Q cavities, including superconducting microwave cavities for bosonic codes) are a different lane: they confine a single mode for long times so that GKP, cat, and binomial codes can be prepared and stabilized. Microwave bosonic codes have been demonstrated at the break-even point for memory<sup className="fn-ref"><a href="#fn-5">[5]</a></sup>; optical-frequency analogs remain proposed.
+
+What is demonstrated today: programmable Gaussian boson sampling at hundreds of modes, small entangled cluster states, GKP states in microwave cavities, single-photon sources with high indistinguishability. What is proposed but not yet demonstrated at scale: fault-tolerant fusion-based photonic architectures, optical-frequency GKP encoded qubits, room-temperature universal CV computation.
+
+## Why this matters for the rest of the book
+
+The qumode picture changes what counts as expensive. Gaussian operations — squeezing, displacement, beam splitting, homodyne detection — are deterministic and cheap. Non-Gaussian resources are the bottleneck, which inverts the usual qubit cost model where two-qubit entangling gates dominate. Subsequent chapters take this inversion seriously: the engineering question becomes how to manufacture non-Gaussian states at scale rather than how to make every gate deterministic.
+
+Chapter 02 develops the Fock and coherent-state machinery in detail and works through the optical transfer matrix formalism that the rest of the book uses. Chapter 03 then treats the encoding zoo above as concrete circuits, with loss budgets attached.
+
+## Notes
+
+<ol className="footnotes">
+  <li id="fn-1">Slussarenko, S. and Pryde, G. J. "Photonic quantum information processing: A concise review." Applied Physics Reviews 6, 041303 (2019). <a href="https://arxiv.org/abs/1907.06331">https://arxiv.org/abs/1907.06331</a></li>
+  <li id="fn-2">Lloyd, S. and Braunstein, S. L. "Quantum computation over continuous variables." Physical Review Letters 82, 1784 (1999). <a href="https://arxiv.org/abs/quant-ph/9810082">https://arxiv.org/abs/quant-ph/9810082</a></li>
+  <li id="fn-3">Madsen, L. S. et al. "Quantum computational advantage with a programmable photonic processor." Nature 606, 75 (2022). Xanadu Borealis. <a href="https://arxiv.org/abs/2206.00263">https://arxiv.org/abs/2206.00263</a></li>
+  <li id="fn-4">Bartolucci, S. et al. "Fusion-based quantum computation." Nature Communications 14, 912 (2023). PsiQuantum architecture. <a href="https://arxiv.org/abs/2101.09310">https://arxiv.org/abs/2101.09310</a></li>
+  <li id="fn-5">Bourassa, J. E. et al. "Blueprint for a scalable photonic fault-tolerant quantum computer." Quantum 5, 392 (2021). Xanadu CV architecture using GKP states. <a href="https://arxiv.org/abs/2010.02905">https://arxiv.org/abs/2010.02905</a></li>
+</ol>

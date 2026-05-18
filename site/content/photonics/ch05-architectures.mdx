@@ -1,0 +1,172 @@
+export const meta = {
+  number: '05',
+  slug: 'architectures',
+  title: 'Architectures: MBQC, fusion-based, and the loss problem.',
+  summary: 'A comparative survey of measurement-based and fusion-based photonic quantum computing, and how each absorbs the dominant cost of photon loss.',
+  reading: '13 min',
+};
+
+# Architectures: MBQC, fusion-based, and the loss problem.
+
+<p className="chapter-lede">Photonic quantum computers do not look like miniature versions of superconducting or trapped-ion processors. Deterministic two-photon gates are not native, photons do not sit in a register, and the dominant error is loss — an erasure whose location is known. The architectures that survive these constraints generate entanglement offline and consume it by measurement.</p>
+
+## Physical intuition: why photonic architectures look different
+
+A superconducting qubit waits in place while gates are applied to it. A photon does not wait; it propagates through a circuit at roughly c/n and is destroyed on detection. Any architecture that assumes a long-lived addressable register is the wrong shape for photons.
+
+Two-photon interactions through optical nonlinearities are weak at the single-photon level, so deterministic CZ gates between flying photons are not available in any current platform. The KLM construction<sup className="fn-ref"><a href="#fn-1">[1]</a></sup> showed that linear optics plus ancillae plus measurement plus feed-forward is in principle universal, but at a resource cost that is impractical when applied naively.
+
+The dominant error is photon loss. Loss is not a generic depolarizing channel — it is an *erasure* with a known location, because a missing click at a known mode and time-bin announces itself. Architectures that exploit this located structure pay a much smaller error-correction overhead than ones that treat loss as opaque Pauli noise.
+
+The convergent answer across the field: prepare large entangled resource states in parallel, then consume them by single-qubit measurements. Computation becomes the choice of measurement bases; the entanglement is precompiled.
+
+## Analogy: looms and Lego assembly lines
+
+Measurement-based quantum computation (MBQC) can be pictured as a weaving loom. A 2D fabric of entangled qubits — a cluster state — is laid out in advance, and computation proceeds by measuring qubits row by row, with each measurement basis chosen based on earlier outcomes. The pattern of measurements is the program; the fabric is the substrate.
+
+Fusion-based quantum computation (FBQC) is a Lego assembly line. Small certified bricks — typically 3-photon or 4-photon GHZ states — are produced in parallel by many identical factories. A second layer of linear-optical "fusion" gates probabilistically welds neighbouring bricks together into a much larger cluster. Failed welds leave gaps, and the architecture is engineered so that enough successful welds survive to percolate a connected logical structure.
+
+**Where the analogy breaks:**
+
+<ul>
+  <li>A loom has deterministic stitches; photonic cluster generation has probabilistic ones, and the protocol must tolerate random failures.</li>
+  <li>Lego bricks do not exist in superposition, and snapping two together does not project a joint Bell-basis outcome that must be tracked as a Pauli byproduct.</li>
+  <li>Both analogies suggest a static finished object, but the photonic cluster is generated and consumed in a continuous flow — qubits are created, fused, and measured within nanoseconds of each other.</li>
+  <li>Neither captures the role of the heralded ancillae and feed-forward that make the whole pipeline run.</li>
+</ul>
+
+## MBQC and CV cluster states
+
+The Raussendorf–Briegel construction<sup className="fn-ref"><a href="#fn-2">[2]</a></sup> defines a cluster state on a graph G = (V, E) as
+
+|C⟩ = (∏<sub>(i,j) ∈ E</sub> CZ<sub>ij</sub>) |+⟩<sup>⊗|V|</sup>,
+
+where |+⟩ = (|0⟩ + |1⟩)/√2 and CZ<sub>ij</sub> is the controlled-Z between qubits i and j. On a sufficiently large 2D lattice, this state plus adaptive single-qubit measurements in bases of the form M(θ) = cos θ X + sin θ Y is universal for quantum computation. Logical gates are encoded into measurement angles; Clifford byproducts are tracked classically and absorbed into later measurement bases.
+
+For photonics, two discrete-variable encodings dominate: dual-rail (a single photon in one of two modes encodes |0⟩ or |1⟩) and polarization. CZ between two dual-rail qubits via linear optics succeeds probabilistically (1/9 in the simplest KLM construction), which is why MBQC is attractive — the probabilistic gates are pushed into offline resource-state generation rather than into the runtime gate sequence.
+
+Continuous-variable MBQC<sup className="fn-ref"><a href="#fn-3">[3]</a></sup> replaces qubits with optical modes carrying squeezed vacuum states. A CV cluster state is built by sending squeezed modes through a beam-splitter network whose unitary matrix implements the graph's adjacency structure; measurements are homodyne. CV-MBQC is universal only when supplemented with a non-Gaussian resource, typically GKP-encoded states, which is where the experimental cost sits.
+
+## Fusion-based quantum computation
+
+FBQC<sup className="fn-ref"><a href="#fn-4">[4]</a></sup> takes a different decomposition. Instead of preparing one giant cluster, it prepares many tiny constant-sized resource states — say 3-photon GHZ states |GHZ<sub>3</sub>⟩ = (|000⟩ + |111⟩)/√2 — and entangles them by Type-II fusion measurements. A Type-II fusion gate is a polarizing beam splitter followed by detection on both output modes; on success it projects two input photons onto a Bell pair (consuming both photons) and grafts their neighbours into a single cluster.
+
+The fusion gate succeeds with probability 1/2 in the simplest linear-optical implementation, and on failure it removes the two photons from the cluster, leaving a gap. The architecture wins by redundancy and percolation: the resource-state graph is chosen so that the random graph remaining after each fusion attempt either succeeds or fails still contains a connected, fault-tolerant logical structure with high probability.
+
+<figure className="chapter-figure">
+  <svg viewBox="0 0 720 260" width="100%" role="img" aria-labelledby="fbqc-title fbqc-desc" xmlns="http://www.w3.org/2000/svg">
+    <title id="fbqc-title">Fusion-based quantum computation schematic</title>
+    <desc id="fbqc-desc">Four 3-photon GHZ resource states on the left are connected by Type-II fusion gates in the middle; some fusions fail while others succeed, leaving a percolating 2D lattice of photons on the right that forms the logical cluster.</desc>
+
+    <g id="resource-states" fill="currentColor">
+      <g transform="translate(40,30)">
+        <circle cx="0" cy="0" r="4"/>
+        <circle cx="30" cy="0" r="4"/>
+        <circle cx="15" cy="26" r="4"/>
+        <path d="M0,0 L30,0 L15,26 Z" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.7"/>
+      </g>
+      <g transform="translate(40,110)">
+        <circle cx="0" cy="0" r="4"/>
+        <circle cx="30" cy="0" r="4"/>
+        <circle cx="15" cy="26" r="4"/>
+        <path d="M0,0 L30,0 L15,26 Z" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.7"/>
+      </g>
+      <g transform="translate(40,180)">
+        <circle cx="0" cy="0" r="4"/>
+        <circle cx="30" cy="0" r="4"/>
+        <circle cx="15" cy="26" r="4"/>
+        <path d="M0,0 L30,0 L15,26 Z" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.7"/>
+      </g>
+      <g transform="translate(40,230)">
+        <text fontSize="11" fontFamily="ui-sans-serif, system-ui, sans-serif">3-GHZ resource states</text>
+      </g>
+    </g>
+
+    <g id="fusion-layer">
+      <rect x="260" y="40" width="60" height="26" rx="3" fill="none" stroke="var(--pillar-color, var(--color-accent))" strokeWidth="1.6"/>
+      <text x="270" y="58" fill="currentColor" fontSize="11">Type-II</text>
+      <path d="M85,30 L260,53" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.7"/>
+      <path d="M85,110 L260,53" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.7"/>
+
+      <rect x="260" y="110" width="60" height="26" rx="3" fill="none" stroke="currentColor" strokeWidth="1.2"/>
+      <text x="278" y="128" fill="currentColor" fontSize="10" opacity="0.85">FAIL  X</text>
+      <path d="M85,136 L260,123" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.7"/>
+      <path d="M85,180 L260,123" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.7"/>
+
+      <rect x="260" y="180" width="60" height="26" rx="3" fill="none" stroke="var(--pillar-color, var(--color-accent))" strokeWidth="1.6"/>
+      <text x="270" y="198" fill="currentColor" fontSize="11">Type-II</text>
+      <path d="M85,206 L260,193" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.7"/>
+      <path d="M85,180 L260,193" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.7"/>
+    </g>
+
+    <g id="logical-cluster" transform="translate(440,30)">
+      <g fill="currentColor">
+        <circle cx="0" cy="0" r="4"/>
+        <circle cx="55" cy="0" r="4"/>
+        <circle cx="110" cy="0" r="4"/>
+        <circle cx="165" cy="0" r="4"/>
+        <circle cx="0" cy="55" r="4"/>
+        <circle cx="55" cy="55" r="4"/>
+        <circle cx="110" cy="55" r="4"/>
+        <circle cx="165" cy="55" r="4"/>
+        <circle cx="0" cy="110" r="4"/>
+        <circle cx="55" cy="110" r="4"/>
+        <circle cx="110" cy="110" r="4"/>
+        <circle cx="165" cy="110" r="4"/>
+        <circle cx="0" cy="165" r="4"/>
+        <circle cx="55" cy="165" r="4"/>
+        <circle cx="110" cy="165" r="4"/>
+        <circle cx="165" cy="165" r="4"/>
+      </g>
+      <g stroke="var(--pillar-color, var(--color-accent))" strokeWidth="1.4" fill="none">
+        <path d="M0,0 L55,0 L110,0 L165,0"/>
+        <path d="M0,55 L55,55 L110,55 L165,55"/>
+        <path d="M0,110 L55,110 L110,110 L165,110"/>
+        <path d="M0,165 L55,165 L110,165 L165,165"/>
+        <path d="M0,0 L0,55 L0,110 L0,165"/>
+        <path d="M55,0 L55,55 L55,110 L55,165"/>
+        <path d="M110,0 L110,55 L110,110 L110,165"/>
+        <path d="M165,0 L165,55 L165,110 L165,165"/>
+      </g>
+      <text x="0" y="195" fill="currentColor" fontSize="11" fontFamily="ui-sans-serif, system-ui, sans-serif">logical cluster</text>
+    </g>
+  </svg>
+  <figcaption>Probabilistic Type-II fusion of small GHZ resource states into a connected logical cluster.</figcaption>
+</figure>
+
+A useful mental model: each fusion attempt is a bond on the resource-state graph that is open with probability p<sub>fuse</sub>. Above the bond-percolation threshold of that graph, a connected component spans the lattice with high probability. Bartolucci et al. show concrete resource-state geometries — six-ring and similar — for which the fusion network supports a topologically protected logical qubit even with realistic p<sub>fuse</sub> well below 1.
+
+## Three blueprints
+
+**Xanadu CV blueprint** (Bourassa et al. 2021<sup className="fn-ref"><a href="#fn-5">[5]</a></sup>). Squeezed vacuum modes pass through an interferometer to form a macronode CV cluster state; GKP-encoded ancillae provide the non-Gaussian resource needed for universality and for error correction in the GKP code. Demonstrated: programmable Gaussian boson sampling at hundreds of modes on Borealis-class hardware. Proposed: the full CV-MBQC stack with GKP encoding to reach fault tolerance; high-quality on-demand GKP states remain the missing piece.
+
+**PsiQuantum fusion-based architecture** (Bartolucci et al. 2023<sup className="fn-ref"><a href="#fn-4">[4]</a></sup>). Silicon photonic dual-rail qubits, multiplexed heralded single-photon sources, on-chip Type-II fusion, and a photonic surface code with erasure-aware decoding. Demonstrated: small resource-state generation, single-photon source arrays, integrated fabrication on standard silicon photonic processes. Proposed: million-qubit scaling via massive parallelization of constant-sized resource-state generators and deterministic resource-state preparation through multiplexed heralding.
+
+**Quandela / Quix / boson-sampling lineage**. Quantum-dot single-photon sources (Quandela) or SPDC pair sources feeding programmable interferometer chips (Quix, others). Demonstrated: small-scale BosonSampling, variational photonic algorithms, six-photon GHZ generation. Proposed: integrated MBQC, near-term variational photonic computing, and modular linear-optical processors as building blocks for future fault-tolerant systems.
+
+## The loss problem
+
+Per-component loss budgets dominate every scaling estimate. Representative numbers for current silicon photonic platforms at telecom wavelengths: chip-to-fiber coupling 0.5–1 dB per facet, on-chip waveguide propagation around 0.1 dB/cm, on-chip components (MZIs, filters) a few tenths of a dB each, and superconducting nanowire single-photon detector efficiency around 95%. End-to-end loss of 1–3 dB per photon is typical for current integrated chips, corresponding to 20–50% per-photon survival probabilities.
+
+Fault tolerance in fusion-based architectures with current decoders requires sub-1% per-photon loss budgets — well below today's hardware. Closing this gap is the central engineering problem, and the available levers are improved couplers, lower-loss waveguide materials, shorter path lengths, and detector-efficiency improvements that are already near their physical ceiling.
+
+Erasure-aware decoders<sup className="fn-ref"><a href="#fn-4">[4]</a>,<a href="#fn-6">[6]</a></sup> exploit the fact that loss is a *located* error: a missing detector click flags exactly which qubit was lost, and the decoder can mark that site as an erasure rather than as an unknown Pauli error. The loss threshold for the surface code under pure erasure is approximately 50%, far higher than the ~1% threshold for unlocated depolarizing noise. Real photonic systems sit between these extremes and decoder design tracks the mixture explicitly.
+
+## Where photonic architecture diverges from gate-model superconducting qubits
+
+Resource generation is offline and massively parallel. Thousands of identical photon factories run in parallel, each producing constant-sized entangled bricks, and the computation is the routing and measurement of those bricks. Throughput, not coherence time, is the resource budget.
+
+Evolution is measurement-driven. There is no analogue of a long sequence of unitary gates applied to a static register; instead, measurement outcomes adaptively steer the next layer of measurements, with classical feed-forward stitching the logical computation together. Networking is native — photons are the natural medium for moving quantum information between chips and between modules, so distributed and modular architectures are not an afterthought.
+
+The dominant error is loss, not decoherence. The architectural question is therefore not "how long can the qubit live" but "how much of the resource state survives the optical path, and does the surviving fragment percolate." That reframing — from coherence-time engineering to loss budget and percolation engineering — is the clearest single difference between photonic and matter-qubit quantum computing.
+
+## Notes
+
+<ol className="footnotes">
+  <li id="fn-1">E. Knill, R. Laflamme, G. J. Milburn, "A scheme for efficient quantum computation with linear optics," Nature 409, 46 (2001). <a href="https://arxiv.org/abs/quant-ph/0006088">https://arxiv.org/abs/quant-ph/0006088</a>.</li>
+  <li id="fn-2">R. Raussendorf, H. J. Briegel, "A One-Way Quantum Computer," Phys. Rev. Lett. 86, 5188 (2001). <a href="https://arxiv.org/abs/quant-ph/0010033">https://arxiv.org/abs/quant-ph/0010033</a>.</li>
+  <li id="fn-3">N. C. Menicucci et al., "Universal Quantum Computation with Continuous-Variable Cluster States," Phys. Rev. Lett. 97, 110501 (2006). <a href="https://arxiv.org/abs/quant-ph/0605198">https://arxiv.org/abs/quant-ph/0605198</a>.</li>
+  <li id="fn-4">S. Bartolucci et al., "Fusion-based quantum computation," Nat. Commun. 14, 912 (2023). <a href="https://arxiv.org/abs/2101.09310">https://arxiv.org/abs/2101.09310</a>.</li>
+  <li id="fn-5">J. E. Bourassa et al., "Blueprint for a Scalable Photonic Fault-Tolerant Quantum Computer," Quantum 5, 392 (2021). <a href="https://arxiv.org/abs/2010.02905">https://arxiv.org/abs/2010.02905</a>.</li>
+  <li id="fn-6">J. M. Auger, H. Anwar, M. Gimeno-Segovia, T. M. Stace, D. E. Browne, "Fault-tolerance thresholds for the surface code with fabrication errors," Phys. Rev. A 96, 042316 (2017). <a href="https://arxiv.org/abs/1706.04912">https://arxiv.org/abs/1706.04912</a>.</li>
+</ol>

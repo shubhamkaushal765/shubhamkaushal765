@@ -1091,3 +1091,273 @@ h3[data-pillar="quantum"]  .section-num { color: var(--color-pillar-quantum); }
     display: none;
   }
 }
+
+/* ── Photonics book ── */
+main[data-pillar="photonics"] {
+  --pillar-color: var(--color-pillar-photonics);
+}
+
+.book-eyebrow,
+.chapter-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--spacing-3) 0;
+}
+
+.chapter-eyebrow a {
+  color: var(--pillar-color);
+}
+
+.chapter-toc {
+  list-style: none;
+  padding: 0;
+  margin: var(--spacing-5) 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.chapter-toc__item {
+  border-top: 1px solid var(--color-border-hair);
+}
+
+.chapter-toc__item:last-child {
+  border-bottom: 1px solid var(--color-border-hair);
+}
+
+.chapter-toc__link {
+  display: grid;
+  grid-template-columns: 6ch 1fr;
+  gap: var(--spacing-3);
+  padding: var(--spacing-5) 0;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 180ms ease-out, padding 180ms ease-out;
+}
+
+.chapter-toc__link:hover {
+  background: color-mix(in oklab, var(--pillar-color) 6%, transparent);
+  padding-left: var(--spacing-3);
+}
+
+.chapter-toc__num {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pillar-color);
+  align-self: start;
+  padding-top: 0.2rem;
+}
+
+.chapter-toc__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.chapter-toc__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+  color: var(--color-text-body);
+}
+
+.chapter-toc__summary {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  max-width: 64ch;
+}
+
+.chapter-toc__reading {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-footnote);
+}
+
+.chapter-article {
+  max-width: 68ch;
+}
+
+.chapter-article h1 {
+  margin-bottom: var(--spacing-5);
+}
+
+.chapter-article h2 {
+  margin-top: var(--spacing-13);
+  margin-bottom: var(--spacing-3);
+  border-bottom: 1px solid var(--color-border-hair);
+  padding-bottom: var(--spacing-2);
+}
+
+.chapter-lede {
+  font-size: 1.05rem;
+  color: var(--color-text-body);
+  border-left: 2px solid var(--pillar-color);
+  padding-left: var(--spacing-5);
+  margin: var(--spacing-5) 0 var(--spacing-8) 0;
+}
+
+.chapter-figure {
+  margin: var(--spacing-8) 0;
+  padding: var(--spacing-5);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border-hair);
+  border-radius: 6px;
+  color: var(--color-text-body);
+}
+
+.chapter-figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--color-text-body);
+}
+
+.chapter-figure figcaption {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-top: var(--spacing-3);
+  line-height: 1.6;
+}
+
+.encoding-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--spacing-5) 0;
+  font-size: 0.92rem;
+}
+
+.encoding-table th,
+.encoding-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: var(--spacing-2) var(--spacing-3);
+  border-bottom: 1px solid var(--color-border-hair);
+}
+
+.encoding-table th {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.encoding-table td:first-child {
+  color: var(--pillar-color);
+  font-weight: 500;
+}
+
+.footnotes {
+  list-style: none;
+  padding: 0;
+  margin: var(--spacing-8) 0 0 0;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border-hair);
+  padding-top: var(--spacing-5);
+}
+
+.footnotes li {
+  padding: var(--spacing-2) 0;
+  display: flex;
+  gap: var(--spacing-3);
+  counter-increment: footnote;
+}
+
+.footnotes li::before {
+  content: "[" counter(footnote) "]";
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-text-footnote);
+  flex: 0 0 auto;
+}
+
+.footnotes {
+  counter-reset: footnote;
+}
+
+.fn-ref {
+  font-size: 0.7em;
+  vertical-align: super;
+  line-height: 0;
+}
+
+.fn-ref a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.chapter-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-5);
+  margin-top: var(--spacing-13);
+  padding-top: var(--spacing-5);
+  border-top: 1px solid var(--color-border-hair);
+}
+
+.chapter-nav__prev,
+.chapter-nav__next {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  padding: var(--spacing-3);
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid var(--color-border-hair);
+  border-radius: 4px;
+  transition: border-color 180ms ease-out, background-color 180ms ease-out;
+}
+
+.chapter-nav__next {
+  text-align: right;
+}
+
+.chapter-nav__prev:hover,
+.chapter-nav__next:hover {
+  border-color: color-mix(in oklab, var(--pillar-color) 45%, var(--color-border-hair));
+  background: color-mix(in oklab, var(--pillar-color) 6%, transparent);
+}
+
+.chapter-nav__direction {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pillar-color);
+}
+
+.chapter-nav__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--color-text-body);
+}
+
+.chapter-nav__placeholder {
+  display: block;
+}
+
+.blog-entry__title-link,
+.blog-entry__chapter-link {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 180ms ease-out, color 180ms ease-out;
+}
+
+.blog-entry__title-link:hover,
+.blog-entry__chapter-link:hover {
+  color: var(--pillar-color);
+  border-bottom-color: color-mix(in oklab, var(--pillar-color) 45%, transparent);
+}
+

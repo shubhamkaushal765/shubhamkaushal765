@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import Hero from '@/components/Hero';
 import FooterSignature from '@/components/FooterSignature';
+import { CHAPTERS as PHOTONICS_CHAPTERS } from './photonics/chapters';
 
 export const metadata: Metadata = {
   title: 'Blog — Shubham Kaushal',
@@ -9,6 +11,11 @@ export const metadata: Metadata = {
 
 type Pillar = 'code-int' | 'ml' | 'quantum' | 'photonics';
 
+type ChapterLink = {
+  title: string;
+  href?: string;
+};
+
 type Post = {
   title: string;
   summary: string;
@@ -16,7 +23,8 @@ type Post = {
   pillarLabel: string;
   date: string;
   status: 'upcoming' | 'draft' | 'published';
-  chapters?: string[];
+  href?: string;
+  chapters?: ChapterLink[];
 };
 
 const POSTS: Post[] = [
@@ -25,15 +33,13 @@ const POSTS: Post[] = [
     summary: 'A working notebook on photonic quantum computing — continuous-variable encoding, Gaussian operations, measurement-induced nonlinearity, and where the architecture diverges from gate-model superconducting qubits.',
     pillar: 'photonics',
     pillarLabel: 'photonics',
-    date: '2026-Q3',
-    status: 'upcoming',
-    chapters: [
-      'Chapter 1',
-      'Chapter 2',
-      'Chapter 3',
-      'Chapter 4',
-      'Chapter 5',
-    ],
+    date: '2026-Q2',
+    status: 'draft',
+    href: '/writing/photonics/',
+    chapters: PHOTONICS_CHAPTERS.map((c) => ({
+      title: c.title,
+      href: `/writing/photonics/${c.slug}/`,
+    })),
   },
   {
     title: 'Why your static analyzer should emit SARIF — and what most authors get wrong about it',
@@ -91,14 +97,24 @@ export default function WritingPage() {
               <span className="blog-entry__pillar">{post.pillarLabel}</span>
               <span className="blog-entry__status">{post.status}</span>
             </div>
-            <h3 className="blog-entry__title">{post.title}</h3>
+            <h3 className="blog-entry__title">
+              {post.href !== undefined ? (
+                <Link href={post.href} className="blog-entry__title-link">{post.title}</Link>
+              ) : (
+                post.title
+              )}
+            </h3>
             <p className="blog-entry__summary">{post.summary}</p>
             {post.chapters && post.chapters.length > 0 && (
               <ol className="blog-entry__chapters">
                 {post.chapters.map((chapter, j) => (
                   <li key={j} className="blog-entry__chapter">
                     <span className="blog-entry__chapter-num">{`[ ${String(j + 1).padStart(2, '0')} ]`}</span>
-                    <span className="blog-entry__chapter-title">{chapter}</span>
+                    {chapter.href !== undefined ? (
+                      <Link href={chapter.href} className="blog-entry__chapter-title blog-entry__chapter-link">{chapter.title}</Link>
+                    ) : (
+                      <span className="blog-entry__chapter-title">{chapter.title}</span>
+                    )}
                   </li>
                 ))}
               </ol>
