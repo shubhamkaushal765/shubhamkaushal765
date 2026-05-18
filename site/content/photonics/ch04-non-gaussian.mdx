@@ -8,21 +8,21 @@ export const meta = {
 
 # Non-Gaussian resources: where the magic lives.
 
-<p className="chapter-lede">Chapter 03 left a sharp question on the table: if squeezing, displacement, and linear-optical interferometry are all efficiently classically simulable, what carries the quantum-computational content of a photonic device? The answer is concentrated, almost surgically, into a small set of expensive non-Gaussian states and measurements. The unitary evolution stays Gaussian and cheap; the resource is the input or the readout.</p>
+<p className="chapter-lede">Chapter 03 left us with an awkward question: if squeezing, displacement, and linear-optical interferometry are all things a laptop can simulate, where does the actual quantum-ness of a photonic computer live? Answer: it's surgically concentrated into a small set of difficult, expensive non-Gaussian states and measurements. The evolution stays Gaussian and cheap; the quantum magic gets paid for at the input or the output. This is the chapter about that bill.</p>
 
 ## Physical intuition: Wigner negativity as the resource
 
-Recall from Chapter 02 that every continuous-variable (CV) state has a Wigner quasi-probability distribution W(x, p) on phase space. Gaussian states have Wigner functions that are strictly non-negative two-dimensional Gaussians; coherent, thermal, and squeezed-vacuum states all qualify. A state is called non-Gaussian, in the operationally useful sense, when W(x, p) &lt; 0 somewhere on phase space.<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>
+Recall from Chapter 02 that every continuous-variable (CV) state has a Wigner quasi-probability distribution W(x, p) on phase space. Gaussian states paint Wigner functions that are strictly non-negative two-dimensional Gaussians — gentle, well-behaved blobs. Coherent, thermal, and squeezed-vacuum states all sit in this polite category. A state is "non-Gaussian," in the operationally useful sense, when W(x, p) goes negative somewhere on phase space.<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>
 
-Wigner negativity is the signature that no local-hidden-variable model over phase space can reproduce the state's measurement statistics. It is also the property that blocks efficient classical sampling via standard Monte Carlo over W. Negativity is therefore both a foundational marker and a computational currency.
+Wigner negativity is the flag that says "no classical story over phase space can mimic this." It's also exactly what breaks ordinary Monte Carlo sampling over W: you can't draw samples from a "probability" that dips below zero. So negativity is at once a foundational marker (this state is genuinely quantum) and a computational currency (this is what you spend to get speedup).
 
-Concrete examples worth holding in mind: Fock states |n⟩ for n ≥ 1, Schrödinger cat states |α⟩ + |−α⟩, cubic-phase states exp(iγ x̂³)|0⟩<sub>p</sub>, and Gottesman–Kitaev–Preskill (GKP) grid states. Each has Wigner fringes that dip below zero. Each is, correspondingly, hard to manufacture.
+A few concrete non-Gaussian celebrities: Fock states |n⟩ for n ≥ 1, Schrödinger cat states |α⟩ + |−α⟩, cubic-phase states exp(iγ x̂³)|0⟩<sub>p</sub>, and Gottesman–Kitaev–Preskill (GKP) grid states. Each has Wigner fringes that go negative. Each is, predictably, a nightmare to manufacture.
 
 ## Analogy: rivers and locks
 
-Picture Gaussian evolution as a network of perfectly smooth canals. Water — the quantum state — flows through beam splitters, phase shifters, and squeezers as if through frictionless junctions and pumps. The flow is rich and continuous, but it is laminar: every downstream distribution is a linear, predictable function of the upstream one, and a classical hydrodynamic simulator keeps up without breaking a sweat.
+Picture Gaussian evolution as a network of perfectly smooth canals. Water — the quantum state — flows through beam splitters, phase shifters, and squeezers as if through frictionless junctions and pumps. The flow is rich and continuous, but it's laminar: every downstream pattern is a predictable, linear function of the upstream one, and a classical simulator can keep up while reading the newspaper.
 
-Non-Gaussian resources are the locks and dams. A lock injects discrete, quantised structure into the flow: it lifts a packet of water by a fixed amount, gates it, and releases it on a schedule that depends on a measurement (the lock-keeper's eye). Computation — sorting, hashing, conditional routing — happens at the locks, not in the canals.
+Non-Gaussian resources are the locks and dams. A lock injects discrete, quantized structure into the flow: it lifts a packet of water by a fixed amount, gates it, and releases it on a schedule that depends on a measurement (the lock-keeper's eye, basically). The actual computing — sorting, hashing, conditional routing — happens at the locks, not in the canals.
 
 **Where the analogy breaks:**
 
@@ -35,11 +35,11 @@ Non-Gaussian resources are the locks and dams. A lock injects discrete, quantise
 
 ## The Bartlett–Sanders boundary
 
-The formal statement is the CV analogue of the Gottesman–Knill theorem. Bartlett, Sanders, Braunstein, and de Guise showed in 2002 that any quantum computation built from (i) Gaussian input states, (ii) Gaussian unitaries generated by Hamiltonians at most quadratic in x̂ and p̂, and (iii) homodyne or heterodyne measurements is efficiently simulable on a classical computer.<sup className="fn-ref"><a href="#fn-1">[1]</a></sup> Mari and Eisert later strengthened the picture: as long as the Wigner function of the input and the Wigner representation of the measurement are non-negative, classical sampling remains efficient.<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>
+The formal statement is the CV analogue of the Gottesman–Knill theorem. Bartlett, Sanders, Braunstein, and de Guise showed in 2002 that any quantum computation built from (i) Gaussian input states, (ii) Gaussian unitaries generated by Hamiltonians at most quadratic in x̂ and p̂, and (iii) homodyne or heterodyne measurements is efficiently simulable on a classical computer.<sup className="fn-ref"><a href="#fn-1">[1]</a></sup> Mari and Eisert later tightened the result: as long as the Wigner function of the input and the Wigner representation of the measurement are non-negative, classical sampling stays efficient.<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>
 
-Adding any single non-Gaussian element — a non-Gaussian state at the input, a non-Gaussian unitary in the circuit, or a non-Gaussian measurement such as photon-number resolution — breaks the simulability argument. Lloyd and Braunstein showed that a Gaussian gate set augmented by a single cubic nonlinearity is universal for CV quantum computation.<sup className="fn-ref"><a href="#fn-3">[3]</a></sup> The canonical generator is the cubic-phase gate V<sub>γ</sub> = exp(iγ x̂³), where x̂ is the position quadrature and γ a tunable strength.
+Add a single non-Gaussian element — a non-Gaussian input state, a non-Gaussian gate in the circuit, or a non-Gaussian measurement such as photon counting — and the simulability argument breaks. Lloyd and Braunstein showed that a Gaussian gate set augmented by a single cubic nonlinearity is universal for CV quantum computation.<sup className="fn-ref"><a href="#fn-3">[3]</a></sup> The canonical generator is the cubic-phase gate V<sub>γ</sub> = exp(iγ x̂³), where x̂ is the position quadrature and γ a tunable strength.
 
-A direct optical x̂³ Hamiltonian is not available at useful strengths in any known nonlinear material. The practical workaround is measurement-induced nonlinearity: prepare an offline non-Gaussian ancilla, interfere it with the data mode through a Gaussian circuit, and apply a Gaussian feedforward correction conditioned on a homodyne outcome. The non-Gaussianity is teleported in.
+In principle, lovely. In practice, no known nonlinear material gives you a direct optical x̂³ Hamiltonian at any useful strength. The workaround is measurement-induced nonlinearity: prepare a non-Gaussian helper state offline, interfere it with the data mode through a perfectly mundane Gaussian circuit, then apply a Gaussian correction conditioned on a homodyne outcome. The non-Gaussian-ness is, effectively, teleported in from the side. Quantum sleight of hand.
 
 ## The non-Gaussian zoo: Fock, cat, cubic-phase, GKP
 
@@ -51,7 +51,7 @@ GKP states encode a logical qubit into an oscillator as approximate simultaneous
 
 ## Manufacturing non-Gaussianity: photon subtraction and PNR projection
 
-The simplest demonstrated route is photon subtraction. Send a single-mode squeezed vacuum |ξ⟩ into one port of a beam splitter with low reflectivity r ≪ 1, with vacuum on the other port. Most of the field is transmitted; the small reflected component is sent to a photon-number-resolving (PNR) detector. A single click heralds a Schrödinger kitten in the transmitted mode, demonstrated by Ourjoumtsev and collaborators in 2006.<sup className="fn-ref"><a href="#fn-5">[5]</a></sup>
+The simplest demonstrated trick is photon subtraction. Send a single-mode squeezed vacuum |ξ⟩ into one port of a beam splitter with very low reflectivity r ≪ 1, with vacuum on the other port. Almost all the field is transmitted; the tiny reflected component is sent to a photon-number-resolving (PNR) detector. If the detector clicks — and it usually doesn't — that single click heralds a Schrödinger kitten in the transmitted mode, demonstrated by Ourjoumtsev and collaborators in 2006.<sup className="fn-ref"><a href="#fn-5">[5]</a></sup> Yes, it's literally called a kitten. Cat states are easier to take seriously in a paper than in a slide deck.
 
 <figure className="chapter-figure">
   <svg viewBox="0 0 520 260" width="100%" role="img" aria-labelledby="ng-svg-title ng-svg-desc" xmlns="http://www.w3.org/2000/svg">
@@ -82,7 +82,7 @@ The simplest demonstrated route is photon subtraction. Send a single-mode squeez
   <figcaption>Photon subtraction: a low-reflectivity beam splitter routes one photon from a squeezed vacuum to a PNR detector; a single click heralds a non-Gaussian kitten state in the transmitted mode.</figcaption>
 </figure>
 
-Success rates are intrinsically low — the heralding probability scales with |r|²⟨n̂⟩ and sits well below 10% for typical squeezing levels. Generalising this idea, several proposals use PNR detection on a subset of modes of a larger Gaussian circuit to project the unmeasured modes into approximate GKP or cat states.<sup className="fn-ref"><a href="#fn-6">[6]</a></sup> Xanadu's photonic blueprint adopts this strategy and treats GKP generators as the primary non-Gaussian resource for a fault-tolerant architecture; optical GKP generation in this style is proposed and partially benchmarked in simulation, but not yet demonstrated end-to-end.
+Success rates are stubbornly low — the heralding probability scales with |r|²⟨n̂⟩ and sits well below 10% for typical squeezing levels, which is why labs tend to run these experiments overnight rather than during coffee breaks. Generalising this idea, several proposals use PNR detection on a subset of modes of a larger Gaussian circuit to project the unmeasured modes into approximate GKP or cat states.<sup className="fn-ref"><a href="#fn-6">[6]</a></sup> Xanadu's photonic blueprint adopts this strategy and treats GKP generators as the primary non-Gaussian resource for a fault-tolerant architecture; optical GKP generation in this style is proposed and partially benchmarked in simulation, but not yet demonstrated end-to-end.
 
 Outside the optical domain, cat and GKP states have been prepared and stabilised in superconducting microwave cavities coupled to transmon ancillas, by groups at Yale and elsewhere.<sup className="fn-ref"><a href="#fn-7">[7]</a></sup> These demonstrations confirm the bosonic-code playbook works in hardware, but they do not transfer directly to room-temperature integrated optics: the microwave non-Gaussianity is supplied by the transmon's anharmonicity, which has no native optical analogue.
 
