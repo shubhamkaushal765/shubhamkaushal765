@@ -1,0 +1,187 @@
+export const meta = {
+  number: '02',
+  slug: 'lexing-and-parsing',
+  title: 'Lexing, parsing, and the trees you get for your trouble.',
+  summary: 'Bytes become tokens, tokens become a concrete tree, the concrete tree gets pruned into an abstract tree. Each step throws something away and earns something — and incremental parsing is what makes the whole thing usable in an IDE.',
+  reading: '11 min',
+};
+
+# Lexing, parsing, and the trees you get for your trouble.
+
+<p className="chapter-lede">Every keystroke in a modern editor triggers the same small pipeline. Raw bytes get scanned into tokens, tokens get assembled into a tree, and the tree gets repaired in place when the user is mid-edit. The interesting design question is not "what grammar does this language use" but "what does the parser produce when the file is half-broken, and how cheaply can it produce it on the next keystroke." This chapter walks the pipeline end to end, names the trees that come out of it, and shows why incremental parsing is the only reason any of this feels instant.</p>
+
+## Lexing in plain English
+
+A lexer (also called a scanner or tokenizer) reads the source text from left to right and chops it into tokens — small labelled chunks like "the keyword `if`", "the identifier `x`", "the integer literal `42`", "the operator `==`". Whitespace and comments are usually classified as trivia: still recorded, but treated as decoration rather than structure.
+
+The mechanism is a regular language recognized by a DFA — a deterministic finite automaton, which is a tiny state machine that decides which kind of token starts at the current cursor. Lexer generators like `flex` compile a list of token patterns into one of these machines. Hand-written lexers do the same thing by reading a character, switching on it, and looping. The difference is mostly aesthetic.
+
+Take a one-line snippet.
+
+```python
+# Python 3.10+
+x = foo(42, "ok")
+```
+
+A reasonable token stream is `IDENT("x")`, `EQ`, `IDENT("foo")`, `LPAREN`, `INT(42)`, `COMMA`, `STRING("ok")`, `RPAREN`, `NEWLINE`. The lexer does not know that `foo` is a function or that `x` is a variable. It only knows the shape of the characters under the cursor. (Regex is a hammer at this layer, and yes, your config file is a nail.)
+
+## Parsing in plain English
+
+A parser takes that token stream and assembles it into a tree according to a grammar. Grammars for programming languages are usually context-free, which is a fancy way of saying the rules can nest — a parenthesized expression can contain another parenthesized expression, and the rule does not need to know how deep it is. The matching machine is a pushdown automaton, which is a finite state machine with a stack so it can remember how many open parentheses it has seen.
+
+Several algorithms implement this. LL and LR parsers read the input once and decide what rule applies based on a fixed lookahead. PEG parsers use ordered choice and unlimited backtracking. GLR and Earley parsers explore multiple interpretations in parallel and reconcile them at the end. Hand-written recursive descent is just an LL parser written out by hand, with whatever ad-hoc fixes the language needs.
+
+The choice of algorithm matters less for "what programs you can parse" than for two practical things: how well the parser recovers from a syntax error, and how cheaply it can be made incremental. Most modern shipping tooling picks an algorithm for those two reasons, not for theoretical expressiveness.
+
+## Analogy: barcode scanner and the shipping manifest
+
+Imagine a warehouse conveyor. A barcode scanner reads each item as it passes — book, book, mug, cable, cable, mug — and emits a flat stream of scans. That is lexing. Downstream, a clerk takes the stream of scans and assembles it into a shipping manifest: this box contains two books and a mug, that pallet contains four cables. The structure (boxes, pallets, the order they nest in) is built from the same flat stream the scanner produced. That is parsing.
+
+**Where the analogy breaks:**
+- The scanner does not know about boxes; the clerk does. The lexer is similarly ignorant of grammar, and a token that looks fine in isolation can still be illegal where the parser finds it.
+- The clerk can refuse a malformed manifest. An IDE parser cannot — it has to produce a useful tree even when the manifest is half-written.
+- A barcode is unambiguous. Real languages have lexer hacks: `>>` in C++ templates is one token or two depending on context, and that decision leaks information backwards from the parser.
+- Scans are independent. Tokens are not — what `if` means in Rust depends on whether it appears as a statement or as part of `if let`.
+
+## CST vs AST
+
+The parser produces a tree. There are two flavours worth distinguishing. A CST — a concrete syntax tree — keeps every token, including the trivia: whitespace, comments, the trailing comma you left in by accident. An AST — an abstract syntax tree — drops what is not semantically meaningful. A `(x + y)` and `x + y` parse to the same AST but to different CSTs, because the parentheses are real characters and the CST remembers them.
+
+Compilers historically went straight to an AST. The reasoning was reasonable: the optimiser does not care about your comments. But the same reasoning is wrong for an IDE. An IDE needs to round-trip the file — format it, refactor it, present diagnostics on specific characters — and you cannot do that if you have thrown the characters away. The CST keeps every comma you wrote, including the ones you regret.
+
+The other reason IDEs prefer CSTs is error tolerance. Between two keystrokes, the file is almost always partially broken. A CST-first parser is built to produce a tree on broken input, marking the broken regions with error nodes rather than refusing to return.
+
+## A small worked example
+
+A five-line Python function and the CST shape a tree-sitter-style parser produces for it.
+
+```python
+# Python 3.10+, parsed by tree-sitter-python
+def add(a, b):
+    """Sum two numbers."""
+    return a + b
+```
+
+A trimmed bracketed view of the CST looks like:
+
+```
+(module
+  (function_definition
+    name: (identifier "add")
+    parameters: (parameters (identifier "a") (identifier "b"))
+    body: (block
+      (expression_statement (string "\"\"\"Sum two numbers.\"\"\""))
+      (return_statement (binary_operator
+        left: (identifier "a")
+        operator: "+"
+        right: (identifier "b"))))))
+```
+
+The AST drops the docstring node's quotes, the colon after the parameter list, and the newline trivia between statements. The CST keeps them, because a refactoring tool that renames `a` to `alpha` needs to know exactly where `a` sits in the byte buffer to splice the new name in.
+
+## Parsing styles in shipping tooling
+
+Five styles cover almost all production parsers. They differ less in what they accept than in how they fail and how they update.
+
+<table className="encoding-table">
+  <thead>
+    <tr><th>Style</th><th>Used by</th><th>Strength</th><th>Weakness</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Hand-written recursive descent</td><td>rustc, clang, the TypeScript compiler</td><td>Total control over error messages and recovery; easy to special-case</td><td>Verbose; the grammar lives implicitly in the code rather than in a spec</td></tr>
+    <tr><td>LR / LALR generators</td><td>Yacc, Bison, LALRPOP, OCaml's Menhir</td><td>Compact grammar files; well-understood theory; linear time</td><td>Error recovery is awkward; ambiguity is rejected statically rather than negotiated</td></tr>
+    <tr><td>PEG</td><td>pest, Python 3.9+ via PEP 617<sup className="fn-ref"><a href="#fn-2">[2]</a></sup></td><td>Grammar reads like a hand-written parser; ordered choice removes ambiguity by fiat</td><td>Unlimited backtracking can hide performance cliffs; left-recursion needs special handling</td></tr>
+    <tr><td>GLR / Earley</td><td>tree-sitter<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>, Bison's GLR mode</td><td>Handles ambiguous and context-sensitive languages; naturally incremental</td><td>Worst-case cubic time; grammars must still be carefully written to stay near-linear in practice</td></tr>
+    <tr><td>Parser combinators</td><td>nom (Rust), megaparsec (Haskell)</td><td>Composable; the grammar is library code, so the host language's tools apply</td><td>Error messages and performance are the library's problem, and the library does not always solve them</td></tr>
+  </tbody>
+</table>
+
+The pattern across the table is the same: the more friendly the algorithm is to error recovery, the more it gives up on static guarantees about ambiguity.
+
+<figure className="chapter-figure">
+  <svg id="lex-parse-pipeline" viewBox="0 0 880 280" width="100%" role="img" aria-labelledby="lpp-title lpp-desc" style={{color: 'currentColor'}}>
+    <title id="lpp-title">The lex-parse pipeline: bytes to tokens to CST to AST</title>
+    <desc id="lpp-desc">A left-to-right pipeline with four stages. Bytes are scanned into a token stream by the lexer. Tokens are assembled into a concrete syntax tree by the parser. The concrete syntax tree is reduced to an abstract syntax tree by dropping trivia. An arrow labelled "trivia dropped" highlights the last transition.</desc>
+
+    <g className="stage stage-bytes">
+      <rect x="20" y="90" width="150" height="80" rx="8" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <text x="95" y="125" textAnchor="middle" fontSize="16" fill="currentColor" fontWeight="600">Bytes</text>
+      <text x="95" y="148" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">UTF-8 source</text>
+      <text x="95" y="195" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">"def add(a, b):"</text>
+    </g>
+
+    <line x1="170" y1="130" x2="220" y2="130" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#arrow)" />
+    <text x="195" y="118" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">lexer</text>
+
+    <g className="stage stage-tokens">
+      <rect x="220" y="90" width="170" height="80" rx="8" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <text x="305" y="125" textAnchor="middle" fontSize="16" fill="currentColor" fontWeight="600">Tokens</text>
+      <text x="305" y="148" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">flat stream</text>
+      <text x="305" y="195" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">DEF IDENT LPAREN ...</text>
+    </g>
+
+    <line x1="390" y1="130" x2="440" y2="130" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#arrow)" />
+    <text x="415" y="118" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">parser</text>
+
+    <g className="stage stage-cst">
+      <rect x="440" y="90" width="170" height="80" rx="8" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <text x="525" y="125" textAnchor="middle" fontSize="16" fill="currentColor" fontWeight="600">CST</text>
+      <text x="525" y="148" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">trivia preserved</text>
+      <text x="525" y="195" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">every comma, every space</text>
+    </g>
+
+    <g className="accent-edge">
+      <line x1="610" y1="130" x2="660" y2="130" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="3" markerEnd="url(#arrow-accent)" />
+      <text x="635" y="118" textAnchor="middle" fontSize="11" fill="var(--pillar-color, var(--color-accent, currentColor))">trivia dropped</text>
+    </g>
+
+    <g className="stage stage-ast">
+      <rect x="660" y="90" width="200" height="80" rx="8" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <text x="760" y="125" textAnchor="middle" fontSize="16" fill="currentColor" fontWeight="600">AST</text>
+      <text x="760" y="148" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">semantic skeleton</text>
+      <text x="760" y="195" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">what the compiler sees</text>
+    </g>
+
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
+      </marker>
+      <marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--pillar-color, var(--color-accent, currentColor))" />
+      </marker>
+    </defs>
+
+    <text x="440" y="50" textAnchor="middle" fontSize="12" fill="currentColor" opacity="0.7">each stage throws something away and earns something</text>
+  </svg>
+  <figcaption>The pipeline reads left to right on every keystroke in an IDE. The lexer collapses byte offsets into typed tokens. The parser assembles a CST that preserves trivia and tolerates broken input. A later pass produces the AST by dropping trivia and merging syntactic sugar; that is the tree most compiler back-ends consume.</figcaption>
+</figure>
+
+## Incremental parsing and error recovery
+
+If you re-parsed the whole file on every keystroke, a 100k-line file would not feel like an IDE. Incremental parsers avoid that by keeping the previous tree, finding the smallest subtree that contains the user's edit, re-parsing only that region, and splicing the new subtree back in. Tree-sitter does this in time proportional to the size of the edit, not the size of the file<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>. Roslyn, the C# compiler-as-service, does the same with a different data structure (immutable red-green trees) and the same effect: edits are cheap because the unchanged parts of the tree are shared with the previous version<sup className="fn-ref"><a href="#fn-3">[3]</a></sup>.
+
+Error recovery is the other half. A parser confronted with a syntax error has two reasonable choices: insert a synthetic token to satisfy the next rule, or skip tokens until it reaches a known resynchronization point such as a semicolon or a closing brace. Both leave the resulting tree marked with error nodes, which downstream tooling can ignore or surface as diagnostics. Hand-written parsers usually pick recovery strategies per construct; generated parsers usually accept a default and live with it.
+
+The combined effect is that the parser will accept things your team lead would not. That is by design. Chapter 04 picks this up: a language server is essentially a long-lived cache keyed on the tree that the parser produced, and that cache is only useful if the parser produces something even when the file is mid-edit.
+
+## What shipped tooling actually uses
+
+Concrete examples ground the discussion. Tree-sitter ships grammars for roughly 200 languages and powers GitHub's code navigation, neovim's structural highlighting, and Atom's original syntax engine; it is a GLR-style incremental parser with a custom conflict resolution scheme<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>. rust-analyzer uses a hand-written incremental parser that produces a Rowan CST, which is a Rust port of the Roslyn red-green tree design. Roslyn itself, released by Microsoft in 2014, was the first widely-deployed CST-first compiler-as-service and remains the template most other IDE backends imitate<sup className="fn-ref"><a href="#fn-3">[3]</a></sup>.
+
+CPython switched from an LL(1) parser to a PEG parser in version 3.9, as specified in PEP 617<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>. The motivation was not speed but expressiveness: the old grammar had accumulated workarounds, and a PEG let the maintainers describe Python's syntax in something close to the language reference. LALRPOP<sup className="fn-ref"><a href="#fn-5">[5]</a></sup> is the LR(1) generator most often reached for in the Rust ecosystem when a hand-written parser is overkill. GLR's theoretical foundations trace back to Tomita's 1985 work on natural-language parsing<sup className="fn-ref"><a href="#fn-4">[4]</a></sup>.
+
+## Why this matters for the rest of the book
+
+The tree is the substrate for everything downstream. Chapter 03 builds the control-flow graph and the dataflow lattice on top of an AST or IR derived from it, and the precision of those analyses bottoms out at how faithfully the parser captured the user's intent. Chapter 04 treats the language server as a cache layered on top of the parser; the cache's invalidation story is exactly the incremental-parsing story above. Chapter 05 asks whether code embeddings should be computed over the raw text, over token sequences, or over AST nodes — and the answer turns on what the parser preserves and what it discards.
+
+Each stage in the pipeline throws something away. The art is choosing what to throw away, and when.
+
+## Notes
+
+<ol className="footnotes">
+  <li id="fn-1">Brunsfeld, M. "Tree-sitter: a new parsing system for programming tools." Strange Loop 2018, and the project documentation. <a href="https://tree-sitter.github.io/tree-sitter/">https://tree-sitter.github.io/tree-sitter/</a></li>
+  <li id="fn-2">van Rossum, G., de Bondt, P., and Shannon, L. "PEP 617 – New PEG parser for CPython." Accepted 2020; shipped in CPython 3.9. <a href="https://peps.python.org/pep-0617/">https://peps.python.org/pep-0617/</a></li>
+  <li id="fn-3">Microsoft. ".NET Compiler Platform ('Roslyn')." Project repository, including the red-green tree design notes. <a href="https://github.com/dotnet/roslyn">https://github.com/dotnet/roslyn</a></li>
+  <li id="fn-4">Tomita, M. "Efficient Parsing for Natural Language: A Fast Algorithm for Practical Systems." Kluwer Academic Publishers, 1985. The original GLR formulation. <a href="https://link.springer.com/book/10.1007/978-1-4757-1885-0">https://link.springer.com/book/10.1007/978-1-4757-1885-0</a></li>
+  <li id="fn-5">Matsakis, N. et al. "LALRPOP: an LR(1) parser generator for Rust." Project repository and book. <a href="https://github.com/lalrpop/lalrpop">https://github.com/lalrpop/lalrpop</a></li>
+</ol>

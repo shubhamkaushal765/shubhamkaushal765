@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Hero from '@/components/Hero';
 import FooterSignature from '@/components/FooterSignature';
 import { CHAPTERS as PHOTONICS_CHAPTERS } from './photonics/chapters';
+import { CHAPTERS as CODE_INTELLIGENCE_CHAPTERS } from './code-intelligence/chapters';
 
 export const metadata: Metadata = {
   title: 'Blog — Shubham Kaushal',
@@ -28,6 +29,20 @@ type Post = {
 };
 
 const POSTS: Post[] = [
+  {
+    title: 'Code intelligence',
+    summary:
+      'A working notebook on tooling that operates on the tree, the graph, and the symbol table rather than on the source text — parsers, control- and data-flow analysis, language servers, and the hybrid symbolic-plus-neural systems that ship in modern developer tools.',
+    pillar: 'code-int',
+    pillarLabel: 'code intelligence',
+    date: '2026-Q2',
+    status: 'draft',
+    href: '/writing/code-intelligence/',
+    chapters: CODE_INTELLIGENCE_CHAPTERS.map((c) => ({
+      title: c.title,
+      href: `/writing/code-intelligence/${c.slug}/`,
+    })),
+  },
   {
     title: 'Photonics',
     summary: 'A working notebook on photonic quantum computing — continuous-variable encoding, Gaussian operations, measurement-induced nonlinearity, and where the architecture diverges from gate-model superconducting qubits.',

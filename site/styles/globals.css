@@ -1097,6 +1097,11 @@ main[data-pillar="photonics"] {
   --pillar-color: var(--color-pillar-photonics);
 }
 
+/* ── Code intelligence book ── */
+main[data-pillar="code-int"] {
+  --pillar-color: var(--color-pillar-code);
+}
+
 .book-eyebrow,
 .chapter-eyebrow {
   font-family: var(--font-mono);
