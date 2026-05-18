@@ -1,116 +1,147 @@
-```text
-+----------------------------------------------------------+
-|  shubham kaushal // shubhamkaushal765                    |
-|                                                          |
-|  parsers -> qubits.                                      |
-|                                                          |
-|     code intelligence ---bridge--- machine learning      |
-|              \                          /                |
-|               \                        /                 |
-|                +------ bridge ------> quantum computing  |
-|                                                          |
-|  rust at the bottom. python at the top.                  |
-+----------------------------------------------------------+
+<div align="center">
 
-Independent engineer and researcher working across code intelligence, machine
-learning, and quantum computing — from Rust-based static analyzers at the
-bottom of the stack to transformer-based quantum error correction at the top.
-The connecting thread is operating on symbolic structure: ASTs, code
-embeddings, syndrome graphs. The tooling is built to respect that structure.
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+                      S H U B H A M
+                      K A U S H A L
+
+                    parsers to qubits.
+
+              count compilers,  not commits.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
----
+**independent engineer**  ·  *code intelligence × machine learning × quantum*
 
-## What I work on
+<sub>rust at the bottom.  python at the top.  ascii through the middle.</sub>
 
-### Code intelligence
-
-Multi-language static analysis in Rust. The work focuses on structured
-findings across maintainability, security, complexity, and test-smell
-dimensions, emitted as SARIF 2.1.0 with CWE and OWASP taxonomy anchors.
-Correctness is verified through a fixture corpus of vulnerable + safe pairs
-with `expected.json` contracts. Shipped: [zuit](https://github.com/shubhamkaushal765/zuit).
-
-### Machine learning
-
-Local-first RAG infrastructure over source code. Models and embeddings stay
-on the operator's machine — Ollama inference, Chroma vector store,
-sentence-transformers encoding, six language parsers. The earlier ML
-fundamentals work (autoencoders, sentiment classification, image
-classification) established the applied baseline. Shipped: [tell-me-why](https://github.com/shubhamkaushal765/tell-me-why).
-
-### Quantum computing
-
-Transformer-based decoding for surface-code quantum error correction. Syndrome
-graphs are encoded as sequences; a custom transformer encoder learns to correct
-bit-flip and phase-flip errors from Stim-simulated circuits, trained under
-PyTorch Lightning. QOSF Cohort 9 work covers QAOA and adiabatic quantum
-computing. Shipped: [TransformerQEC](https://github.com/shubhamkaushal765/TransformerQEC).
+</div>
 
 ---
 
-## Selected work
+## `[ 00 ]`  The house special
 
-**[TransformerQEC](https://github.com/shubhamkaushal765/TransformerQEC)** — Transformer-based decoder for surface-code QEC. Stim simulation, PyTorch Lightning training, syndrome-graph encoding. — Quantum · ML
+> Three pillars.  One operator.  One promise — ship structure-aware tooling
+> that respects what the data actually is: ASTs, syndrome graphs, embeddings.
+> Never the surface form.
 
-**[zuit](https://github.com/shubhamkaushal765/zuit)** — Multi-language static-analysis CLI in Rust. Structured findings across five quality dimensions. SARIF 2.1.0 + CWE/OWASP taxonomy. — Rust · static analysis
+```
+   code intelligence ───── bridge ───── machine learning
+            \                                  /
+             \                                /
+              +──────── bridge ────────> quantum computing
+```
 
-**[tell-me-why](https://github.com/shubhamkaushal765/tell-me-why)** — Local-first RAG over your codebase. Multi-language. Ollama + Chroma + sentence-transformers — code and embeddings never leave the machine. — RAG · local-first
+<table>
+<tr>
+<td width="33%" valign="top">
 
-**[qosf_excercises](https://github.com/shubhamkaushal765/qosf_excercises)** — QOSF Cohort 9, Task 4: QAOA and adiabatic quantum computing solutions. Variational ansatz, adiabatic-to-QAOA mapping, benchmark notebooks. — QAOA · quantum
+**Code intelligence**
 
-**[codestick](https://github.com/shubhamkaushal765/codestick)** — Programmatic stick-figure animation library for TypeScript. Angular-skeleton system, 22 human poses, 10 animation clips, SVG export. — TypeScript · animation
+Multi-language static analysis in Rust. SARIF 2.1.0 with CWE and OWASP anchors. Vulnerable-vs-safe fixture pairs as the correctness contract.
 
----
+→ [`zuit`](https://github.com/shubhamkaushal765/zuit)
 
-## Bridges
+</td>
+<td width="33%" valign="top">
 
-[TransformerQEC](https://github.com/shubhamkaushal765/TransformerQEC) is the ML-to-Quantum bridge: it applies transformer sequence modeling — the same architecture that underlies code embeddings — to syndrome graph decoding, bringing ML methodology into quantum error correction directly.
+**Machine learning**
 
-[tell-me-why](https://github.com/shubhamkaushal765/tell-me-why) is the Code-to-ML bridge: it treats source code as a corpus, runs multi-language parsing to extract structure, and feeds that structure into a local embedding and retrieval pipeline.
+Local-first RAG over source code. Six language parsers, Ollama inference, Chroma vector store, sentence-transformers encoding. Embeddings never leave the machine.
 
----
+→ [`tell-me-why`](https://github.com/shubhamkaushal765/tell-me-why)
 
-## Engineering philosophy
+</td>
+<td width="33%" valign="top">
 
-- Structure first, syntax second — work on the AST, the syndrome graph, the embedding, not the surface form.
-- Run local until proven otherwise — code, models, and quantum simulators belong on the operator's machine.
-- Reproducibility is the deliverable — fixtures, seeds, SARIF, `expected.json` — the artifact is the contract.
+**Quantum computing**
 
----
+Transformer-based decoder for surface-code QEC. Syndrome graphs as sequences. Stim-simulated circuits, PyTorch Lightning training, custom encoder.
 
-## How I work
+→ [`TransformerQEC`](https://github.com/shubhamkaushal765/TransformerQEC)
 
-- Conventional Commits strict on every repo. Linear history on `main`.
-- Commits are GPG-signed. No Claude co-author tags.
-- Reproducibility is the deliverable: fixtures, seeds, SARIF, `expected.json`.
-
----
-
-## Current focus
-
-2026-Q2:
-
-- Researching qubit calibration scheduling (RB / T1 / T2 / single-qubit gate tomography) as an orchestration problem. No public repo yet — this is a research direction.
-- zuit 0.x to 1.0: stabilizing the SARIF schema, adding the first three Python rules with paper-grade rationale, preparing a crates.io release.
-- TransformerQEC reproduction on public datasets: releasing training weights and the full training script for independent verification.
-
----
-
-## Writing
-
-Essays and technical posts are published at [shubhamkaushal765.github.io/shubhamkaushal765](https://shubhamkaushal765.github.io/shubhamkaushal765/). The personal site is under active development; a custom domain and a structured writing section are forthcoming. Posts are drafted as MDX and versioned in the site build.
+</td>
+</tr>
+</table>
 
 ---
 
-## Connect
+## `[ 01 ]`  The menu
 
-- Site: [shubhamkaushal765.github.io/shubhamkaushal765](https://shubhamkaushal765.github.io/shubhamkaushal765/)
-- Email: [kaushalshubham.ks@gmail.com](mailto:kaushalshubham.ks@gmail.com)
-- GitHub: [shubhamkaushal765](https://github.com/shubhamkaushal765)
-- LinkedIn: [kaushalshubham](https://linkedin.com/in/kaushalshubham)
-- ORCID: _coming_
+> Five sliders.  No filler.  Each one shipped, fixtured, reproducible.
+
+#### `TransformerQEC`  ·  *the headliner*
+Transformer-based decoder for surface-code QEC. Stim simulation, PyTorch Lightning training, syndrome-graph encoding.
+`quantum`  `ml`  ·  [open repo →](https://github.com/shubhamkaushal765/TransformerQEC)
+
+#### `zuit`  ·  *the workhorse*
+Multi-language static-analysis CLI in Rust. Structured findings across five quality dimensions. SARIF 2.1.0 with CWE / OWASP taxonomy anchors.
+`rust`  `static analysis`  ·  [open repo →](https://github.com/shubhamkaushal765/zuit)
+
+#### `tell-me-why`  ·  *the locavore*
+Local-first RAG over your codebase. Multi-language. Ollama + Chroma + sentence-transformers — code and embeddings never leave the machine.
+`rag`  `local-first`  ·  [open repo →](https://github.com/shubhamkaushal765/tell-me-why)
+
+#### `qosf_excercises`  ·  *the side project*
+QOSF Cohort 9, Task 4 — QAOA and adiabatic quantum computing solutions. Variational ansatz, adiabatic-to-QAOA mapping, benchmark notebooks.
+`qaoa`  `quantum`  ·  [open repo →](https://github.com/shubhamkaushal765/qosf_excercises)
+
+#### `codestick`  ·  *the wildcard*
+Programmatic stick-figure animation library for TypeScript. Angular-skeleton system, 22 human poses, 10 animation clips, SVG export.
+`typescript`  `animation`  ·  [open repo →](https://github.com/shubhamkaushal765/codestick)
+
+---
+
+## `[ 02 ]`  Pairings
+
+> Some bridges are obvious.  Some you build.
+
+**`TransformerQEC`**  —  the **ML ↔ Quantum** bridge.  Transformer sequence modeling, the same architecture that underlies code embeddings, applied to syndrome-graph decoding.  ML methodology landing directly inside quantum error correction.
+
+**`tell-me-why`**  —  the **Code ↔ ML** bridge.  Source code treated as a structured corpus.  Multi-language parsing extracts the structure; local embedding and retrieval operate on it end-to-end.
+
+---
+
+## `[ 03 ]`  House rules
+
+The kitchen runs on three lines.  They do not bend.
+
+- **Structure first, syntax second** — work on the AST, the syndrome graph, the embedding, not the surface form.
+- **Run local until proven otherwise** — code, models, and quantum simulators belong on the operator's machine.
+- **Reproducibility is the deliverable** — fixtures, seeds, SARIF, `expected.json` — the artifact is the contract.
+
+<sub>House style: Conventional Commits, strict.  Linear history on `main`.  GPG-signed.  No co-author tags.</sub>
+
+---
+
+## `[ 04 ]`  Tonight's specials  ·  *2026-Q2*
+
+- **Qubit calibration scheduling** as an orchestration problem — RB / T1 / T2 / single-qubit gate tomography.  Research direction; no public repo yet.
+- **`zuit` 0.x → 1.0** — stabilizing the SARIF schema, the first three Python rules with paper-grade rationale, crates.io release.
+- **`TransformerQEC` reproduction** on public datasets — training weights and the full training script out for independent verification.
+
+---
+
+## `[ 05 ]`  Reservations
+
+> Open for research collaboration, structured-tooling work, and a long conversation about anything on the menu.
+
+|     |     |
+| --- | --- |
+| site      | [shubhamkaushal765.github.io/shubhamkaushal765](https://shubhamkaushal765.github.io/shubhamkaushal765/) |
+| email     | [kaushalshubham.ks@gmail.com](mailto:kaushalshubham.ks@gmail.com) |
+| github    | [@shubhamkaushal765](https://github.com/shubhamkaushal765) |
+| linkedin  | [in/kaushalshubham](https://linkedin.com/in/kaushalshubham) |
+| orcid     | *coming* |
+
+---
+
+<div align="center">
 
 <sub>~/lab  ·  asia/kolkata (utc+5:30)  ·  pgp 0xDEADBEEF</sub>
 
-<sub>Reads / contributes to the qBraid, openqaoa, QAOAKit, and qiskit-textbook ecosystems.</sub>
+<sub>reads / contributes to qBraid, openqaoa, QAOAKit, qiskit-textbook</sub>
+
+</div>
