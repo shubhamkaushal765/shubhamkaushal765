@@ -1,0 +1,137 @@
+export const meta = {
+  number: '02',
+  slug: 'phase-space',
+  title: 'Phase space and the Wigner picture.',
+  summary: 'A working picture of continuous-variable quantum states as quasi-probability distributions in (x, p), and why negativity is the resource that matters.',
+  reading: '9 min',
+};
+
+# Phase space and the Wigner picture.
+
+<p className="chapter-lede">A single optical mode is a quantum harmonic oscillator, and its state is most usefully drawn as a shape in a two-dimensional (x, p) plane. The Wigner function makes that drawing precise, and its sign structure is what separates classically simulable photonics from genuinely quantum photonics.</p>
+
+## Physical intuition
+
+A bosonic mode — one polarization, one frequency, one spatial profile of the electromagnetic field — is mathematically a quantum harmonic oscillator. Its Hilbert space is infinite-dimensional, spanned by Fock states &#123;|0⟩, |1⟩, |2⟩, ...&#125; of definite photon number. Any pure or mixed state of that mode can be represented by a density operator ρ̂ on this space.
+
+Carrying ρ̂ around as a matrix is awkward for reasoning about experiments. A more useful object is a real-valued function W(x, p) on the plane of the two field quadratures, normalized so that ∫∫ W(x, p) dx dp = 1. This is the Wigner function<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>, and it contains the same information as ρ̂.
+
+The quadratures x̂ and p̂ are the real and imaginary parts of the mode's complex amplitude — physically, the two orthogonal components of the optical electric field at a given frequency. Classical electrodynamics describes the field by a single point in (x, p). Quantum mechanics forbids that, and a state must instead occupy a region of nonzero area set by [x̂, p̂] = i (using the ℏ = 1, vacuum-variance = 1/2 convention used throughout this chapter).
+
+## Analogy: phase space as a fog map
+
+Think of (x, p) as a map and the state as a patch of fog above it. A classical coherent oscillation is a sharp pin at one location moving in a circle around the origin at the optical frequency. A quantum state replaces the pin with a fog blob whose shape, orientation, and position encode every measurable property of the field.
+
+Displacing the blob rigidly across the plane corresponds to driving the mode with a classical laser. Stretching the blob along one axis and squashing it along the orthogonal axis — preserving area — corresponds to squeezing. Rotating the blob corresponds to free evolution at the mode frequency or to a phase shift in an interferometer.
+
+**Where the analogy breaks:**
+
+<ul>
+  <li>The Wigner function can take negative values for non-Gaussian states, so it is a quasi-probability, not a probability. No literal fog has negative density.</li>
+  <li>Marginals of W along any quadrature axis are true probability densities, but joint values W(x, p) are not jointly measurable — the uncertainty relation forbids it.</li>
+  <li>Measurement is not a passive look at the fog. A homodyne measurement of x̂ collapses the state to (approximately) a thin vertical strip, destroying the prior p-structure.</li>
+  <li>Two different states can have the same coarse blob shape but differ in fine interference fringes that carry the quantum content.</li>
+</ul>
+
+## Mathematical structure
+
+For a density operator ρ̂, the Wigner function is defined by
+
+W(x, p) = (1 / π) ∫ ⟨x + y | ρ̂ | x − y⟩ e<sup>−2ipy</sup> dy,
+
+with ℏ = 1. It is real, bounded by 1/π in magnitude, and its marginals reproduce the position and momentum distributions: ∫ W(x, p) dp = ⟨x|ρ̂|x⟩ and ∫ W(x, p) dx = ⟨p|ρ̂|p⟩. Expectation values of symmetrically ordered operator products are phase-space integrals of W against the corresponding classical polynomial<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>.
+
+Five canonical examples build most of the intuition needed for later chapters:
+
+<ul>
+  <li><strong>Vacuum |0⟩.</strong> W(x, p) = (1/π) exp(−x² − p²). A round Gaussian centered at the origin with variance 1/2 in each quadrature. This is the noise floor every other state is measured against.</li>
+  <li><strong>Coherent |α⟩.</strong> The same Gaussian, rigidly displaced to (x₀, p₀) = (√2 Re α, √2 Im α). Output of an ideal laser well above threshold.</li>
+  <li><strong>Squeezed vacuum |ξ⟩.</strong> A Gaussian with variance e<sup>−2r</sup>/2 along one quadrature and e<sup>+2r</sup>/2 along the orthogonal one, with r the squeezing parameter. Area is preserved; one axis is sharper than vacuum at the cost of the other.</li>
+  <li><strong>Single-photon |1⟩.</strong> W(x, p) = (1/π)(2(x² + p²) − 1) exp(−x² − p²). A rotationally symmetric ring with a negative dip at the origin reaching W(0, 0) = −1/π. This negativity is non-Gaussian and cannot be produced by passive linear optics plus squeezing and displacement alone.</li>
+  <li><strong>Even cat state (|α⟩ + |−α⟩)/N.</strong> Two displaced Gaussian lobes plus an oscillatory interference pattern along p between them, with fringes that go strongly negative. The fringe period scales as 1/|α|.</li>
+</ul>
+
+<figure className="chapter-figure">
+  <svg viewBox="0 0 640 220" width="100%" role="img" aria-labelledby="ch02-fig-title ch02-fig-desc" xmlns="http://www.w3.org/2000/svg">
+    <title id="ch02-fig-title">Wigner functions of four canonical continuous-variable states</title>
+    <desc id="ch02-fig-desc">Four side-by-side panels showing, in (x, p) phase space: the vacuum as a small round blob at the origin, a coherent state as the same blob displaced from the origin, a squeezed state as a vertical ellipse at the origin, and a single-photon state as a ring with a darker central region indicating negativity. Each panel has labeled x and p axes.</desc>
+    <defs>
+      <radialGradient id="ch02-blob" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stopColor="var(--pillar-color, var(--color-accent))" stopOpacity="0.85" />
+        <stop offset="100%" stopColor="var(--pillar-color, var(--color-accent))" stopOpacity="0" />
+      </radialGradient>
+      <radialGradient id="ch02-ring" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stopColor="currentColor" stopOpacity="0.55" />
+        <stop offset="35%" stopColor="currentColor" stopOpacity="0.0" />
+        <stop offset="60%" stopColor="var(--pillar-color, var(--color-accent))" stopOpacity="0.85" />
+        <stop offset="100%" stopColor="var(--pillar-color, var(--color-accent))" stopOpacity="0" />
+      </radialGradient>
+      <marker id="ch02-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
+      </marker>
+    </defs>
+    <g fontFamily="ui-sans-serif, system-ui, sans-serif" fontSize="11" fill="currentColor" stroke="currentColor" strokeWidth="1">
+      <g className="ch02-panel" transform="translate(80,110)">
+        <line x1="-55" y1="0" x2="55" y2="0" markerEnd="url(#ch02-arrow)" />
+        <line x1="0" y1="55" x2="0" y2="-55" markerEnd="url(#ch02-arrow)" />
+        <text x="60" y="4" stroke="none">x</text>
+        <text x="-4" y="-58" stroke="none" textAnchor="end">p</text>
+        <circle cx="0" cy="0" r="22" fill="url(#ch02-blob)" stroke="none" />
+        <text x="0" y="80" stroke="none" textAnchor="middle">Vacuum |0⟩</text>
+      </g>
+      <g className="ch02-panel" transform="translate(220,110)">
+        <line x1="-55" y1="0" x2="55" y2="0" markerEnd="url(#ch02-arrow)" />
+        <line x1="0" y1="55" x2="0" y2="-55" markerEnd="url(#ch02-arrow)" />
+        <text x="60" y="4" stroke="none">x</text>
+        <text x="-4" y="-58" stroke="none" textAnchor="end">p</text>
+        <circle cx="22" cy="-18" r="22" fill="url(#ch02-blob)" stroke="none" />
+        <text x="0" y="80" stroke="none" textAnchor="middle">Coherent |α⟩</text>
+      </g>
+      <g className="ch02-panel" transform="translate(360,110)">
+        <line x1="-55" y1="0" x2="55" y2="0" markerEnd="url(#ch02-arrow)" />
+        <line x1="0" y1="55" x2="0" y2="-55" markerEnd="url(#ch02-arrow)" />
+        <text x="60" y="4" stroke="none">x</text>
+        <text x="-4" y="-58" stroke="none" textAnchor="end">p</text>
+        <ellipse cx="0" cy="0" rx="10" ry="34" fill="url(#ch02-blob)" stroke="none" />
+        <text x="0" y="80" stroke="none" textAnchor="middle">Squeezed |ξ⟩</text>
+      </g>
+      <g className="ch02-panel" transform="translate(540,110)">
+        <line x1="-55" y1="0" x2="55" y2="0" markerEnd="url(#ch02-arrow)" />
+        <line x1="0" y1="55" x2="0" y2="-55" markerEnd="url(#ch02-arrow)" />
+        <text x="60" y="4" stroke="none">x</text>
+        <text x="-4" y="-58" stroke="none" textAnchor="end">p</text>
+        <circle cx="0" cy="0" r="34" fill="url(#ch02-ring)" stroke="none" />
+        <circle cx="0" cy="0" r="7" fill="currentColor" fillOpacity="0.45" stroke="none" />
+        <text x="0" y="80" stroke="none" textAnchor="middle">Single photon |1⟩</text>
+      </g>
+    </g>
+  </svg>
+  <figcaption>Wigner functions of four canonical CV states. The single-photon panel shows a ring with a darker central region indicating W(0, 0) &lt; 0; the other three are positive Gaussians.</figcaption>
+</figure>
+
+## Measurement: homodyne, heterodyne, PNR
+
+Homodyne detection is a direct measurement of a single quadrature. The signal mode is mixed on a 50:50 beam splitter with a strong local oscillator of phase θ, and the difference photocurrent of the two output detectors is proportional to the rotated quadrature x̂<sub>θ</sub> = x̂ cos θ + p̂ sin θ. Sweeping θ and histogramming outcomes yields the marginals of W along every axis, from which W itself is reconstructed by inverse Radon transform — this is optical homodyne tomography, demonstrated since the early 1990s<sup className="fn-ref"><a href="#fn-3">[3]</a></sup>.
+
+Heterodyne detection uses a local oscillator detuned from the signal and effectively measures x̂ and p̂ simultaneously, at the cost of an extra half unit of vacuum noise per quadrature. It implements a projector onto coherent states (a Q-function measurement) rather than a sharp quadrature projector.
+
+Photon-number-resolving (PNR) detection projects onto Fock states |n⟩. Superconducting nanowire single-photon detectors (SNSPDs) at telecom wavelengths have reached system detection efficiencies near 95% in 2023–2025 demonstrations<sup className="fn-ref"><a href="#fn-4">[4]</a></sup>, with transition-edge sensors providing intrinsic number resolution at lower bandwidth. PNR detection is the standard route to herald non-Gaussian states from Gaussian resources, because subtracting or adding photons to a squeezed state is a known recipe for generating Wigner negativity.
+
+## Practical implications
+
+States with everywhere-nonnegative Wigner functions and Gaussian measurements can be simulated classically in polynomial time. This is the content of the Mari–Eisert and Veitch–Ferrie–Gross–Emerson results, which formalize earlier observations going back to Bartlett, Sanders, Braunstein, and de Guise<sup className="fn-ref"><a href="#fn-5">[5]</a></sup>. Linear optics, squeezing, displacement, homodyne, and heterodyne on Gaussian inputs all stay within this efficiently simulable class.
+
+Wigner negativity is therefore a necessary resource for any photonic quantum-computational advantage. It is not sufficient — negativity must be combined with sufficient interference, low loss, and high-fidelity adaptive control — but no demonstrated, simulated, proposed, or theoretical scheme for photonic quantum advantage avoids it<sup className="fn-ref"><a href="#fn-6">[6]</a></sup>. Gaussian Boson Sampling generates its hardness from the non-Gaussian PNR measurement at the output rather than from a non-Gaussian input state, but the same accounting applies: negativity must enter somewhere.
+
+This framing sets up the next two chapters. Chapter 03 takes the Gaussian sector seriously as a building block — Gottesman–Kitaev–Preskill encoding, cluster states, and measurement-based CV computation. Chapter 04 examines the non-Gaussian resources — heralded photon subtraction, cat-state breeding, and GKP state preparation — that supply the negativity those architectures consume.
+
+## Notes
+
+<ol className="footnotes">
+  <li id="fn-1">E. Wigner, "On the quantum correction for thermodynamic equilibrium," Physical Review 40, 749 (1932).</li>
+  <li id="fn-2">C. Weedbrook et al., "Gaussian quantum information," Reviews of Modern Physics 84, 621 (2012). arXiv: <a href="https://arxiv.org/abs/1110.3234">https://arxiv.org/abs/1110.3234</a>.</li>
+  <li id="fn-3">D. T. Smithey, M. Beck, M. G. Raymer, A. Faridani, "Measurement of the Wigner distribution and the density matrix of a light mode using optical homodyne tomography," Physical Review Letters 70, 1244 (1993). See also U. Leonhardt, <em>Measuring the Quantum State of Light</em> (Cambridge, 1997).</li>
+  <li id="fn-4">D. V. Reddy et al., "Superconducting nanowire single-photon detectors with 98% system detection efficiency at 1550 nm," Optica 7, 1649 (2020); subsequent NIST and industrial reports through 2024–2025 sustain ~95% system efficiency at telecom wavelengths in deployed setups.</li>
+  <li id="fn-5">A. Mari and J. Eisert, "Positive Wigner functions render classical simulation of quantum computation efficient," Physical Review Letters 109, 230503 (2012). arXiv: <a href="https://arxiv.org/abs/1208.3660">https://arxiv.org/abs/1208.3660</a>. V. Veitch, C. Ferrie, D. Gross, J. Emerson, "Negative quasi-probability as a resource for quantum computation," New Journal of Physics 14, 113011 (2012). arXiv: <a href="https://arxiv.org/abs/1201.1256">https://arxiv.org/abs/1201.1256</a>.</li>
+  <li id="fn-6">S. L. Braunstein and P. van Loock, "Quantum information with continuous variables," Reviews of Modern Physics 77, 513 (2005). arXiv: <a href="https://arxiv.org/abs/quant-ph/0410100">https://arxiv.org/abs/quant-ph/0410100</a>.</li>
+</ol>
