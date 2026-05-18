@@ -1,0 +1,199 @@
+export const meta = {
+  number: '04',
+  slug: 'language-servers',
+  title: 'The language server as an incremental cache.',
+  summary: 'LSP, salsa-style query systems, and the cache-invalidation problem at the heart of every modern IDE — why latency, not algorithmic correctness, is the binding constraint.',
+  reading: '12 min',
+};
+
+# The language server as an incremental cache.
+
+<p className="chapter-lede">A modern IDE has to answer hard questions about a program on every keystroke, against codebases with tens of thousands of files and millions of lines, in under a hundred milliseconds. Recomputing from scratch is not on the table. Almost everything a language server does is, underneath, the bookkeeping of a cache: which derived facts are still valid, which have just gone stale, and which can be quietly skipped.</p>
+
+## What the IDE has to compute, on every keystroke
+
+Type a character. The editor expects, more or less immediately, a list of plausible completions, a hover tooltip if you pause, red squigglies under anything that no longer type-checks, and a working F12 if you ask to jump to the definition of the symbol your cursor is on. Find-references should return inside a second on a large monorepo.
+
+The informal latency budgets are well known. Completion needs to feel instant, which in practice means a round trip under about 100 ms. Diagnostics — the red and yellow underlines — can take a little longer, perhaps 300 ms, before the user notices the lag. Hover and go-to-definition sit somewhere in between. The input is not small: a working IDE session might have 30,000 source files open in the project graph and a few megabytes of code changing per minute.
+
+The engineering problem is not "understand the program." It is "understand the program in 80 milliseconds, again, after the user pressed one more key."
+
+So the server caches. A lot.
+
+## The user's view
+
+The red squiggle under a typo is the visible end of a chain of derived data: lexer tokens, a parse tree, name resolution, a type-check result, a list of diagnostics for the file. The completion popup is a query against the same name resolution plus a ranker. F12 — go-to-definition — walks from the cursor's syntactic position to the resolved symbol and back out to a source location. Find-references inverts that walk across every file that imports the symbol's containing module.
+
+Each of these features corresponds to a different slice of derived data. The server's job is to keep all of those slices current as the user edits, without recomputing the slices that nothing has touched.
+
+## LSP, the protocol
+
+LSP is the Language Server Protocol — a JSON-RPC interface between the editor (the client) and a separate language-server process (one per workspace, typically). The editor sends notifications and requests over stdio or a TCP socket; the server replies with results or pushes diagnostics back. The split matters: the parser, type checker, and indexer live in the server, not in the editor, which is why VS Code, Neovim, Emacs, and Zed can all light up Rust files identically as long as a `rust-analyzer` binary is on the path.
+
+The canonical request and notification kinds are a short list. `textDocument/didChange` tells the server a buffer's contents have changed. `textDocument/completion` asks for completion candidates at a position. `textDocument/definition` and `textDocument/references` are the navigation queries. `textDocument/hover` returns the tooltip. `textDocument/publishDiagnostics` is the server-to-client push that paints the squigglies.
+
+The 2016 insight that unlocked the modern editor ecosystem was simple. Before LSP, every (editor, language) pair was its own integration; Microsoft published the protocol alongside VS Code, and the matrix collapsed into a row plus a column<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>. One server, any editor.
+
+```jsonc
+// JSON-RPC 2.0 over LSP 3.17. Client notifies the server of an edit;
+// server later pushes diagnostics for the same document.
+{"jsonrpc": "2.0", "method": "textDocument/didChange", "params": {
+  "textDocument": {"uri": "file:///src/main.rs", "version": 42},
+  "contentChanges": [
+    {"range": {"start": {"line": 12, "character": 8},
+               "end":   {"line": 12, "character": 8}},
+     "text": "x"}
+  ]
+}}
+{"jsonrpc": "2.0", "method": "textDocument/publishDiagnostics", "params": {
+  "uri": "file:///src/main.rs",
+  "version": 42,
+  "diagnostics": [
+    {"range": {"start": {"line": 12, "character": 0},
+               "end":   {"line": 12, "character": 9}},
+     "severity": 1, "code": "E0425",
+     "message": "cannot find value `fxoo` in this scope"}
+  ]
+}}
+```
+
+## Analogy: a spreadsheet that knows what to recompute
+
+Picture a spreadsheet with a few million cells, where most cells are formulas referencing other cells. Edit one input. The engine does not re-evaluate every formula on the sheet; it walks the dependency graph it has been tracking all along, marks only the cells that transitively depend on the changed input, and recomputes those. Everything else stays exactly as it was.
+
+A language server is the same idea applied to source code. Files are input cells. Tokens, syntax trees, resolved names, and types are formula cells, each one a pure function of the cells it reads. When a byte of a file changes, only the dependents are dirtied.
+
+**Where the analogy breaks:**
+- Spreadsheet cells hold a scalar; an AST or a symbol table is a large structured value, and "did this value change?" needs a real equality check or a content hash to be useful as a propagation guard.
+- Spreadsheet dependencies are declared by the formula's static references. In a language server, the dependencies of "the type of `foo`" depend on what `foo` resolves to, which is itself a query result — dependencies are discovered dynamically as queries execute.
+- Spreadsheets recompute eagerly on edit. IDEs recompute lazily, on demand, because most derived facts are never asked for in a given second of editing.
+- A spreadsheet does not have to finish in 80 ms or lose to the user's perception of lag.
+
+## The cache-invalidation problem
+
+Phil Karlton was right about cache invalidation. A language server is the working example.
+
+The inputs are concrete: the contents of every open buffer, file-watcher events from disk, the project manifest (`Cargo.toml`, `tsconfig.json`, `pyproject.toml`), and toolchain settings. The derived facts form a layered DAG: per-file token streams; per-file parse trees; per-module name resolution; cross-module symbol tables; type-check results; per-file diagnostics. A `find-references` result for a public symbol is a transitive consumer of half the project's name resolution.
+
+The question on every keystroke is: of all those derived facts, which ones depend on the byte that just changed, and which ones can be reused as-is? The naive answer — invalidate everything — is what makes a language server feel slow. The correct answer requires the server to have remembered which inputs each query actually read, so that on an edit it can mark only the affected subgraph dirty and leave the rest green.
+
+This is what a query system does. Every query is a memoised pure function of its inputs. The system records the dependency edge at the moment the query reads another query's result. On an input change, dependents are marked stale; when something asks for them again, they re-run. If their re-run produces a value equal to the previous one, the dirty mark stops propagating — downstream queries can stay cached. That last property is the difference between fast and slow.
+
+If your IDE takes a coffee break on every keystroke, the IDE has lost.
+
+## Salsa, red-green, and the alternatives
+
+rust-analyzer is built on `salsa`, a Rust crate for exactly this style of incremental computation<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>. Each query is a function annotated so that salsa memoises its result and tracks which other queries it called. On an input edit, salsa marks dependents "red" (definitely stale) or leaves them "green" (possibly stale, recheck on demand). When a red query is re-evaluated and turns out to produce a structurally equal result, its own dependents can return to green without running again. The mechanism is sometimes called the red-green algorithm; rust-analyzer's architecture notes describe how the language-server queries map onto it<sup className="fn-ref"><a href="#fn-3">[3]</a></sup>.
+
+The alternatives have similar shapes with different trade-offs. Roslyn, the .NET compiler platform, exposes a compiler-as-a-service with immutable syntax and semantic snapshots: each edit produces a new `Compilation` value that shares structure with the previous one, and incremental work happens because new snapshots reuse the old snapshot's analyses where inputs are identical<sup className="fn-ref"><a href="#fn-4">[4]</a></sup>. Bazel and Buck go in the other direction: a coarse-grained, file-level, content-addressed action cache where the unit of reuse is a whole build action rather than a per-function query. Both extremes work; they trade granularity for bookkeeping cost.
+
+## A comparison table
+
+<table className="encoding-table">
+  <thead>
+    <tr><th>System</th><th>Granularity</th><th>Invalidation strategy</th><th>Strength</th><th>Weakness</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>rust-analyzer (salsa)</td><td>Per-query, per-input</td><td>Red-green with value-equality short-circuit</td><td>Minimal recomputation; fine-grained dependency tracking</td><td>Memory footprint grows with query count; macro-heavy code stresses the model</td></tr>
+    <tr><td>Roslyn (.NET)</td><td>Per-compilation snapshot</td><td>Persistent immutable trees; structural sharing across snapshots</td><td>Clean concurrency model; easy to host as a service</td><td>Snapshot churn on every edit; allocator pressure</td></tr>
+    <tr><td>TypeScript language service</td><td>Project graph + per-file cache</td><td>Version-stamped source files; project references rebuilt on graph change</td><td>Handles huge JS/TS monorepos with `--build` mode</td><td>Whole-project type-check still the slow path on cold start</td></tr>
+    <tr><td>pyright</td><td>In-memory typed AST per module</td><td>Module-level invalidation with import-graph propagation</td><td>Single-threaded but very fast; trivial to embed</td><td>Loses cache on restart; no persistent index</td></tr>
+    <tr><td>Bazel / Buck</td><td>Build action (whole-file inputs)</td><td>Content-addressed action cache, hermetic inputs</td><td>Reproducible, shareable across a team</td><td>Coarse: a one-byte change in a header invalidates everything that included it</td></tr>
+  </tbody>
+</table>
+
+## A query DAG, with one input flipped
+
+<figure className="chapter-figure">
+  <svg id="query-dag" viewBox="0 0 800 360" width="100%" role="img" aria-labelledby="dag-title dag-desc" style={{color: 'currentColor'}}>
+    <title id="dag-title">A small query DAG with one changed input invalidating the path to a derived diagnostic</title>
+    <desc id="dag-desc">Three leaf nodes at the bottom represent source files; the middle layer holds per-file AST nodes; above that a cross-file symbol table; the root is diagnostics for file X. The middle leaf is marked changed; dashed edges trace the invalidation path upward.</desc>
+
+    <g fontSize="12" fill="currentColor">
+      <text x="400" y="24" textAnchor="middle" fontSize="15" fontWeight="600">queries: leaves are inputs, root is a published diagnostic</text>
+    </g>
+
+    <g stroke="currentColor" strokeWidth="1.5" fill="none">
+      <rect x="120" y="290" width="120" height="44" rx="6" />
+      <rect x="340" y="290" width="120" height="44" rx="6" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="2.5" />
+      <rect x="560" y="290" width="120" height="44" rx="6" />
+    </g>
+    <g fontSize="12" fill="currentColor" textAnchor="middle">
+      <text x="180" y="316">file: a.rs</text>
+      <text x="400" y="316">file: x.rs (changed)</text>
+      <text x="620" y="316">file: b.rs</text>
+    </g>
+
+    <g stroke="currentColor" strokeWidth="1.5" fill="none">
+      <rect x="120" y="180" width="120" height="44" rx="6" />
+      <rect x="340" y="180" width="120" height="44" rx="6" strokeDasharray="5 4" />
+      <rect x="560" y="180" width="120" height="44" rx="6" />
+    </g>
+    <g fontSize="12" fill="currentColor" textAnchor="middle">
+      <text x="180" y="206">AST(a.rs)</text>
+      <text x="400" y="206">AST(x.rs)</text>
+      <text x="620" y="206">AST(b.rs)</text>
+    </g>
+
+    <g stroke="currentColor" strokeWidth="1.5" fill="none">
+      <rect x="280" y="100" width="240" height="44" rx="6" strokeDasharray="5 4" />
+    </g>
+    <text x="400" y="126" fontSize="12" fill="currentColor" textAnchor="middle">cross-file symbol table</text>
+
+    <g stroke="currentColor" strokeWidth="2" fill="none">
+      <rect x="300" y="30" width="200" height="44" rx="6" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeDasharray="5 4" />
+    </g>
+    <text x="400" y="56" fontSize="12" fill="currentColor" textAnchor="middle">diagnostics(x.rs)</text>
+
+    <g stroke="currentColor" strokeWidth="1.2" fill="none">
+      <line x1="180" y1="290" x2="180" y2="224" />
+      <line x1="620" y1="290" x2="620" y2="224" />
+    </g>
+    <g stroke="currentColor" strokeWidth="1.5" fill="none" strokeDasharray="5 4">
+      <line x1="400" y1="290" x2="400" y2="224" />
+      <line x1="180" y1="180" x2="340" y2="144" />
+      <line x1="400" y1="180" x2="400" y2="144" />
+      <line x1="620" y1="180" x2="460" y2="144" />
+      <line x1="400" y1="100" x2="400" y2="74" />
+    </g>
+
+    <g fontSize="11" fill="currentColor" opacity="0.7">
+      <text x="40" y="316">inputs</text>
+      <text x="40" y="206">per-file</text>
+      <text x="40" y="126">cross-file</text>
+      <text x="40" y="56">root</text>
+    </g>
+  </svg>
+  <figcaption>An edit to <code>x.rs</code> invalidates only the queries on the path from that input to the published root. Solid edges remain green and reuse their cached values; dashed edges and nodes are dirty and will be recomputed on demand.</figcaption>
+</figure>
+
+## The monorepo problem
+
+A query DAG with a few thousand nodes is tractable. A monorepo introduces a different scaling failure: one type change in a widely-imported module can fan out to thousands of downstream queries. If the server actually re-runs all of them, latency budgets are gone.
+
+Real systems handle this by being selective about what counts as a change. The first technique is firewalling: fingerprint the public API surface of a module separately from its internal bodies, so that edits inside a function body do not invalidate consumers of the module's signatures. Rust's incremental compilation uses this idea, with a stable fingerprint per item that gates downstream work<sup className="fn-ref"><a href="#fn-5">[5]</a></sup>. The second is sharding: split the project graph into packages, crates, or TypeScript project references, so that an edit can be confined to the smallest unit that contains it. TypeScript's `--build` mode caches per-project outputs on disk for exactly this reason.
+
+The third technique is, with some embarrassment, lying. If a node's content hash is unchanged, the system reports it as identical even if its source location moved, its formatting changed, or its file was rewritten in place. The downstream consumer never has to know.
+
+## What shipped tooling actually uses
+
+The current production picture is concrete. rust-analyzer runs on salsa, in-process per workspace. The TypeScript language service uses a project-graph cache with per-file versioning and supports `--build` for incremental disk-cached output. Roslyn ships `Microsoft.CodeAnalysis` as the compiler-as-a-service used by Visual Studio, with immutable syntax and semantic models. pyright is a single-threaded TypeScript implementation with an in-memory typed AST cache that prioritises raw speed over persistence<sup className="fn-ref"><a href="#fn-6">[6]</a></sup>. gopls keeps a `go/packages`-derived build graph and re-imports affected packages on change.
+
+A pattern worth naming: several of the fastest new language servers (rust-analyzer, but also linters and formatters like ruff and biome) are written in Rust. The reason is mundane. Lex, parse, and walk are hot loops; predictable allocation and zero-cost abstractions are worth real milliseconds when the budget is 80.
+
+## Why this matters for the rest of the book
+
+Chapter 05 looks at AI coding assistants. The natural framing, once Chapter 04 is in your head, is that an assistant is a second cache sitting on top of the language server's cache. The retrieval index over a codebase has the same invalidation problem with the same DAG shape: file edits dirty embeddings, which dirty retrieved chunks, which dirty the prompt sent to a model. The model output is itself a derived fact with inputs that change.
+
+The latency budget is also similar — completion-style assistants live or die by sub-second responsiveness — and so are the techniques. Fingerprinting, sharding, content-addressed memoisation. The names change; the structure does not.
+
+## Notes
+
+<ol className="footnotes">
+  <li id="fn-1">Microsoft. "Language Server Protocol Specification, version 3.17." <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/">https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/</a></li>
+  <li id="fn-2">salsa-rs. "salsa: a generic framework for on-demand, incrementalized computation." Source repository. <a href="https://github.com/salsa-rs/salsa">https://github.com/salsa-rs/salsa</a></li>
+  <li id="fn-3">rust-lang. "rust-analyzer architecture." Developer documentation. <a href="https://github.com/rust-lang/rust-analyzer/blob/master/docs/dev/architecture.md">https://github.com/rust-lang/rust-analyzer/blob/master/docs/dev/architecture.md</a></li>
+  <li id="fn-4">dotnet. "Roslyn — The .NET Compiler Platform." Source repository. <a href="https://github.com/dotnet/roslyn">https://github.com/dotnet/roslyn</a></li>
+  <li id="fn-5">Horwitz, S., Reps, T., and Sagiv, M. "Demand interprocedural dataflow analysis." Proceedings of SIGSOFT '95, ACM SIGSOFT Symposium on the Foundations of Software Engineering, 1995. The academic ancestor of demand-driven analysis used by modern query systems. <a href="https://dl.acm.org/doi/10.1145/222124.222146">https://dl.acm.org/doi/10.1145/222124.222146</a></li>
+  <li id="fn-6">Microsoft. "pyright — static type checker for Python." Source repository. <a href="https://github.com/microsoft/pyright">https://github.com/microsoft/pyright</a></li>
+</ol>
