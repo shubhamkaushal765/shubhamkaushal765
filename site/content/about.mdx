@@ -61,22 +61,7 @@ The connecting thread is operating on *symbolic structure* — ASTs, code embedd
   </div>
 </div>
 
-<SectionRule number="04">Engineering philosophy</SectionRule>
-
-<ol className="house-rules">
-  <li>Structure first, syntax second — work on the AST, the syndrome graph, the embedding, not the surface form.</li>
-  <li>Run local until proven otherwise — code, models, and quantum simulators belong on the operator&apos;s machine.</li>
-  <li>Reproducibility is the deliverable — fixtures, seeds, SARIF, `expected.json` — the artifact is the contract.</li>
-</ol>
-
-<SectionRule number="05">How I work</SectionRule>
-
-- Conventional Commits strict on every owned repository. Linear history on `main`. GPG-signed.
-- No Claude co-author tags. Commits are authored by the human operator.
-- Releases ship a `CHANGELOG.md`. Research repos (`TransformerQEC`) ship a `CITATION.cff`.
-- Project READMEs follow a fixed skeleton: install, usage, architecture, **status**, license. The status section is mandatory.
-
-<SectionRule number="06">12-month direction</SectionRule>
+<SectionRule number="04">12-month direction</SectionRule>
 
 <div className="timeline">
   <div className="timeline__item">
@@ -95,12 +80,6 @@ The connecting thread is operating on *symbolic structure* — ASTs, code embedd
     <span className="timeline__date">Q3 · TransformerQEC reproduction</span>
     <div className="timeline__body">
       Reproduction on public datasets; release of training weights and full training script.
-    </div>
-  </div>
-  <div className="timeline__item">
-    <span className="timeline__date">Q4 · synthesis writeup</span>
-    <div className="timeline__body">
-      *Three projects, one thesis* — formalizing the parsers-to-qubits framing as a single coherent research program.
     </div>
   </div>
 </div>

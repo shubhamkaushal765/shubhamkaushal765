@@ -828,82 +828,79 @@ h3[data-pillar="quantum"]  .section-num { color: var(--color-pillar-quantum); }
   margin: 0;
 }
 
-/* ── Writing pipeline cards ── */
-.writing-pipeline {
+/* ── Blog index entries ── */
+.blog-list {
   list-style: none;
   padding: 0;
   margin: var(--spacing-5) 0;
-  display: grid;
-  gap: var(--spacing-5);
-  grid-template-columns: 1fr;
-  counter-reset: writing-counter;
-}
-
-@media (min-width: 760px) {
-  .writing-pipeline {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.writing-card {
-  --pillar-color: var(--color-accent);
-  position: relative;
-  padding: var(--spacing-5);
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-border-hair);
-  border-radius: 8px;
   display: flex;
   flex-direction: column;
+}
+
+.blog-entry {
+  --pillar-color: var(--color-accent);
+  position: relative;
+  padding: var(--spacing-5) 0;
+  border-top: 1px solid var(--color-border-hair);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  transition: border-color 220ms ease-out;
+}
+
+.blog-entry:last-child {
+  border-bottom: 1px solid var(--color-border-hair);
+}
+
+.blog-entry[data-pillar="code-int"] { --pillar-color: var(--color-pillar-code); }
+.blog-entry[data-pillar="ml"]       { --pillar-color: var(--color-pillar-ml); }
+.blog-entry[data-pillar="quantum"]  { --pillar-color: var(--color-pillar-quantum); }
+
+.blog-entry:hover {
+  border-top-color: color-mix(in oklab, var(--pillar-color) 45%, var(--color-border-hair));
+}
+
+.blog-entry__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: var(--spacing-3);
-  counter-increment: writing-counter;
-  overflow: hidden;
-  transition: border-color 220ms ease-out, transform 220ms ease-out;
-}
-
-.writing-card[data-pillar="code-int"] { --pillar-color: var(--color-pillar-code); }
-.writing-card[data-pillar="ml"]       { --pillar-color: var(--color-pillar-ml); }
-.writing-card[data-pillar="quantum"]  { --pillar-color: var(--color-pillar-quantum); }
-
-.writing-card::before {
-  content: counter(writing-counter, decimal-leading-zero);
-  position: absolute;
-  top: var(--spacing-2);
-  right: var(--spacing-3);
-  font-family: var(--font-mono);
-  font-size: 2.5rem;
-  font-weight: 600;
-  line-height: 1;
-  color: color-mix(in oklab, var(--pillar-color) 25%, transparent);
-  letter-spacing: -0.05em;
-}
-
-.writing-card:hover {
-  border-color: color-mix(in oklab, var(--pillar-color) 45%, var(--color-border-hair));
-  transform: translateY(-2px);
-}
-
-.writing-card__pillar {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.blog-entry__date {
+  color: var(--color-text-muted);
+}
+
+.blog-entry__pillar {
   color: var(--pillar-color);
 }
 
-.writing-card__title {
+.blog-entry__status {
+  color: var(--color-text-muted);
+  padding: 2px 6px;
+  border: 1px solid var(--color-border-hair);
+  border-radius: 3px;
+}
+
+.blog-entry__title {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   letter-spacing: -0.01em;
   margin: 0;
   color: var(--color-text-body);
-  max-width: 36ch;
+  max-width: 56ch;
 }
 
-.writing-card__summary {
+.blog-entry__summary {
   color: var(--color-text-muted);
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   margin: 0;
+  max-width: 64ch;
 }
 
 /* ── Bridge callouts ── */
@@ -956,39 +953,6 @@ h3[data-pillar="quantum"]  .section-num { color: var(--color-pillar-quantum); }
   padding-top: var(--spacing-5);
   border-top: 1px solid var(--color-border-hair);
   font-size: 0.85em;
-}
-
-/* ── House rules (philosophy) panel ── */
-.house-rules {
-  list-style: none;
-  padding: 0;
-  margin: var(--spacing-5) 0;
-  display: grid;
-  gap: var(--spacing-3);
-  counter-reset: rule-counter;
-}
-
-.house-rules li {
-  counter-increment: rule-counter;
-  position: relative;
-  padding: var(--spacing-3) var(--spacing-5) var(--spacing-3) calc(var(--spacing-13) + var(--spacing-2));
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-border-hair);
-  border-radius: 6px;
-  color: var(--color-text-body);
-}
-
-.house-rules li::before {
-  content: counter(rule-counter, decimal-leading-zero);
-  position: absolute;
-  left: var(--spacing-5);
-  top: 50%;
-  transform: translateY(-50%);
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--color-accent);
-  letter-spacing: 0.05em;
 }
 
 /* ── Animations ── */
@@ -1074,7 +1038,7 @@ h3[data-pillar="quantum"]  .section-num { color: var(--color-pillar-quantum); }
 @media (prefers-reduced-motion: reduce) {
   .hero-tagline { animation: none; }
   .status-dot__pip { animation: none; }
-  a, .topic-card, .pillar-tile, .writing-card, .selected-work li {
+  a, .topic-card, .pillar-tile, .blog-entry, .selected-work li {
     transition: none;
   }
   .flow-edge--animated {
