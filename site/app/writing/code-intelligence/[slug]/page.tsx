@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ChapterSidebar from '@/components/ChapterSidebar';
 import FooterSignature from '@/components/FooterSignature';
+import Hero from '@/components/Hero';
 import { CHAPTERS } from '../chapters';
 
 import Ch01 from '@/content/code-intelligence/ch01-structure-not-surface.mdx';
@@ -57,6 +58,7 @@ export default async function CodeIntelligenceChapterPage({
 
   return (
     <main id="main" data-pillar="code-int" className="chapter-main">
+      <Hero variant="compact" />
       <p className="chapter-eyebrow">
         <Link href="/writing/code-intelligence/">Code intelligence</Link>
         <span aria-hidden="true"> · </span>
