@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ChapterSidebar from '@/components/ChapterSidebar';
 import FooterSignature from '@/components/FooterSignature';
+import Hero from '@/components/Hero';
 import { CHAPTERS } from '../chapters';
 
 import Ch01 from '@/content/photonics/ch01-qumodes-not-qubits.mdx';
@@ -57,6 +58,7 @@ export default async function PhotonicsChapterPage({
 
   return (
     <main id="main" data-pillar="photonics" className="chapter-main">
+      <Hero variant="compact" />
       <p className="chapter-eyebrow">
         <Link href="/writing/photonics/">Photonics</Link>
         <span aria-hidden="true"> · </span>
