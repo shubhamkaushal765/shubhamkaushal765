@@ -6,9 +6,7 @@ import ThemeToggle from './ThemeToggle';
 
 const ITEMS = [
   { href: '/', label: 'home' },
-  { href: '/about/', label: 'about' },
   { href: '/writing/', label: 'blog' },
-  { href: '/now/', label: 'now' },
 ];
 
 export default function Nav() {

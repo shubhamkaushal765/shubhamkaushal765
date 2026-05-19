@@ -1,9 +1,0 @@
-%% Source for site/components/diagrams/ZuitFlow.tsx — hand-authored SVG is the source of truth.
-%% Note: @mermaid-js/mermaid-cli is NOT in devDependencies; regenerate SVG manually if needed.
-flowchart LR
-    A["source"] --> B["parser"]
-    B -->|"animated"| C:::accent
-    C["AST"] --> D["analyzers\n(5 dimensions)"]
-    D --> E["SARIF"]
-
-    classDef accent stroke:#FF00FF,stroke-width:2px;
