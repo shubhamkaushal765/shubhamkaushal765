@@ -47,7 +47,7 @@ const PAIRS = [
   // Threshold 3.0 (UI-element grade) because pillars appear as numbered prefixes, table
   // key column, chip foreground, and SVG edge stroke -- not as body prose.
   { fg: 'pillar-code',    bg: 'surface-base', threshold: 3.0, use: 'pillar-code edge on page bg + hero tagline' },
-  { fg: 'pillar-ml',      bg: 'surface-base', threshold: 3.0, use: 'pillar-ml on page bg (about H3 number)' },
+  { fg: 'pillar-ml',      bg: 'surface-base', threshold: 3.0, use: 'pillar-ml on page bg' },
   { fg: 'pillar-quantum', bg: 'surface-base', threshold: 3.0, use: 'pillar-quantum on page bg + hero tagline' },
   { fg: 'pillar-code',    bg: 'surface-card', threshold: 3.0, use: 'pillar-code on topic-card chrome' },
   { fg: 'pillar-ml',      bg: 'surface-card', threshold: 3.0, use: 'pillar-ml on topic-card chrome' },
