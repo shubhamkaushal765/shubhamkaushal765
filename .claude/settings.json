@@ -11,10 +11,17 @@
         "source": "github",
         "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
       }
+    },
+    "next-skills": {
+      "source": {
+        "source": "github",
+        "repo": "vercel-labs/next-skills"
+      }
     }
   },
   "enabledPlugins": {
     "superpowers@superpowers-marketplace": true,
-    "ui-ux-pro-max@ui-ux-pro-max-skill": true
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
+    "next-best-practices@next-skills": true
   }
 }

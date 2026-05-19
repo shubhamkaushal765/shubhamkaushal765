@@ -55,6 +55,77 @@ Three words get used interchangeably in casual conversation and mean different t
 
 The locked phrase, then, is structure first, syntax second. You parse to get a tree. You build the structures to answer questions about the tree. The tree alone is not enough.
 
+<figure className="chapter-figure">
+  <svg id="ch01ci-three-views" viewBox="0 0 820 240" width="100%" role="img" aria-labelledby="ch01ci-3v-title ch01ci-3v-desc" style={{color: 'currentColor'}}>
+    <title id="ch01ci-3v-title">Three views of the same line of code</title>
+    <desc id="ch01ci-3v-desc">A single source line user.send(msg) shown three ways. On the left, the syntactic view: a row of typed tokens. In the middle, the semantic view: each name annotated with the declaration it resolves to and the type of the expression. On the right, the structural view: a reference edge from the call site to the method definition in another file.</desc>
+
+    <g fontSize="13" fill="currentColor">
+      <g transform="translate(20 30)">
+        <text x="120" y="0" textAnchor="middle" fontSize="13" fontWeight="600">Syntax</text>
+        <text x="120" y="18" textAnchor="middle" fontSize="11" opacity="0.7">typed tokens</text>
+        <g transform="translate(0 40)" fontFamily="ui-monospace, monospace" fontSize="11">
+          <rect x="0" y="0" width="50" height="26" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <text x="25" y="17" textAnchor="middle">user</text>
+          <rect x="56" y="0" width="20" height="26" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <text x="66" y="17" textAnchor="middle">.</text>
+          <rect x="82" y="0" width="50" height="26" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <text x="107" y="17" textAnchor="middle">send</text>
+          <rect x="138" y="0" width="20" height="26" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <text x="148" y="17" textAnchor="middle">(</text>
+          <rect x="164" y="0" width="50" height="26" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <text x="189" y="17" textAnchor="middle">msg</text>
+          <rect x="220" y="0" width="20" height="26" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <text x="230" y="17" textAnchor="middle">)</text>
+        </g>
+        <text x="120" y="120" textAnchor="middle" fontSize="10" opacity="0.7">IDENT  DOT  IDENT  LPAREN  IDENT  RPAREN</text>
+        <text x="120" y="138" textAnchor="middle" fontSize="10" opacity="0.6">grammar says: valid</text>
+      </g>
+
+      <line x1="280" y1="30" x2="280" y2="200" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 4" opacity="0.35" />
+
+      <g transform="translate(300 30)">
+        <text x="120" y="0" textAnchor="middle" fontSize="13" fontWeight="600">Semantics</text>
+        <text x="120" y="18" textAnchor="middle" fontSize="11" opacity="0.7">resolved names and types</text>
+        <g transform="translate(0 50)" fontSize="11" fontFamily="ui-monospace, monospace">
+          <text x="0" y="0" fill="var(--pillar-color, currentColor)">user</text>
+          <text x="40" y="0" opacity="0.7">: Mailer</text>
+          <text x="0" y="22" fill="var(--pillar-color, currentColor)">.send</text>
+          <text x="40" y="22" opacity="0.7">→ Mailer::send(self, m)</text>
+          <text x="0" y="44" fill="var(--pillar-color, currentColor)">msg</text>
+          <text x="40" y="44" opacity="0.7">: Message</text>
+        </g>
+        <text x="120" y="138" textAnchor="middle" fontSize="10" opacity="0.6">type-checker says: well typed</text>
+      </g>
+
+      <line x1="560" y1="30" x2="560" y2="200" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 4" opacity="0.35" />
+
+      <g transform="translate(580 30)">
+        <text x="110" y="0" textAnchor="middle" fontSize="13" fontWeight="600">Structure</text>
+        <text x="110" y="18" textAnchor="middle" fontSize="11" opacity="0.7">cross-file reference edge</text>
+        <g transform="translate(0 50)">
+          <rect x="0" y="0" width="90" height="40" rx="5" fill="var(--pillar-color, currentColor)" fillOpacity="0.12" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="1.6" />
+          <text x="45" y="18" textAnchor="middle" fontSize="11">call site</text>
+          <text x="45" y="32" textAnchor="middle" fontSize="10" opacity="0.7" fontFamily="ui-monospace, monospace">app.py:12</text>
+          <rect x="130" y="0" width="90" height="40" rx="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <text x="175" y="18" textAnchor="middle" fontSize="11">definition</text>
+          <text x="175" y="32" textAnchor="middle" fontSize="10" opacity="0.7" fontFamily="ui-monospace, monospace">mail.py:48</text>
+          <line x1="90" y1="20" x2="130" y2="20" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="2" markerEnd="url(#ch01ci-3v-arrow)" />
+          <text x="110" y="14" textAnchor="middle" fontSize="10" opacity="0.7">resolves to</text>
+        </g>
+        <text x="110" y="138" textAnchor="middle" fontSize="10" opacity="0.6">symbol table says: one declaration</text>
+      </g>
+    </g>
+
+    <defs>
+      <marker id="ch01ci-3v-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--pillar-color, var(--color-accent, currentColor))" />
+      </marker>
+    </defs>
+  </svg>
+  <figcaption>The same six tokens, three layers deep. Syntax tells you the line parses; semantics tells you what each name means in context; structure makes the cross-file fact — this call goes to that declaration — directly queryable. A rename refactor needs the third view; grep only has the first.</figcaption>
+</figure>
+
 ## What changes when you have structure
 
 A small comparison, with the same five tasks each tool is asked to do.
@@ -222,6 +293,62 @@ The pipeline is not abstract. You can name the projects that implement each stag
 **Static analyzers** sit on top of the AST and the symbol table and add their own analyses. Semgrep matches structural patterns against the AST. CodeQL treats the program as a database and lets you write queries in a Datalog-flavored language<sup className="fn-ref"><a href="#fn-3">[3]</a></sup>. SonarQube ships a large rulebook with dataflow taint tracking. `zuit` — the author's Rust-based multi-language analyzer — emits findings as SARIF 2.1.0<sup className="fn-ref"><a href="#fn-4">[4]</a></sup>, the OASIS-standardized JSON format that lets analyzer output flow into CI, IDE, and review tooling without bespoke glue.
 
 **AI assistants** are the newest entrants. Cursor, Copilot, and Continue increasingly mix retrieval-augmented generation with structural context — pulling the type of the symbol under the cursor, the call sites of the function being edited, the imports of the current file — because pure token windows over a million-line repository miss the things a junior engineer would notice on day two. The structural representations in this book are the ones those systems are quietly building underneath.
+
+<figure className="chapter-figure">
+  <svg id="ch01ci-tool-stack" viewBox="0 0 820 280" width="100%" role="img" aria-labelledby="ch01ci-stack-title ch01ci-stack-desc" style={{color: 'currentColor'}}>
+    <title id="ch01ci-stack-title">Shipped tools layered by which structural artifact they consume</title>
+    <desc id="ch01ci-stack-desc">Four horizontal tiers stacked vertically. The bottom tier holds incremental parsers (Tree-sitter, Roslyn). Above it, language servers (rust-analyzer, gopls, pyright, clangd). Above that, static analyzers (Semgrep, CodeQL, SonarQube, zuit). At the top, AI assistants (Copilot, Cursor, Continue). Arrows on the left show that each upper tier reads structures produced by the tier below.</desc>
+
+    <g fontSize="13" fill="currentColor">
+      <g transform="translate(140 30)">
+        <rect x="0" y="0" width="600" height="44" rx="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="20" y="20" fontWeight="600">AI assistants</text>
+        <text x="20" y="36" fontSize="11" opacity="0.75" fontFamily="ui-monospace, monospace">Copilot · Cursor · Continue · Cody</text>
+      </g>
+
+      <g transform="translate(140 92)">
+        <rect x="0" y="0" width="600" height="44" rx="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="20" y="20" fontWeight="600">Static analyzers</text>
+        <text x="20" y="36" fontSize="11" opacity="0.75" fontFamily="ui-monospace, monospace">Semgrep · CodeQL · SonarQube · zuit</text>
+      </g>
+
+      <g transform="translate(140 154)">
+        <rect x="0" y="0" width="600" height="44" rx="5" fill="var(--pillar-color, currentColor)" fillOpacity="0.12" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="2" />
+        <text x="20" y="20" fontWeight="600">Language servers</text>
+        <text x="20" y="36" fontSize="11" opacity="0.75" fontFamily="ui-monospace, monospace">rust-analyzer · gopls · pyright · clangd</text>
+      </g>
+
+      <g transform="translate(140 216)">
+        <rect x="0" y="0" width="600" height="44" rx="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="20" y="20" fontWeight="600">Incremental parsers</text>
+        <text x="20" y="36" fontSize="11" opacity="0.75" fontFamily="ui-monospace, monospace">Tree-sitter · Roslyn red-green · Rowan</text>
+      </g>
+    </g>
+
+    <g stroke="currentColor" strokeWidth="1.5" fill="none">
+      <line x1="100" y1="238" x2="100" y2="60" markerEnd="url(#ch01ci-up)" />
+    </g>
+    <g fontSize="11" fill="currentColor" opacity="0.75">
+      <text x="20" y="142" textAnchor="start">consumes</text>
+      <text x="20" y="158" textAnchor="start">artifacts</text>
+      <text x="20" y="174" textAnchor="start">from below</text>
+    </g>
+
+    <g fontSize="11" fill="currentColor" opacity="0.7" fontFamily="ui-monospace, monospace">
+      <text x="760" y="55" textAnchor="start">prompts</text>
+      <text x="760" y="117" textAnchor="start">findings</text>
+      <text x="760" y="179" textAnchor="start">symbols</text>
+      <text x="760" y="241" textAnchor="start">trees</text>
+    </g>
+
+    <defs>
+      <marker id="ch01ci-up" viewBox="0 0 10 10" refX="5" refY="2" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,10 L5,0 L10,10 z" fill="currentColor" />
+      </marker>
+    </defs>
+  </svg>
+  <figcaption>The same pipeline, read as a tool stack. Each tier consumes the structures produced by the one below — trees feed symbol tables, symbols feed analyzer rules, analyzer output and resolved context feed the prompt window. The language-server tier is the load-bearing middle; almost every productivity feature in a modern editor is built against its symbol table.</figcaption>
+</figure>
 
 ## Why this matters for the rest of the book
 

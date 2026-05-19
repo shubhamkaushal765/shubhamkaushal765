@@ -208,6 +208,70 @@ Fault tolerance in fusion-based architectures with current decoders demands sub-
 
 Erasure-aware decoders<sup className="fn-ref"><a href="#fn-4">[4]</a>,<a href="#fn-6">[6]</a></sup> exploit the fact that loss is a *located* error: a missing detector click flags exactly which qubit was lost, and the decoder can mark that site as an erasure rather than as an unknown Pauli error. The loss threshold for the surface code under pure erasure is approximately 50%, far higher than the ~1% threshold for unlocated depolarizing noise. Real photonic systems sit between these extremes and decoder design tracks the mixture explicitly.
 
+<figure className="chapter-figure">
+  <svg id="phot5-loss" viewBox="0 0 820 260" width="100%" role="img" aria-labelledby="phot5-l-title phot5-l-desc" style={{color: 'currentColor'}}>
+    <title id="phot5-l-title">End-to-end photon-survival budget across a single chip path</title>
+    <desc id="phot5-l-desc">A horizontal pipeline of five stages a photon traverses on a typical silicon photonic chip. Each stage is labelled with its typical per-component loss in decibels. From left to right: fiber-to-chip coupling at 0.5 to 1 dB per facet, on-chip waveguide propagation around 0.1 dB per centimetre, MZI components a few tenths of a dB each, chip-to-fiber output coupling, and detector efficiency around 95 percent. A running survival probability is annotated under the pipeline, ending near 20 to 50 percent. A dashed line marks the sub-1 percent loss budget required for fusion-based fault tolerance.</desc>
+
+    <g fontSize="11" fill="currentColor" textAnchor="middle">
+      <g transform="translate(20 60)">
+        <rect x="0" y="0" width="120" height="46" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="60" y="20" fontWeight="600">input coupler</text>
+        <text x="60" y="36" opacity="0.75">0.5–1 dB</text>
+      </g>
+      <g transform="translate(170 60)">
+        <rect x="0" y="0" width="120" height="46" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="60" y="20" fontWeight="600">waveguide</text>
+        <text x="60" y="36" opacity="0.75">~0.1 dB/cm</text>
+      </g>
+      <g transform="translate(320 60)">
+        <rect x="0" y="0" width="120" height="46" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="60" y="20" fontWeight="600">MZI mesh</text>
+        <text x="60" y="36" opacity="0.75">~0.2 dB each</text>
+      </g>
+      <g transform="translate(470 60)">
+        <rect x="0" y="0" width="120" height="46" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="60" y="20" fontWeight="600">output coupler</text>
+        <text x="60" y="36" opacity="0.75">0.5–1 dB</text>
+      </g>
+      <g transform="translate(620 60)">
+        <rect x="0" y="0" width="120" height="46" rx="6" fill="var(--pillar-color, currentColor)" fillOpacity="0.12" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="1.8" />
+        <text x="60" y="20" fontWeight="600">SNSPD</text>
+        <text x="60" y="36" opacity="0.75">η ≈ 95%</text>
+      </g>
+
+      <g stroke="currentColor" strokeWidth="1.4" fill="none">
+        <line x1="140" y1="83" x2="170" y2="83" markerEnd="url(#phot5-l-r)" />
+        <line x1="290" y1="83" x2="320" y2="83" markerEnd="url(#phot5-l-r)" />
+        <line x1="440" y1="83" x2="470" y2="83" markerEnd="url(#phot5-l-r)" />
+        <line x1="590" y1="83" x2="620" y2="83" markerEnd="url(#phot5-l-r)" />
+      </g>
+
+      <g fontSize="11" fill="currentColor" opacity="0.85" fontFamily="ui-monospace, monospace">
+        <text x="80" y="135">~85%</text>
+        <text x="230" y="135">~80%</text>
+        <text x="380" y="135">~60%</text>
+        <text x="530" y="135">~45%</text>
+        <text x="680" y="135" fill="var(--pillar-color, var(--color-accent, currentColor))" fontWeight="600">20–50%</text>
+        <text x="380" y="155" opacity="0.7">cumulative photon-survival probability</text>
+      </g>
+
+      <g transform="translate(20 190)">
+        <line x1="0" y1="0" x2="780" y2="0" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="1.6" strokeDasharray="6 4" />
+        <text x="0" y="-6" fontSize="11" fill="var(--pillar-color, var(--color-accent, currentColor))" textAnchor="start">fusion-FT target: sub-1% total loss</text>
+        <text x="780" y="20" textAnchor="end" fontSize="10" fill="currentColor" opacity="0.7">today's chips sit roughly 1.5 decades above this line</text>
+      </g>
+    </g>
+
+    <defs>
+      <marker id="phot5-l-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
+      </marker>
+    </defs>
+  </svg>
+  <figcaption>Photon survival is multiplicative. Five mundane stages — couple in, propagate, route through the mesh, couple out, detect — each take their tenths of a decibel, and the product is the per-photon survival probability the architecture has to design around. The dashed accent line is the fault-tolerance budget; the gap between it and where chips currently land is the central engineering problem of the field.</figcaption>
+</figure>
+
 ## Where photonic architecture diverges from gate-model superconducting qubits
 
 Resource generation is offline and embarrassingly parallel. Thousands of identical photon factories run side by side, each spitting out constant-sized entangled bricks, and the computation is the routing and measurement of those bricks. Your resource budget isn't coherence time — it's throughput.

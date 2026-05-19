@@ -221,6 +221,78 @@ Real systems handle this by being selective about what counts as a change. The f
 
 The third technique is, with some embarrassment, lying. If a node's content hash is unchanged, the system reports it as identical even if its source location moved, its formatting changed, or its file was rewritten in place. The downstream consumer never has to know.
 
+<figure className="chapter-figure">
+  <svg id="ch04ci-firewall" viewBox="0 0 820 300" width="100%" role="img" aria-labelledby="ch04ci-fw-title ch04ci-fw-desc" style={{color: 'currentColor'}}>
+    <title id="ch04ci-fw-title">Public-API firewall stops body-edits from invalidating consumers</title>
+    <desc id="ch04ci-fw-desc">A module box contains a public-signature section on top and a private-body section underneath, separated by a horizontal dashed firewall. Two downstream consumer modules depend on the public signatures only. An edit inside a function body is marked with an accent change indicator; arrows show the dirty mark stopping at the firewall and not propagating to consumers.</desc>
+
+    <g fontSize="12" fill="currentColor">
+      <g transform="translate(40 40)">
+        <rect x="0" y="0" width="280" height="220" rx="8" fill="none" stroke="currentColor" strokeWidth="1.6" />
+        <text x="140" y="22" textAnchor="middle" fontSize="13" fontWeight="600">module: mailer</text>
+
+        <g transform="translate(20 40)">
+          <rect x="0" y="0" width="240" height="60" rx="5" fill="var(--pillar-color, currentColor)" fillOpacity="0.10" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="1.6" />
+          <text x="120" y="20" textAnchor="middle" fontWeight="600">public signatures</text>
+          <text x="120" y="38" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace">fn send(&amp;self, m: Message) -&gt; Result</text>
+          <text x="120" y="54" textAnchor="middle" fontSize="10" opacity="0.65">fingerprint: 0x4a17…  (unchanged)</text>
+        </g>
+
+        <line x1="20" y1="118" x2="260" y2="118" stroke="currentColor" strokeWidth="1" strokeDasharray="5 4" opacity="0.55" />
+        <text x="140" y="134" textAnchor="middle" fontSize="10" opacity="0.65">firewall</text>
+
+        <g transform="translate(20 142)">
+          <rect x="0" y="0" width="240" height="60" rx="5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="5 4" />
+          <text x="120" y="20" textAnchor="middle" fontWeight="600">function body</text>
+          <text x="120" y="38" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace">let r = self.client.post(m)…</text>
+          <text x="120" y="54" textAnchor="middle" fontSize="10" fill="var(--pillar-color, var(--color-accent, currentColor))">edited — dirty</text>
+        </g>
+      </g>
+
+      <g stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="2" fill="none">
+        <line x1="180" y1="240" x2="180" y2="170" markerEnd="url(#ch04ci-up)" />
+      </g>
+      <text x="180" y="282" textAnchor="middle" fontSize="11" fill="var(--pillar-color, var(--color-accent, currentColor))">edit reaches firewall and stops</text>
+
+      <g transform="translate(420 40)">
+        <rect x="0" y="0" width="160" height="60" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="80" y="22" textAnchor="middle" fontWeight="600">consumer: app</text>
+        <text x="80" y="40" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace">mailer.send(m)</text>
+        <text x="80" y="54" textAnchor="middle" fontSize="10" opacity="0.6">cache: green</text>
+      </g>
+
+      <g transform="translate(420 130)">
+        <rect x="0" y="0" width="160" height="60" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="80" y="22" textAnchor="middle" fontWeight="600">consumer: jobs</text>
+        <text x="80" y="40" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace">mailer.send(reply)</text>
+        <text x="80" y="54" textAnchor="middle" fontSize="10" opacity="0.6">cache: green</text>
+      </g>
+
+      <g stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.65">
+        <line x1="320" y1="80" x2="420" y2="70" markerEnd="url(#ch04ci-r)" />
+        <line x1="320" y1="80" x2="420" y2="160" markerEnd="url(#ch04ci-r)" />
+      </g>
+      <text x="370" y="60" fontSize="10" fill="currentColor" opacity="0.65">depends on signature</text>
+
+      <g transform="translate(620 80)">
+        <text x="80" y="0" textAnchor="middle" fontSize="11" opacity="0.7">signature fingerprint</text>
+        <text x="80" y="16" textAnchor="middle" fontSize="11" opacity="0.7">unchanged → consumers</text>
+        <text x="80" y="32" textAnchor="middle" fontSize="11" opacity="0.7">stay cached</text>
+      </g>
+    </g>
+
+    <defs>
+      <marker id="ch04ci-up" viewBox="0 0 10 10" refX="5" refY="2" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,10 L5,0 L10,10 z" fill="var(--pillar-color, var(--color-accent, currentColor))" />
+      </marker>
+      <marker id="ch04ci-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
+      </marker>
+    </defs>
+  </svg>
+  <figcaption>The firewall is just an extra query whose only inputs are a module's public signatures and types. Body edits dirty the function-level query but not the signature fingerprint, so the consumer's "type of <code>mailer.send</code>" lookup short-circuits on value-equality and the downstream cache stays green.</figcaption>
+</figure>
+
 ## What shipped tooling actually uses
 
 The current production picture is concrete. rust-analyzer runs on salsa, in-process per workspace. The TypeScript language service uses a project-graph cache with per-file versioning and supports `--build` for incremental disk-cached output. Roslyn ships `Microsoft.CodeAnalysis` as the compiler-as-a-service used by Visual Studio, with immutable syntax and semantic models. pyright is a single-threaded TypeScript implementation with an in-memory typed AST cache that prioritises raw speed over persistence<sup className="fn-ref"><a href="#fn-6">[6]</a></sup>. gopls keeps a `go/packages`-derived build graph and re-imports affected packages on change.
