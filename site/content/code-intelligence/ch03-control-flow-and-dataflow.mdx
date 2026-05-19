@@ -207,6 +207,75 @@ Both are more precise. Both blow up exponentially in the worst case. A program w
 
 Production tools pick different points on this spectrum. CodeQL gives you a relational query language and lets you decide how much sensitivity to pay for. Infer is path-sensitive via separation logic but aggressively summarizes procedures so the cost stays sub-quadratic. Semgrep is largely pattern-based with only shallow dataflow, which is why it is fast enough to run in CI on every push. Every linter you have ever cursed is making an honest trade-off.
 
+<figure className="chapter-figure">
+  <svg id="ch03ci-taint" viewBox="0 0 820 320" width="100%" role="img" aria-labelledby="ch03ci-t-title ch03ci-t-desc" style={{color: 'currentColor'}}>
+    <title id="ch03ci-t-title">Taint flowing from a source to a sink along the CFG</title>
+    <desc id="ch03ci-t-desc">A small control-flow graph with five basic blocks. The entry block reads untrusted input from request.args and is labelled a source. A propagation block assigns the value into a string variable. A branch checks whether the value passed a sanitizer; the unsanitized branch flows into a subprocess.run call labelled a sink. The propagation path from source to sink is highlighted with a thick accent edge, with the taint label traveling along it.</desc>
+
+    <g fontSize="12" fill="currentColor" textAnchor="middle">
+      <g transform="translate(330 30)">
+        <rect x="0" y="0" width="160" height="46" rx="6" fill="var(--pillar-color, currentColor)" fillOpacity="0.12" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="2" />
+        <text x="80" y="20" fontWeight="600">source</text>
+        <text x="80" y="36" fontSize="11" fontFamily="ui-monospace, monospace">u = request.args["q"]</text>
+      </g>
+
+      <g transform="translate(330 100)">
+        <rect x="0" y="0" width="160" height="40" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="80" y="16" fontWeight="600">propagate</text>
+        <text x="80" y="32" fontSize="11" fontFamily="ui-monospace, monospace">cmd = "ls " + u</text>
+      </g>
+
+      <g transform="translate(330 168)">
+        <rect x="0" y="0" width="160" height="40" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="80" y="16" fontWeight="600">branch</text>
+        <text x="80" y="32" fontSize="11" fontFamily="ui-monospace, monospace">if sanitized(u):</text>
+      </g>
+
+      <g transform="translate(140 240)">
+        <rect x="0" y="0" width="160" height="40" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="80" y="16">sanitizer cleans</text>
+        <text x="80" y="32" fontSize="11" fontFamily="ui-monospace, monospace">u = shell_quote(u)</text>
+      </g>
+
+      <g transform="translate(520 240)">
+        <rect x="0" y="0" width="180" height="40" rx="6" fill="var(--pillar-color, currentColor)" fillOpacity="0.18" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="2" />
+        <text x="90" y="16" fontWeight="600">sink</text>
+        <text x="90" y="32" fontSize="11" fontFamily="ui-monospace, monospace">subprocess.run(cmd)</text>
+      </g>
+    </g>
+
+    <g stroke="currentColor" strokeWidth="1.4" fill="none">
+      <line x1="410" y1="76" x2="410" y2="98" markerEnd="url(#ch03ci-arrow)" />
+      <line x1="410" y1="140" x2="410" y2="166" markerEnd="url(#ch03ci-arrow)" />
+      <line x1="370" y1="208" x2="220" y2="238" markerEnd="url(#ch03ci-arrow)" />
+    </g>
+
+    <g stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="2.6" fill="none">
+      <line x1="450" y1="208" x2="600" y2="238" markerEnd="url(#ch03ci-arrow-acc)" />
+    </g>
+
+    <g fontSize="11" fontFamily="ui-monospace, monospace" fill="currentColor" opacity="0.85">
+      <text x="500" y="92" textAnchor="start">tainted = {`{u}`}</text>
+      <text x="500" y="138" textAnchor="start">tainted = {`{u, cmd}`}</text>
+      <text x="500" y="226" textAnchor="start" fill="var(--pillar-color, var(--color-accent, currentColor))">tainted reaches sink</text>
+    </g>
+
+    <g fontSize="11" fill="currentColor" opacity="0.7">
+      <text x="60" y="270" textAnchor="start">sanitized branch: tainted = ∅</text>
+    </g>
+
+    <defs>
+      <marker id="ch03ci-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
+      </marker>
+      <marker id="ch03ci-arrow-acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--pillar-color, var(--color-accent, currentColor))" />
+      </marker>
+    </defs>
+  </svg>
+  <figcaption>Taint as a forward may-analysis. The taint label is generated at the source, propagated by every assignment that reads a tainted value, and killed only by a sanitizer the rule recognises. The accent edge shows the surviving tainted path into <code>subprocess.run</code> — exactly the finding an injection rule reports.</figcaption>
+</figure>
+
 ## Soundness vs precision: the engineering choice
 
 Two words do most of the work here. An analyzer is **sound** for a property if it never misses a real instance — no false negatives. It is **complete** if it never reports a non-instance — no false positives. Rice's theorem guarantees that for any nontrivial semantic property on a Turing-complete language, you cannot have both.

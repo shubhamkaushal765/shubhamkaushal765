@@ -168,6 +168,69 @@ Heterodyne detection uses a local oscillator detuned from the signal and effecti
 
 Photon-number-resolving (PNR) detection projects onto Fock states |n⟩. Superconducting nanowire single-photon detectors (SNSPDs) at telecom wavelengths have reached system detection efficiencies near 95% in 2023–2025 demonstrations<sup className="fn-ref"><a href="#fn-4">[4]</a></sup>, with transition-edge sensors providing intrinsic number resolution at lower bandwidth. PNR detection is the standard route to herald non-Gaussian states from Gaussian resources, because subtracting or adding photons to a squeezed state is a known recipe for generating Wigner negativity.
 
+<figure className="chapter-figure">
+  <svg id="phot2-divide" viewBox="0 0 820 280" width="100%" role="img" aria-labelledby="phot2-d-title phot2-d-desc" style={{color: 'currentColor'}}>
+    <title id="phot2-d-title">Wigner-positivity divide between classically simulable and quantum-advantageous regimes</title>
+    <desc id="phot2-d-desc">A horizontal axis runs from left to right with a vertical divider in the middle. The left half is labelled classically simulable and contains icons for vacuum, coherent, squeezed, and thermal states, all marked W non-negative. The right half is labelled quantum-advantageous and contains icons for Fock, cat, and GKP states, all marked W can be negative. The divider is labelled Wigner negativity.</desc>
+
+    <g fontSize="12" fill="currentColor">
+      <line x1="410" y1="40" x2="410" y2="240" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="2.5" strokeDasharray="6 4" />
+      <text x="410" y="30" textAnchor="middle" fontSize="12" fontWeight="600" fill="var(--pillar-color, var(--color-accent, currentColor))">Wigner negativity threshold</text>
+
+      <text x="200" y="60" textAnchor="middle" fontSize="13" fontWeight="600">W(x, p) ≥ 0 everywhere</text>
+      <text x="200" y="76" textAnchor="middle" fontSize="11" opacity="0.7">classically simulable</text>
+
+      <text x="620" y="60" textAnchor="middle" fontSize="13" fontWeight="600">W(x, p) &lt; 0 somewhere</text>
+      <text x="620" y="76" textAnchor="middle" fontSize="11" opacity="0.7">quantum-advantageous resource</text>
+
+      <g transform="translate(60 110)">
+        <circle cx="0" cy="0" r="14" fill="var(--pillar-color, currentColor)" fillOpacity="0.35" />
+        <text x="0" y="36" textAnchor="middle" fontSize="11">vacuum</text>
+      </g>
+      <g transform="translate(140 110)">
+        <circle cx="6" cy="-4" r="14" fill="var(--pillar-color, currentColor)" fillOpacity="0.35" />
+        <text x="0" y="36" textAnchor="middle" fontSize="11">coherent</text>
+      </g>
+      <g transform="translate(230 110)">
+        <ellipse cx="0" cy="0" rx="6" ry="18" fill="var(--pillar-color, currentColor)" fillOpacity="0.35" />
+        <text x="0" y="36" textAnchor="middle" fontSize="11">squeezed</text>
+      </g>
+      <g transform="translate(320 110)">
+        <circle cx="0" cy="0" r="18" fill="var(--pillar-color, currentColor)" fillOpacity="0.2" />
+        <text x="0" y="36" textAnchor="middle" fontSize="11">thermal</text>
+      </g>
+
+      <g transform="translate(500 110)">
+        <circle cx="0" cy="0" r="18" fill="none" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="1.8" />
+        <circle cx="0" cy="0" r="5" fill="currentColor" fillOpacity="0.55" />
+        <text x="0" y="40" textAnchor="middle" fontSize="11">Fock |1⟩</text>
+      </g>
+      <g transform="translate(610 110)">
+        <circle cx="-9" cy="0" r="10" fill="var(--pillar-color, currentColor)" fillOpacity="0.35" />
+        <circle cx="9" cy="0" r="10" fill="var(--pillar-color, currentColor)" fillOpacity="0.35" />
+        <line x1="-3" y1="-6" x2="3" y2="-6" stroke="currentColor" strokeWidth="1.2" opacity="0.6" />
+        <line x1="-3" y1="0" x2="3" y2="0" stroke="currentColor" strokeWidth="1.2" opacity="0.6" />
+        <line x1="-3" y1="6" x2="3" y2="6" stroke="currentColor" strokeWidth="1.2" opacity="0.6" />
+        <text x="0" y="40" textAnchor="middle" fontSize="11">cat</text>
+      </g>
+      <g transform="translate(720 110)" fill="var(--pillar-color, currentColor)" fillOpacity="0.55">
+        <circle cx="-12" cy="-12" r="3" /><circle cx="0" cy="-12" r="3" /><circle cx="12" cy="-12" r="3" />
+        <circle cx="-12" cy="0" r="3" /><circle cx="0" cy="0" r="4" /><circle cx="12" cy="0" r="3" />
+        <circle cx="-12" cy="12" r="3" /><circle cx="0" cy="12" r="3" /><circle cx="12" cy="12" r="3" />
+        <text x="0" y="40" textAnchor="middle" fontSize="11" fillOpacity="1" fill="currentColor">GKP</text>
+      </g>
+
+      <g fontSize="11" opacity="0.75">
+        <text x="200" y="200" textAnchor="middle">Gaussian only →</text>
+        <text x="200" y="216" textAnchor="middle">your laptop keeps up</text>
+        <text x="620" y="200" textAnchor="middle" fill="var(--pillar-color, var(--color-accent, currentColor))">non-Gaussian →</text>
+        <text x="620" y="216" textAnchor="middle">entry fee for advantage</text>
+      </g>
+    </g>
+  </svg>
+  <figcaption>The Wigner-positivity line is the operational boundary between the polite Gaussian club and the rest of CV photonics. Everything on the left can be sampled and tracked with covariance arithmetic; everything on the right requires a genuinely quantum resource — and somebody, somewhere in any speedup-claiming circuit, has to deliver one.</figcaption>
+</figure>
+
 ## Practical implications
 
 If your Wigner function is non-negative everywhere and your measurements are Gaussian, a classical computer can simulate the whole experiment in polynomial time. That's the punchline of Mari–Eisert and Veitch–Ferrie–Gross–Emerson, which formalize earlier observations going back to Bartlett, Sanders, Braunstein, and de Guise<sup className="fn-ref"><a href="#fn-5">[5]</a></sup>. Linear optics, squeezing, displacement, homodyne, heterodyne — applied to Gaussian inputs, all of it stays inside the "your laptop could have done that" club.

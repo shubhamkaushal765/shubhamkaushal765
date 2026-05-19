@@ -171,6 +171,64 @@ Heralded single photons from spontaneous parametric down-conversion and from sem
 
 PNR detection itself is a non-Gaussian measurement and a critical enabling component. Transition-edge sensors and superconducting-nanowire detectors deliver photon-number resolution with high efficiency at cryogenic temperatures, with detector efficiency, dark counts, and timing jitter setting the achievable fidelity of any heralded non-Gaussian state. Loss between source and detector is the dominant killer; every dB of loss between squeezer and PNR detector degrades the negativity of the heralded state.
 
+<figure className="chapter-figure">
+  <svg id="phot4-multiplex" viewBox="0 0 820 280" width="100%" role="img" aria-labelledby="phot4-m-title phot4-m-desc" style={{color: 'currentColor'}}>
+    <title id="phot4-m-title">Multiplexing turns probabilistic heralding into near-deterministic supply</title>
+    <desc id="phot4-m-desc">Eight parallel heralded sources fire into a switching network. Each source has an independent probability p of producing a clean non-Gaussian state on a given clock cycle. The switching network routes whichever channels heralded successfully to the downstream circuit, so the overall delivery rate per clock cycle is 1 minus the probability that all sources fail simultaneously.</desc>
+
+    <g fontSize="12" fill="currentColor">
+      <g transform="translate(20 30)">
+        <text x="0" y="0" fontSize="13" fontWeight="600">M parallel heralded sources</text>
+      </g>
+
+      <g transform="translate(20 60)" fontSize="11" textAnchor="middle">
+        <g transform="translate(0 0)"><rect x="0" y="0" width="80" height="22" rx="4" fill="none" stroke="currentColor" strokeWidth="1.4" /><text x="40" y="15">source · click</text></g>
+        <g transform="translate(0 28)"><rect x="0" y="0" width="80" height="22" rx="4" fill="var(--pillar-color, currentColor)" fillOpacity="0.15" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="1.6" /><text x="40" y="15" fontWeight="600">source · click</text></g>
+        <g transform="translate(0 56)" opacity="0.5"><rect x="0" y="0" width="80" height="22" rx="4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeDasharray="3 3" /><text x="40" y="15">source · ∅</text></g>
+        <g transform="translate(0 84)" opacity="0.5"><rect x="0" y="0" width="80" height="22" rx="4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeDasharray="3 3" /><text x="40" y="15">source · ∅</text></g>
+        <g transform="translate(0 112)"><rect x="0" y="0" width="80" height="22" rx="4" fill="var(--pillar-color, currentColor)" fillOpacity="0.15" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="1.6" /><text x="40" y="15" fontWeight="600">source · click</text></g>
+        <g transform="translate(0 140)" opacity="0.5"><rect x="0" y="0" width="80" height="22" rx="4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeDasharray="3 3" /><text x="40" y="15">source · ∅</text></g>
+        <g transform="translate(0 168)"><rect x="0" y="0" width="80" height="22" rx="4" fill="none" stroke="currentColor" strokeWidth="1.4" /><text x="40" y="15">source · click</text></g>
+        <g transform="translate(0 196)" opacity="0.5"><rect x="0" y="0" width="80" height="22" rx="4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeDasharray="3 3" /><text x="40" y="15">source · ∅</text></g>
+      </g>
+
+      <g stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.65">
+        <line x1="100" y1="71" x2="320" y2="140" />
+        <line x1="100" y1="99" x2="320" y2="140" />
+        <line x1="100" y1="127" x2="320" y2="140" />
+        <line x1="100" y1="155" x2="320" y2="140" />
+        <line x1="100" y1="183" x2="320" y2="140" />
+        <line x1="100" y1="211" x2="320" y2="140" />
+        <line x1="100" y1="239" x2="320" y2="140" />
+        <line x1="100" y1="267" x2="320" y2="140" />
+      </g>
+
+      <g transform="translate(320 100)">
+        <rect x="0" y="0" width="180" height="80" rx="8" fill="var(--pillar-color, currentColor)" fillOpacity="0.12" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="2" />
+        <text x="90" y="28" textAnchor="middle" fontWeight="600">switching network</text>
+        <text x="90" y="48" textAnchor="middle" fontSize="11" opacity="0.75">picks any successful</text>
+        <text x="90" y="62" textAnchor="middle" fontSize="11" opacity="0.75">channel this clock</text>
+      </g>
+
+      <line x1="500" y1="140" x2="600" y2="140" stroke="var(--pillar-color, var(--color-accent, currentColor))" strokeWidth="2.5" markerEnd="url(#phot4-m-r)" />
+
+      <g transform="translate(600 110)">
+        <rect x="0" y="0" width="200" height="60" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <text x="100" y="22" textAnchor="middle" fontWeight="600">downstream circuit</text>
+        <text x="100" y="40" textAnchor="middle" fontSize="11" opacity="0.75">rate = 1 − (1 − p)<tspan dy="-3" fontSize="9">M</tspan></text>
+        <text x="100" y="54" textAnchor="middle" fontSize="10" opacity="0.6">near-deterministic for M large</text>
+      </g>
+    </g>
+
+    <defs>
+      <marker id="phot4-m-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--pillar-color, var(--color-accent, currentColor))" />
+      </marker>
+    </defs>
+  </svg>
+  <figcaption>Probabilistic heralding becomes effectively deterministic by running many sources in parallel and routing whichever channels happened to fire. With per-source success probability p, the chance of getting at least one usable state per clock cycle approaches 1 exponentially in the number of sources M — the tax paid in chip area for what hardware refuses to deliver in physics.</figcaption>
+</figure>
+
 ## Practical implications for fault tolerance
 
 Three engineering questions follow directly. First, can a useful non-Gaussian resource — most plausibly GKP, given its built-in error-correcting structure — be generated deterministically, or at least with success probability close enough to unity to be practical? Second, if generation remains probabilistic, how many parallel heralded sources, multiplexed in space or time, are needed to approximate determinism at a given clock rate? Third, given a stream of non-Gaussian resource states, what Gaussian circuit and measurement schedule consumes them to execute a fault-tolerant computation with tolerable overhead?
