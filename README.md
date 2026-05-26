@@ -13,19 +13,19 @@
 +----------------------------------------------------------+
 ```
 
-Independent engineer. Code intelligence, machine learning, quantum computing.
+Independent engineer who genuinely loves this work — code intelligence, machine learning, quantum computing. I build tools I'd stake my own name on, and ship them so they hold up when someone else runs them.
 
 ---
 
 ## `[ 01 ]`  Three pillars
 
-Three pillars, one operator. Structure-aware tooling — ASTs, syndrome graphs, embeddings — not the surface form.
+Three pillars, one operator — and one conviction tying them together: work the structure, not the surface. ASTs, syndrome graphs, embeddings. That's where the signal lives, and it's the part I'm most excited to dig into.
 
-**Code intelligence** — [`zuit`](https://github.com/shubhamkaushal765/zuit). Multi-language static analysis in Rust. SARIF 2.1.0 with CWE and OWASP anchors. Correctness pinned by a vulnerable-vs-safe fixture corpus.
+**Code intelligence** — [`zuit`](https://github.com/shubhamkaushal765/zuit). Multi-language static analysis in Rust, fast and honest. SARIF 2.1.0 with CWE and OWASP anchors, so the findings drop straight into tooling you already trust. Correctness is pinned by a vulnerable-vs-safe fixture corpus — every claim it makes, it can prove.
 
-**Machine learning** — [`tell-me-why`](https://github.com/shubhamkaushal765/tell-me-why). Local-first RAG over source code. Six language parsers, Ollama for inference, Chroma for the vector store, sentence-transformers for encoding. Nothing leaves the machine.
+**Machine learning** — [`tell-me-why`](https://github.com/shubhamkaushal765/tell-me-why). Local-first RAG over source code, built for people who care where their code goes. Six language parsers, Ollama for inference, Chroma for the vector store, sentence-transformers for encoding. Nothing leaves the machine — that's a promise, not a default.
 
-**Quantum computing** — [`TransformerQEC`](https://github.com/shubhamkaushal765/TransformerQEC). Transformer-based decoder for surface-code QEC. Syndrome graphs as sequences, Stim-simulated circuits, PyTorch Lightning training, custom encoder.
+**Quantum computing** — [`TransformerQEC`](https://github.com/shubhamkaushal765/TransformerQEC). Transformer-based decoder for surface-code QEC, and easily the project I'll talk your ear off about. Syndrome graphs as sequences, Stim-simulated circuits, PyTorch Lightning training, a custom encoder built for the job.
 
 ---
 
@@ -41,17 +41,17 @@ Three pillars, one operator. Structure-aware tooling — ASTs, syndrome graphs, 
 
 ## `[ 03 ]`  Bridge artifacts
 
-**`TransformerQEC`** bridges ML and Quantum. The transformer architecture that underlies code embeddings turns out to be the right structural prior for syndrome graphs — both are sparse, both have local correlations, both reward learning a low-dimensional structural representation over a surface-form one.
+**`TransformerQEC`** bridges ML and Quantum — and this is the connection I find genuinely thrilling. The transformer architecture that underlies code embeddings turns out to be exactly the right structural prior for syndrome graphs: both are sparse, both have local correlations, both reward learning a low-dimensional structural representation over a surface-form one. Same idea, two worlds.
 
-**`tell-me-why`** bridges Code and ML. Source code is the structured corpus; multi-language parsing is the structure-extraction step; local embedding and retrieval is the model layer. The pipeline does not flatten a function into a string of tokens before embedding.
+**`tell-me-why`** bridges Code and ML, and the design choice is deliberate every step of the way. Source code is the structured corpus; multi-language parsing is the structure-extraction step; local embedding and retrieval is the model layer. The pipeline never flattens a function into a string of tokens before embedding — the structure is the whole point, so it stays.
 
 ---
 
 ## `[ 04 ]`  Engineering philosophy
 
-- **Structure first, syntax second** — work on the AST, the syndrome graph, the embedding, not the surface form.
-- **Run local until proven otherwise** — code, models, and quantum simulators belong on the operator's machine.
-- **Reproducibility is the deliverable** — fixtures, seeds, SARIF, `expected.json` — the artifact is the contract.
+- **Structure first, syntax second** — work on the AST, the syndrome graph, the embedding, never the surface form. It's harder up front and it pays off every time.
+- **Run local until proven otherwise** — code, models, and quantum simulators belong on the operator's machine. Your data is yours.
+- **Reproducibility is the deliverable** — fixtures, seeds, SARIF, `expected.json`. If you can't re-run it and get my result, I haven't finished the job. The artifact is the contract, and I keep it.
 
 ---
 
