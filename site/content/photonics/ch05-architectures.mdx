@@ -8,30 +8,30 @@ export const meta = {
 
 # Architectures: MBQC, fusion-based, and the loss problem.
 
-<p className="chapter-lede">Photonic quantum computers don't look like miniature versions of superconducting or trapped-ion processors. There's no native deterministic two-photon gate, photons refuse to sit still in a register, and the dominant error is loss — an erasure whose street address you happen to know. The architectures that actually work around these constraints take a wildly different approach: build entanglement in advance and then eat it for breakfast.</p>
+<p className="chapter-lede">Photonic quantum computers don't look like miniature versions of superconducting or trapped-ion processors. There's no native deterministic two-photon gate, photons refuse to sit still in a register, and the dominant error is loss: an erasure whose street address you happen to know. The architectures that actually work around these constraints take a wildly different approach: build entanglement in advance and then eat it for breakfast.</p>
 
 ## Physical intuition: why photonic architectures look different
 
-A superconducting qubit politely waits in place while you apply gates to it. A photon does no such thing — it screams through the circuit at roughly c/n and dies the moment a detector looks at it. Any architecture built around a long-lived, addressable register is the wrong shape for photons. Trying to bend photons into that mold is like asking a paper airplane to sit still.
+A superconducting qubit politely waits in place while you apply gates to it. A photon does no such thing: it screams through the circuit at roughly c/n and dies the moment a detector looks at it. Any architecture built around a long-lived, addressable register is the wrong shape for photons. Trying to bend photons into that mold is like asking a paper airplane to sit still.
 
-Two-photon interactions through optical nonlinearities are pathetically weak at the single-photon level, so deterministic CZ gates between flying photons aren't on the menu at any current platform. The KLM construction<sup className="fn-ref"><a href="#fn-1">[1]</a></sup> showed that linear optics plus helper photons plus measurement plus feed-forward is, in principle, universal — at a resource cost that, applied naively, is roughly "all the world's photons."
+Two-photon interactions through optical nonlinearities are pathetically weak at the single-photon level, so deterministic CZ gates between flying photons aren't on the menu at any current platform. The KLM construction<sup className="fn-ref"><a href="#fn-1">[1]</a></sup> showed that linear optics plus helper photons plus measurement plus feed-forward is, in principle, universal, at a resource cost that, applied naively, is roughly "all the world's photons."
 
-Loss is the dominant error, and loss is not a generic depolarizing channel — it's an *erasure* whose location announces itself. A missing click at a known mode and time-bin is a polite "I was supposed to be here, I'm not." Architectures that take advantage of this located structure pay a fraction of the error-correction overhead that ones treating loss as opaque Pauli noise have to.
+Loss is the dominant error, and loss is not a generic depolarizing channel. It's an *erasure* whose location announces itself. A missing click at a known mode and time-bin is a polite "I was supposed to be here, I'm not." Architectures that take advantage of this located structure pay a fraction of the error-correction overhead that ones treating loss as opaque Pauli noise have to.
 
 The whole field has converged on roughly the same answer: prepare large entangled resource states in parallel, then consume them with single-qubit measurements. The "program" is the schedule of measurement bases; the entanglement was precompiled at the factory.
 
 ## Analogy: looms and Lego assembly lines
 
-Measurement-based quantum computation (MBQC) is best pictured as a weaving loom. A 2D fabric of entangled qubits — a cluster state — gets laid out in advance, and computation proceeds by measuring qubits row by row, with each measurement basis chosen based on earlier outcomes. The pattern of measurements is the program; the fabric is the substrate. The program is, very literally, an embroidery instruction.
+Measurement-based quantum computation (MBQC) is best pictured as a weaving loom. A 2D fabric of entangled qubits (a cluster state) gets laid out in advance, and computation proceeds by measuring qubits row by row, with each measurement basis chosen based on earlier outcomes. The pattern of measurements is the program; the fabric is the substrate. The program is, very literally, an embroidery instruction.
 
-Fusion-based quantum computation (FBQC) is a Lego assembly line. Tiny certified bricks — typically 3- or 4-photon GHZ states — come off many identical micro-factories in parallel. A second layer of linear-optical "fusion" gates probabilistically welds neighboring bricks together into a much larger cluster. Some welds fail and leave gaps; the architecture is designed so that enough welds succeed for a connected logical structure to percolate through the wreckage. It's a quantum computer built the way ants build colonies: lots of small redundant attempts, only some of them work, the whole thing still gets done.
+Fusion-based quantum computation (FBQC) is a Lego assembly line. Tiny certified bricks (typically 3- or 4-photon GHZ states) come off many identical micro-factories in parallel. A second layer of linear-optical "fusion" gates probabilistically welds neighboring bricks together into a much larger cluster. Some welds fail and leave gaps; the architecture is designed so that enough welds succeed for a connected logical structure to percolate through the wreckage. It's a quantum computer built the way ants build colonies: lots of small redundant attempts, only some of them work, the whole thing still gets done.
 
 **Where the analogy breaks:**
 
 <ul>
   <li>A loom has deterministic stitches; photonic cluster generation has probabilistic ones, and the protocol must tolerate random failures.</li>
   <li>Lego bricks do not exist in superposition, and snapping two together does not project a joint Bell-basis outcome that must be tracked as a Pauli byproduct.</li>
-  <li>Both analogies suggest a static finished object, but the photonic cluster is generated and consumed in a continuous flow — qubits are created, fused, and measured within nanoseconds of each other.</li>
+  <li>Both analogies suggest a static finished object, but the photonic cluster is generated and consumed in a continuous flow: qubits are created, fused, and measured within nanoseconds of each other.</li>
   <li>Neither captures the role of the heralded ancillae and feed-forward that make the whole pipeline run.</li>
 </ul>
 
@@ -43,13 +43,13 @@ The Raussendorf–Briegel construction<sup className="fn-ref"><a href="#fn-2">[2
 
 where |+⟩ = (|0⟩ + |1⟩)/√2 and CZ<sub>ij</sub> is the controlled-Z between qubits i and j. On a sufficiently large 2D lattice, this state plus adaptive single-qubit measurements in bases of the form M(θ) = cos θ X + sin θ Y is universal for quantum computation. Logical gates are encoded into measurement angles; Clifford byproducts are tracked classically and absorbed into later measurement bases.
 
-For photonics, two discrete-variable encodings dominate: dual-rail (a single photon in one of two modes encodes |0⟩ or |1⟩) and polarization. CZ between two dual-rail qubits via linear optics succeeds probabilistically (1/9 in the simplest KLM construction), which is why MBQC is attractive — the probabilistic gates are pushed into offline resource-state generation rather than into the runtime gate sequence.
+For photonics, two discrete-variable encodings dominate: dual-rail (a single photon in one of two modes encodes |0⟩ or |1⟩) and polarization. CZ between two dual-rail qubits via linear optics succeeds probabilistically (1/9 in the simplest KLM construction), which is why MBQC is attractive: the probabilistic gates are pushed into offline resource-state generation rather than into the runtime gate sequence.
 
 Continuous-variable MBQC<sup className="fn-ref"><a href="#fn-3">[3]</a></sup> replaces qubits with optical modes carrying squeezed vacuum states. A CV cluster state is built by sending squeezed modes through a beam-splitter network whose unitary matrix implements the graph's adjacency structure; measurements are homodyne. CV-MBQC is universal only when supplemented with a non-Gaussian resource, typically GKP-encoded states, which is where the experimental cost sits.
 
 ## Fusion-based quantum computation
 
-FBQC<sup className="fn-ref"><a href="#fn-4">[4]</a></sup> takes a different decomposition. Instead of preparing one giant cluster, it prepares many tiny constant-sized resource states — say 3-photon GHZ states |GHZ<sub>3</sub>⟩ = (|000⟩ + |111⟩)/√2 — and entangles them by Type-II fusion measurements. A Type-II fusion gate is a polarizing beam splitter followed by detection on both output modes; on success it projects two input photons onto a Bell pair (consuming both photons) and grafts their neighbours into a single cluster.
+FBQC<sup className="fn-ref"><a href="#fn-4">[4]</a></sup> takes a different decomposition. Instead of preparing one giant cluster, it prepares many tiny constant-sized resource states (say 3-photon GHZ states |GHZ<sub>3</sub>⟩ = (|000⟩ + |111⟩)/√2) and entangles them by Type-II fusion measurements. A Type-II fusion gate is a polarizing beam splitter followed by detection on both output modes; on success it projects two input photons onto a Bell pair (consuming both photons) and grafts their neighbours into a single cluster.
 
 The fusion gate succeeds with probability 1/2 in the simplest linear-optical implementation, and on failure it removes the two photons from the cluster, leaving a gap. The architecture wins by redundancy and percolation: the resource-state graph is chosen so that the random graph remaining after each fusion attempt either succeeds or fails still contains a connected, fault-tolerant logical structure with high probability.
 
@@ -134,7 +134,7 @@ The fusion gate succeeds with probability 1/2 in the simplest linear-optical imp
   <figcaption>Probabilistic Type-II fusion of small GHZ resource states into a connected logical cluster.</figcaption>
 </figure>
 
-A useful mental model: each fusion attempt is a bond on the resource-state graph that is open with probability p<sub>fuse</sub>. Above the bond-percolation threshold of that graph, a connected component spans the lattice with high probability. Bartolucci et al. show concrete resource-state geometries — six-ring and similar — for which the fusion network supports a topologically protected logical qubit even with realistic p<sub>fuse</sub> well below 1.
+A useful mental model: each fusion attempt is a bond on the resource-state graph that is open with probability p<sub>fuse</sub>. Above the bond-percolation threshold of that graph, a connected component spans the lattice with high probability. Bartolucci et al. show concrete resource-state geometries (six-ring and similar) for which the fusion network supports a topologically protected logical qubit even with realistic p<sub>fuse</sub> well below 1.
 
 ## Three blueprints
 
@@ -150,7 +150,7 @@ A useful mental model: each fusion attempt is a bond on the resource-state graph
     <desc id="cluster-desc">A 6 by 4 lattice of circles connected by horizontal and vertical edges, representing entangled qubits. Time arrows from left to right show successive columns being measured, with measurement results feeding adaptively into the basis chosen for the next column.</desc>
 
     <g transform="translate(40 50)">
-      <text x="360" y="-20" textAnchor="middle" fontSize="14" fontWeight="600" fill="currentColor">2D cluster state — entangle once, measure column by column</text>
+      <text x="360" y="-20" textAnchor="middle" fontSize="14" fontWeight="600" fill="currentColor">2D cluster state: entangle once, measure column by column</text>
 
       <g stroke="currentColor" strokeWidth="1.2" opacity="0.55">
         <line x1="40" y1="20" x2="680" y2="20" />
@@ -204,7 +204,7 @@ A useful mental model: each fusion attempt is a bond on the resource-state graph
 
 Per-component loss budgets dominate every scaling estimate. Representative numbers for current silicon photonic platforms at telecom wavelengths: chip-to-fiber coupling 0.5–1 dB per facet, on-chip waveguide propagation around 0.1 dB/cm, on-chip components (MZIs, filters) a few tenths of a dB each, and superconducting nanowire single-photon detector efficiency around 95%. End-to-end loss of 1–3 dB per photon is typical for current integrated chips, corresponding to 20–50% per-photon survival probabilities.
 
-Fault tolerance in fusion-based architectures with current decoders demands sub-1% per-photon loss budgets — well below what today's hardware delivers. Closing that gap is the central engineering problem in the field. The available levers are: better couplers, lower-loss waveguide materials, shorter path lengths, and detector-efficiency improvements that are already brushing up against physical ceilings. None of these is glamorous; all of them matter.
+Fault tolerance in fusion-based architectures with current decoders demands sub-1% per-photon loss budgets, well below what today's hardware delivers. Closing that gap is the central engineering problem in the field. The available levers are: better couplers, lower-loss waveguide materials, shorter path lengths, and detector-efficiency improvements that are already brushing up against physical ceilings. None of these is glamorous; all of them matter.
 
 Erasure-aware decoders<sup className="fn-ref"><a href="#fn-4">[4]</a>,<a href="#fn-6">[6]</a></sup> exploit the fact that loss is a *located* error: a missing detector click flags exactly which qubit was lost, and the decoder can mark that site as an erasure rather than as an unknown Pauli error. The loss threshold for the surface code under pure erasure is approximately 50%, far higher than the ~1% threshold for unlocated depolarizing noise. Real photonic systems sit between these extremes and decoder design tracks the mixture explicitly.
 
@@ -269,14 +269,14 @@ Erasure-aware decoders<sup className="fn-ref"><a href="#fn-4">[4]</a>,<a href="#
       </marker>
     </defs>
   </svg>
-  <figcaption>Photon survival is multiplicative. Five mundane stages — couple in, propagate, route through the mesh, couple out, detect — each take their tenths of a decibel, and the product is the per-photon survival probability the architecture has to design around. The dashed accent line is the fault-tolerance budget; the gap between it and where chips currently land is the central engineering problem of the field.</figcaption>
+  <figcaption>Photon survival is multiplicative. Five mundane stages (couple in, propagate, route through the mesh, couple out, detect) each take their tenths of a decibel, and the product is the per-photon survival probability the architecture has to design around. The dashed accent line is the fault-tolerance budget; the gap between it and where chips currently land is the central engineering problem of the field.</figcaption>
 </figure>
 
 ## Where photonic architecture diverges from gate-model superconducting qubits
 
-Resource generation is offline and embarrassingly parallel. Thousands of identical photon factories run side by side, each spitting out constant-sized entangled bricks, and the computation is the routing and measurement of those bricks. Your resource budget isn't coherence time — it's throughput.
+Resource generation is offline and embarrassingly parallel. Thousands of identical photon factories run side by side, each spitting out constant-sized entangled bricks, and the computation is the routing and measurement of those bricks. Your resource budget isn't coherence time: it's throughput.
 
-Evolution is measurement-driven. There's no equivalent of a long sequence of unitary gates whirring away on a stationary register; instead, measurement outcomes adaptively steer the next round of measurements, with classical feed-forward stitching the logical computation together in real time. Networking is native — photons are exactly the medium you'd choose to ferry quantum information between chips and modules anyway — so distributed and modular architectures aren't an afterthought, they're the first thought.
+Evolution is measurement-driven. There's no equivalent of a long sequence of unitary gates whirring away on a stationary register; instead, measurement outcomes adaptively steer the next round of measurements, with classical feed-forward stitching the logical computation together in real time. Networking is native: photons are exactly the medium you'd choose to ferry quantum information between chips and modules anyway, so distributed and modular architectures aren't an afterthought, they're the first thought.
 
 And the dominant error is loss, not decoherence. The architectural question stops being "how long can my qubit survive" and becomes "how much of my resource state actually arrives, and does what arrives form a connected enough mess to compute on." Trading coherence-time engineering for loss-budget-and-percolation engineering is the single clearest difference between photonic quantum computing and the matter-qubit kind.
 

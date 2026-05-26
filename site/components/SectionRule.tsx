@@ -7,7 +7,7 @@ interface SectionRuleProps {
   number?: string;
   /**
    * Typographic ornament that sits on the dividing rule. Each section can pick
-   * a different glyph for visual rhythm — a printed-book gesture. Defaults
+   * a different glyph for visual rhythm (a printed-book gesture). Defaults
    * cycle so consecutive rules don't repeat the same mark.
    */
   glyph?: Glyph;

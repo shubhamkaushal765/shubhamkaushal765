@@ -10,7 +10,7 @@ const sans = Inter({
   display: 'swap',
 });
 
-// Fraunces — variable serif with opsz / SOFT / WONK axes.
+// Fraunces: variable serif with opsz / SOFT / WONK axes.
 // Optical sizing sharpens at display sizes; the soft and wonky axes give
 // headings a hand-cut, editorial flavour rather than a SaaS-template feel.
 const display = Fraunces({

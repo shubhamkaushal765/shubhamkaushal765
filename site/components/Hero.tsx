@@ -29,11 +29,11 @@ export default function Hero({ variant = 'full' }: { variant?: Variant }) {
           <p className="hero__lede drop-cap">
             Independent engineer and researcher across code intelligence,
             machine learning / computer vision, quantum computing, and
-            photonics — building structure-aware tooling that respects what
+            photonics. I build structure-aware tooling that respects what
             the data actually is. The connecting thread is operating on
-            <em> symbolic structure</em> — ASTs, code embeddings, syndrome
-            graphs, qumodes — and tooling that respects it. Rust at the
-            bottom for compiler-grade tooling; Python at the top for research.
+            <em> symbolic structure</em>: ASTs, code embeddings, syndrome
+            graphs, qumodes. Rust at the bottom for compiler-grade tooling;
+            Python at the top for research.
             <span className="aside">
               Yes, it&apos;s a strange shelf of interests. Each one taught me a
               different lesson about respecting structure; they get along better

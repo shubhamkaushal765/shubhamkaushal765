@@ -33,9 +33,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const chapter = CHAPTERS.find((c) => c.slug === slug);
-  if (chapter === undefined) return { title: 'Code intelligence — Shubham Kaushal' };
+  if (chapter === undefined) return { title: 'Code intelligence | Shubham Kaushal' };
   return {
-    title: `${chapter.title} — Code intelligence — Shubham Kaushal`,
+    title: `${chapter.title} | Code intelligence | Shubham Kaushal`,
     description: chapter.summary,
   };
 }

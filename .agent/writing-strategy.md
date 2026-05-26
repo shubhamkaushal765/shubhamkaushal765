@@ -47,27 +47,27 @@ one of these themes should not be published under this profile.
 Posts are published in this order. Earlier posts establish the authority
 baseline; later posts build on it.
 
-1. **"Why your static analyzer should emit SARIF — and what most authors get
-   wrong about it"** — Anchored in `zuit`. Establishes authority in the code
+1. **"Why your static analyzer should emit SARIF: what most authors get
+   wrong about it"** Anchored in `zuit`. Establishes authority in the code
    intelligence pillar immediately. Explains SARIF 2.1.0 schema, CWE/OWASP
    anchoring, and common implementation mistakes. Target: OSS maintainers and
    security tooling authors.
 
 2. **"Local-first RAG over code: the embedding choice matters more than the
-   LLM"** — Anchored in `tell-me-why`. Documents the benchmark methodology
+   LLM"** Anchored in `tell-me-why`. Documents the benchmark methodology
    and results comparing embedding models at fixed memory budget. High viral
    potential in the ML infrastructure community.
 
-3. **"Transformers as quantum decoders: a Stim + Lightning walkthrough"** —
+3. **"Transformers as quantum decoders: a Stim + Lightning walkthrough"**
    Anchored in `TransformerQEC`. Walks through the syndrome graph encoding,
    the transformer architecture, and the training setup. Citation potential
    from the QEC research community.
 
-4. **"Five quality dimensions: a taxonomy for code-health analyzers"** —
+4. **"Five quality dimensions: a taxonomy for code-health analyzers"**
    Anchored in `zuit`'s dimension model. Foundational RFC-style post. Intended
    as a reference that other posts link back to.
 
-5. **"Qubit calibration as an orchestration problem"** — Content-first post;
+5. **"Qubit calibration as an orchestration problem"** Content-first post;
    no public repo required at time of writing. Frames calibration scheduling
    (RB / T1 / T2 / single-qubit gate tomography) as a resource-allocation and
    dependency-ordering problem. Demonstrates depth in the quantum pillar beyond
@@ -80,18 +80,24 @@ baseline; later posts build on it.
 ### What the writing sounds like
 
 Short paragraphs. Declarative sentences. No rhetorical questions. The register
-is technical documentation with authorial perspective, not a blog. Think: a
-well-annotated research diary entry, not a Medium tutorial.
+is technical documentation with authorial perspective: a well-annotated research
+diary entry, not a Medium tutorial.
 
-Paragraphs are 2–4 sentences. Section prose does not exceed 6 sentences before
+Paragraphs are 2-4 sentences. Section prose does not exceed 6 sentences before
 a code block or a structural break. Transitions are explicit ("The second
 consequence is...") rather than connective ("Now, let's look at...").
+
+Tone: enthusiastic, knowledgeable, dependable, and human. Grounded first-person
+is allowed and encouraged when it comes from shipped work ("the part I found
+hardest to get right," "this is the tradeoff I kept running into"). What stays
+banned is empty enthusiasm and try-hard performance.
 
 ### What to avoid
 
 - Rhetorical questions as transitions ("But what does this mean for
   practitioners?")
-- First-person enthusiasm ("I was really excited to discover...")
+- Empty first-person enthusiasm that isn't grounded in a specific shipped
+  artifact or decision ("I was really excited to discover...")
 - Vague forward-looking claims ("In the future, this will change everything")
 - Sycophantic abstracts ("In this post, we will explore...")
 - Jargon used for signaling without definition
@@ -137,11 +143,11 @@ stable CLI interface.
 
 ### Conference targets
 
-- FOSDEM dev-tools room — "SARIF 2.1.0 and the missing dimension taxonomy"
+- FOSDEM dev-tools room: "SARIF 2.1.0 and the missing dimension taxonomy"
   (20-minute talk, anchored in `zuit`).
-- PyData or SciPy — "Transformers as quantum decoders: a reproducible
+- PyData or SciPy: "Transformers as quantum decoders: a reproducible
   walkthrough" (30-minute talk, anchored in `TransformerQEC`).
-- APS March Meeting or Q2B — "Transformer-based decoding for surface codes"
+- APS March Meeting or Q2B: "Transformer-based decoding for surface codes"
   (poster, anchored in `TransformerQEC`).
 
 ### Cross-link discipline

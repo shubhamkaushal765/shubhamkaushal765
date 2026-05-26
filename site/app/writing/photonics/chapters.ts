@@ -28,7 +28,7 @@ export const CHAPTERS: Chapter[] = [
     slug: 'gaussian-operations',
     title: 'Gaussian operations on a photonic chip.',
     summary:
-      'Phase shifters, beam splitters, and squeezers as the symplectic alphabet of CV photonic circuits — and why Gaussian-only chips are classically simulable.',
+      'Phase shifters, beam splitters, and squeezers as the symplectic alphabet of CV photonic circuits. Gaussian-only chips are classically simulable, and that is the key constraint the later chapters build on.',
     reading: '10 min',
   },
   {
@@ -36,7 +36,7 @@ export const CHAPTERS: Chapter[] = [
     slug: 'non-gaussian',
     title: 'Non-Gaussian resources: where the magic lives.',
     summary:
-      'How discrete non-Gaussian states — Fock, cat, cubic-phase, GKP — supply the computational resource that Gaussian-only photonics lacks.',
+      'How discrete non-Gaussian states (Fock, cat, cubic-phase, GKP) supply the computational resource that Gaussian-only photonics lacks.',
     reading: '11 min',
   },
   {

@@ -6,7 +6,7 @@ import { CHAPTERS as PHOTONICS_CHAPTERS } from './photonics/chapters';
 import { CHAPTERS as CODE_INTELLIGENCE_CHAPTERS } from './code-intelligence/chapters';
 
 export const metadata: Metadata = {
-  title: 'Blog — Shubham Kaushal',
+  title: 'Blog | Shubham Kaushal',
   description: 'Essays and working notebooks across code intelligence, machine learning, quantum computing, and photonics.',
 };
 
@@ -32,7 +32,7 @@ const POSTS: Post[] = [
   {
     title: 'Code intelligence',
     summary:
-      'A working notebook on tooling that operates on the tree, the graph, and the symbol table rather than on the source text — parsers, control- and data-flow analysis, language servers, and the hybrid symbolic-plus-neural systems that ship in modern developer tools.',
+      'A working notebook on tooling that operates on the tree, the graph, and the symbol table rather than on the source text: parsers, control- and data-flow analysis, language servers, and the hybrid symbolic-plus-neural systems that ship in modern developer tools.',
     pillar: 'code-int',
     pillarLabel: 'code intelligence',
     date: '2026-Q2',
@@ -45,7 +45,7 @@ const POSTS: Post[] = [
   },
   {
     title: 'Photonics',
-    summary: 'A working notebook on photonic quantum computing — continuous-variable encoding, Gaussian operations, measurement-induced nonlinearity, and where the architecture diverges from gate-model superconducting qubits.',
+    summary: 'A working notebook on photonic quantum computing: continuous-variable encoding, Gaussian operations, measurement-induced nonlinearity, and where the architecture diverges from gate-model superconducting qubits.',
     pillar: 'photonics',
     pillarLabel: 'photonics',
     date: '2026-Q2',
@@ -57,7 +57,7 @@ const POSTS: Post[] = [
     })),
   },
   {
-    title: 'Why your static analyzer should emit SARIF — and what most authors get wrong about it',
+    title: 'Why your static analyzer should emit SARIF: what most authors get wrong about it',
     summary: 'SARIF 2.1.0 schema, CWE/OWASP anchoring, and the implementation mistakes that make findings non-portable.',
     pillar: 'code-int',
     pillarLabel: 'code intelligence',

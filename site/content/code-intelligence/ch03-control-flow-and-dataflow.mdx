@@ -2,25 +2,25 @@ export const meta = {
   number: '03',
   slug: 'control-flow-and-dataflow',
   title: 'Control flow, dataflow, and what soundness costs.',
-  summary: 'The graph, the lattice, and the fixed point — how a static analyzer actually computes facts about your program, and why being right and being useful are in tension.',
+  summary: 'The graph, the lattice, and the fixed point: how a static analyzer actually computes facts about your program, and why being right and being useful are in tension.',
   reading: '12 min',
 };
 
 # Control flow, dataflow, and what soundness costs.
 
-<p className="chapter-lede">Every static analyzer you have ever used — the one that flags an unused variable, the one that warns about a possibly-null dereference, the one that screams about untrusted input flowing into a SQL string — is doing roughly the same thing under the hood. It builds a flowchart of your code, it carries a small set of facts along each edge, and it keeps updating those facts until they stop changing. The interesting question is not whether to do this. It is which facts to track, how precisely to track them, and which lies to tell when precision gets expensive.</p>
+<p className="chapter-lede">Every static analyzer you have ever used (the one that flags an unused variable, the one that warns about a possibly-null dereference, the one that screams about untrusted input flowing into a SQL string) is doing roughly the same thing under the hood. It builds a flowchart of your code, it carries a small set of facts along each edge, and it keeps updating those facts until they stop changing. The interesting question is not whether to do this. It is which facts to track, how precisely to track them, and which lies to tell when precision gets expensive.</p>
 
 ## Opening intuition
 
 Consider three warnings a Python user sees in a normal week. "Local variable `x` is assigned but never used." "Variable `name` may be `None` at this point." "Untrusted data from `request.args` flows into `subprocess.run`." Three different tools, three different vocabularies, and yet the underlying machinery is almost identical. Each tool walks your program, attaches a set of facts to every line, and propagates those facts along the edges of a graph that represents possible executions.
 
-The facts differ. Reaching definitions, nullability, taint — they are all *sets that change as control flow advances*. The same algorithm answers all three.
+The facts differ. Reaching definitions, nullability, taint: they are all *sets that change as control flow advances*. The same algorithm answers all three.
 
 This chapter is about that algorithm and the trade-offs it forces. The formalism has a name (monotone dataflow analysis), an origin (Kildall 1973<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>), and a polite fiction that holds it together (most production tools are deliberately unsound, and they are right to be).
 
-## CFG — the flowchart
+## CFG: the flowchart
 
-A **CFG**, or control-flow graph, is a flowchart of your program's branches and loops. Nodes are *basic blocks* — a run of straight-line code with one way in and one way out — and edges are the possible transfers of control between them. An `if` becomes a node with two outgoing edges. A `while` becomes a node with a back-edge that loops to itself. A `switch` is a fan-out. A `try/except` adds an exception edge from every statement that could throw to the matching handler.
+A **CFG**, or control-flow graph, is a flowchart of your program's branches and loops. Nodes are *basic blocks* (a run of straight-line code with one way in and one way out), and edges are the possible transfers of control between them. An `if` becomes a node with two outgoing edges. A `while` becomes a node with a back-edge that loops to itself. A `switch` is a fan-out. A `try/except` adds an exception edge from every statement that could throw to the matching handler.
 
 That last one is where most analyzers quietly under-approximate. Modeling every statement as potentially throwing makes the graph enormous, so tools draw exception edges only at calls, or only at marked operations, or not at all. The analyzer is going to be wrong about exceptions; the only question is which way.
 
@@ -28,23 +28,23 @@ Once the CFG exists, the rest of static analysis is *labeling its edges with set
 
 ## Analogy: water through a pipe network
 
-Picture a network of pipes laid out as a flowchart. Water enters at the top, flows downward, splits at every branch, and recombines at every junction. Each pipe carries a small bucket of coloured tokens — these are the *facts* the analyzer is tracking. When a pipe runs through a basic block, the block can add tokens, remove tokens, or recolour them. When two pipes meet at a junction, the operator decides how their buckets combine: sometimes by taking the union of tokens (a *may* analysis), sometimes the intersection (a *must* analysis).
+Picture a network of pipes laid out as a flowchart. Water enters at the top, flows downward, splits at every branch, and recombines at every junction. Each pipe carries a small bucket of coloured tokens. These are the *facts* the analyzer is tracking. When a pipe runs through a basic block, the block can add tokens, remove tokens, or recolour them. When two pipes meet at a junction, the operator decides how their buckets combine: sometimes by taking the union of tokens (a *may* analysis), sometimes the intersection (a *must* analysis).
 
 Keep running the water until the buckets stop changing. That is the fixed point.
 
 **Where the analogy breaks:**
 - Water flows forward, but some dataflow analyses (like live variables) flow *backward* through the CFG. The pipes do not care which direction you choose.
 - Loops mean the same pipe is traversed many times; the bucket at a node depends on its own future contents until the iteration settles.
-- The "operator at the junction" is not a free choice — the join must be monotone with respect to the lattice or the iteration will not terminate.
+- The "operator at the junction" is not a free choice: the join must be monotone with respect to the lattice or the iteration will not terminate.
 - Real programs have indirect calls and dynamic dispatch, which is the equivalent of pipes whose destination is decided by the tokens currently inside them. Most tools draw a conservative super-graph and accept the imprecision.
 
 ## Dataflow: facts at every program point
 
 At each point in the program we want to know something specific. "Which definitions of which variables could reach this line?" "Which variables read below are written above?" "Which expressions have already been computed on every path here?" The analyzer carries a set of such facts, updates it as control flow advances, and merges sets when two control-flow paths meet.
 
-The formalism is small. The *lattice* ⟨L, ⊑⟩ is the space of possible fact-sets ordered by "more conservative" — bigger sets usually mean less is known. A *transfer function* `f_B : L → L` describes what one basic block `B` does to a fact-set as control passes through it. The *join operator* ⊔ is the rule for merging fact-sets at a branch join, typically set union or intersection. The analysis is *forward* if facts flow with control, *backward* if they flow against it.
+The formalism is small. The *lattice* ⟨L, ⊑⟩ is the space of possible fact-sets ordered by "more conservative" (bigger sets usually mean less is known). A *transfer function* `f_B : L → L` describes what one basic block `B` does to a fact-set as control passes through it. The *join operator* ⊔ is the rule for merging fact-sets at a branch join, typically set union or intersection. The analysis is *forward* if facts flow with control, *backward* if they flow against it.
 
-We then iterate. Start with an initial fact-set, apply the transfer functions, join at every confluence, and repeat. If the transfer functions are monotone and the lattice has finite height, this fixed-point iteration converges in roughly `O(nodes × height)` steps — the Kildall / Kam–Ullman bound<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>. The math is older than most languages it now analyzes, and it has not been improved upon for the general case.
+We then iterate. Start with an initial fact-set, apply the transfer functions, join at every confluence, and repeat. If the transfer functions are monotone and the lattice has finite height, this fixed-point iteration converges in roughly `O(nodes × height)` steps (the Kildall / Kam–Ullman bound<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>). The math is older than most languages it now analyzes, and it has not been improved upon for the general case.
 
 Rice's theorem says you cannot have it all, and Rice was right. The lattice is how we choose what to give up.
 
@@ -64,7 +64,7 @@ def f(flag):
 
 Reaching definitions is a **forward, may** analysis. The join operator is **set union**: a definition reaches a point if it reaches along *any* incoming path.
 
-At the entry to line 6 the fact-set is `{d1}`. After line 6, the assignment `x = 2` kills `d1` (since `d1` also defines `x`) and generates `d2`, leaving `{d2}`. Along the else branch the fact-set is unchanged at `{d1}`. At program point P1, the join takes the union: `{d1, d2}` — both definitions of `x` could reach line 8. The analyzer therefore knows that `x` on line 8 has two possible sources, which is exactly the input a constant-propagation pass needs to decide it cannot replace `x` with a literal.
+At the entry to line 6 the fact-set is `{d1}`. After line 6, the assignment `x = 2` kills `d1` (since `d1` also defines `x`) and generates `d2`, leaving `{d2}`. Along the else branch the fact-set is unchanged at `{d1}`. At program point P1, the join takes the union: `{d1, d2}`. Both definitions of `x` could reach line 8. The analyzer therefore knows that `x` on line 8 has two possible sources, which is exactly the input a constant-propagation pass needs to decide it cannot replace `x` with a literal.
 
 Notice what the analyzer does *not* track. It does not know that `d1` only reaches P1 when `flag` is false. Encoding that fact would require path-sensitivity, and path-sensitivity is expensive.
 
@@ -201,7 +201,7 @@ Five dataflow analyses cover most of what shipped linters compute. Each picks a 
 
 ## Path-sensitivity, context-sensitivity, and the cost
 
-The dataflow framework above is *flow-sensitive* — it respects the order of statements — but *path-insensitive*, meaning it joins facts from all paths into a branch into a single fact-set. A **path-sensitive** analysis tracks facts separately along each path, so it can keep "if `flag` is true then `x = 2`" as a single correlated fact instead of conservatively merging. A **context-sensitive** analysis, often called k-CFA after Shivers's dissertation<sup className="fn-ref"><a href="#fn-6">[6]</a></sup>, distinguishes facts at each call site rather than merging them at the function entry.
+The dataflow framework above is *flow-sensitive* (it respects the order of statements) but *path-insensitive*, meaning it joins facts from all paths into a branch into a single fact-set. A **path-sensitive** analysis tracks facts separately along each path, so it can keep "if `flag` is true then `x = 2`" as a single correlated fact instead of conservatively merging. A **context-sensitive** analysis, often called k-CFA after Shivers's dissertation<sup className="fn-ref"><a href="#fn-6">[6]</a></sup>, distinguishes facts at each call site rather than merging them at the function entry.
 
 Both are more precise. Both blow up exponentially in the worst case. A program with `n` branches has up to `2^n` paths; a program with `n` call sites has up to `k^n` contexts at k-CFA depth `k`.
 
@@ -273,14 +273,14 @@ Production tools pick different points on this spectrum. CodeQL gives you a rela
       </marker>
     </defs>
   </svg>
-  <figcaption>Taint as a forward may-analysis. The taint label is generated at the source, propagated by every assignment that reads a tainted value, and killed only by a sanitizer the rule recognises. The accent edge shows the surviving tainted path into <code>subprocess.run</code> — exactly the finding an injection rule reports.</figcaption>
+  <figcaption>Taint as a forward may-analysis. The taint label is generated at the source, propagated by every assignment that reads a tainted value, and killed only by a sanitizer the rule recognises. The accent edge shows the surviving tainted path into <code>subprocess.run</code>: exactly the finding an injection rule reports.</figcaption>
 </figure>
 
 ## Soundness vs precision: the engineering choice
 
-Two words do most of the work here. An analyzer is **sound** for a property if it never misses a real instance — no false negatives. It is **complete** if it never reports a non-instance — no false positives. Rice's theorem guarantees that for any nontrivial semantic property on a Turing-complete language, you cannot have both.
+Two words do most of the work here. An analyzer is **sound** for a property if it never misses a real instance: no false negatives. It is **complete** if it never reports a non-instance: no false positives. Rice's theorem guarantees that for any nontrivial semantic property on a Turing-complete language, you cannot have both.
 
-Most production analyzers ship deliberately unsound. ESLint and Sonar lose precision in exchange for fewer false positives, because false positives are what users complain about. The author's own `zuit` follows the same convention — it would rather miss a corner case than ship a warning that ten thousand engineers will train themselves to ignore. Infer and Astrée make the other choice: they accept more false positives so that, on the slice of properties they care about, they miss nothing<sup className="fn-ref"><a href="#fn-4">[4]</a></sup>.
+Most production analyzers ship deliberately unsound. ESLint and Sonar lose precision in exchange for fewer false positives, because false positives are what users complain about. My own `zuit` follows the same convention: it would rather miss a corner case than ship a warning that ten thousand engineers will train themselves to ignore. Infer and Astrée make the other choice: they accept more false positives so that, on the slice of properties they care about, they miss nothing<sup className="fn-ref"><a href="#fn-4">[4]</a></sup>.
 
 Neither tradition is wrong. They are answering different questions.
 
@@ -295,15 +295,15 @@ The lanes worth knowing:
 - **Facebook Infer** uses separation logic with bi-abduction to infer procedure summaries, which is how it scales to monorepos without losing path-sensitivity<sup className="fn-ref"><a href="#fn-4">[4]</a></sup>.
 - **GitHub CodeQL** models the program as a relational database and queries it in a Datalog-style language; sensitivity is something you opt into per query<sup className="fn-ref"><a href="#fn-5">[5]</a></sup>.
 - **Semgrep** is pattern matching with limited intraprocedural dataflow, optimized for speed-of-feedback in CI.
-- **`zuit`** is the author's multi-language Rust analyzer that emits SARIF 2.1.0; it sits in the same trade-off space as Semgrep but extends to taint and constant-propagation passes per language.
+- **`zuit`** is my multi-language Rust analyzer that emits SARIF 2.1.0; it sits in the same trade-off space as Semgrep but extends to taint and constant-propagation passes per language.
 
 Different domains, same skeleton: CFG, lattice, transfer functions, fixed point.
 
 ## Why this matters for the rest of the book
 
-Chapter 04 takes this machinery into the editor. An IDE cannot rerun a whole-program dataflow analysis every keystroke, so it must run a *useful subset* incrementally — recomputing only the facts that could have changed inside the edited function, reusing summaries everywhere else. The incremental story is what distinguishes a usable language server from a slow one.
+Chapter 04 takes this machinery into the editor. An IDE cannot rerun a whole-program dataflow analysis every keystroke, so it must run a *useful subset* incrementally, recomputing only the facts that could have changed inside the edited function and reusing summaries everywhere else. The incremental story is what distinguishes a usable language server from a slow one.
 
-Chapter 05 then asks what changes when an LLM enters the picture. LLM "reasoning" is a probabilistic substitute for the deterministic facts above: it will sometimes get nullability right by pattern, and sometimes wrong by hallucination. Hybrid systems combine both — the dataflow result is ground truth where it exists, and the model fills in where the analyzer punts.
+Chapter 05 then asks what changes when an LLM enters the picture. LLM "reasoning" is a probabilistic substitute for the deterministic facts above: it will sometimes get nullability right by pattern, and sometimes wrong by hallucination. Hybrid systems combine both: the dataflow result is ground truth where it exists, and the model fills in where the analyzer punts.
 
 ## Notes
 
