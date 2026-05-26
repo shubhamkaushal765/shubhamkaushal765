@@ -2,19 +2,19 @@ export const meta = {
   number: '01',
   slug: 'structure-not-surface',
   title: 'Why code intelligence? Structure, not surface.',
-  summary: 'Working on the tree, the graph, and the symbol table beats working on the text — explained without making you read a compilers textbook first.',
+  summary: 'Working on the tree, the graph, and the symbol table beats working on the text. No compilers textbook required.',
   reading: '9 min',
 };
 
 # Why code intelligence? Structure, not surface.
 
-<p className="chapter-lede">If you have ever renamed a variable with find-and-replace and shipped a bug, congratulations — you already know what this chapter is about. Source code is text on disk, but the things you actually want to do with it are not text operations. They are operations on a tree, a graph, and a symbol table. Code intelligence is the discipline of building those structures, querying them, and keeping them in sync with the text while you type.</p>
+<p className="chapter-lede">If you have ever renamed a variable with find-and-replace and shipped a bug, congratulations: you already know what this chapter is about. Source code is text on disk, but the things you actually want to do with it are not text operations. They are operations on a tree, a graph, and a symbol table. Code intelligence is the discipline of building those structures, querying them, and keeping them in sync with the text while you type.</p>
 
 ## Opening intuition
 
 Picture a small everyday task. A method called `send` lives on a class in your codebase, and you want to rename it to `dispatch`. In your head, you do not think "find every occurrence of the five characters s-e-n-d." You think "find this method, and update its definition and every call site." Those are not the same operation, and the difference between them is the entire reason this book exists.
 
-A `Ctrl-F` rename will happily change `send` inside a comment that mentions the postal service, edit the string literal `"send"` that your dashboard depends on, rewrite an unrelated method `send` on a different class, and miss the dynamic call sites — `getattr(obj, name)()` in Python, `obj[methodName]()` in JavaScript — because those do not contain the literal string at all.
+A `Ctrl-F` rename will happily change `send` inside a comment that mentions the postal service, edit the string literal `"send"` that your dashboard depends on, rewrite an unrelated method `send` on a different class, and miss the dynamic call sites (`getattr(obj, name)()` in Python, `obj[methodName]()` in JavaScript) because those do not contain the literal string at all.
 
 What you wanted was a structural operation. What you got was a string operation.
 
@@ -41,7 +41,7 @@ The text approach reads surface tokens in document order. The map approach trave
 - A map of a city is built once and updated rarely; the structures behind code intelligence have to be rebuilt on every keystroke without blocking the editor.
 - Streets and buildings have stable identity; identifiers in code are renamed, shadowed, and re-exported, and the structure has to track those changes.
 - A real map is a single global artifact; in code, the relevant structures are per-file (the syntax tree) and per-project (the symbol table and call graph), and stitching them together is its own engineering problem.
-- Maps are queried by humans; code structures are queried mostly by other programs — language servers, linters, refactoring engines — at machine speed.
+- Maps are queried by humans; code structures are queried mostly by other programs (language servers, linters, refactoring engines) at machine speed.
 
 ## The three useful words: syntax, semantics, structure
 
@@ -49,7 +49,7 @@ Three words get used interchangeably in casual conversation and mean different t
 
 **Syntax** is the arrangement of tokens that the language grammar admits. `if x == 0:` is syntactically valid Python; `if x = 0:` is not. The parser builds a tree, then a smaller, ruder tree. The first is the concrete syntax tree (CST) and keeps every comma, paren, and whitespace token; the second is the abstract syntax tree (AST) and throws away the punctuation the language no longer needs to interpret the code. Chapter 02 develops both.
 
-**Semantics** is what the tokens mean once they are arranged. Names resolve to declarations, expressions have types, control flows along certain paths and not others. Two programs can share syntax and disagree on semantics — `a + b` means different things if `a` is an integer, a string, or an overloaded operator on a user-defined type.
+**Semantics** is what the tokens mean once they are arranged. Names resolve to declarations, expressions have types, control flows along certain paths and not others. Two programs can share syntax and disagree on semantics: `a + b` means different things if `a` is an integer, a string, or an overloaded operator on a user-defined type.
 
 **Structure** is the umbrella term for the derived artifacts that make semantic queries cheap. The symbol table maps each name use to the declaration it refers to. The call graph records, for each function, which functions it might invoke. The control-flow graph (CFG) records, within a single function, which statements can execute after which. This book revisits these three structures in every chapter; they are the load-bearing data structures of every serious code tool.
 
@@ -123,7 +123,7 @@ The locked phrase, then, is structure first, syntax second. You parse to get a t
       </marker>
     </defs>
   </svg>
-  <figcaption>The same six tokens, three layers deep. Syntax tells you the line parses; semantics tells you what each name means in context; structure makes the cross-file fact — this call goes to that declaration — directly queryable. A rename refactor needs the third view; grep only has the first.</figcaption>
+  <figcaption>The same six tokens, three layers deep. Syntax tells you the line parses; semantics tells you what each name means in context; structure makes the cross-file fact (this call goes to that declaration) directly queryable. A rename refactor needs the third view; grep only has the first.</figcaption>
 </figure>
 
 ## What changes when you have structure
@@ -143,14 +143,14 @@ A small comparison, with the same five tasks each tool is asked to do.
   </tbody>
 </table>
 
-The first row is the cheap demo. The last three rows are why a thirty-year-old idea — parse the program, build a graph, query the graph — is the foundation of every static analyzer, every language server, and every code-aware AI assistant shipping today.
+The first row is the cheap demo. The last three rows are why a thirty-year-old idea (parse the program, build a graph, query the graph) is the foundation of every static analyzer, every language server, and every code-aware AI assistant shipping today.
 
 ## The pipeline, in one picture
 
 <figure className="chapter-figure">
   <svg id="text-to-structure" viewBox="0 0 820 240" width="100%" role="img" aria-labelledby="t2s-title t2s-desc" style={{color: 'currentColor'}}>
     <title id="t2s-title">From source text to structural representations</title>
-    <desc id="t2s-desc">A horizontal pipeline of five labelled boxes — Source, Tokens, AST, Symbols, Graphs — connected by arrows, with a one-line caption under each box describing what that stage contains.</desc>
+    <desc id="t2s-desc">A horizontal pipeline of five labelled boxes (Source, Tokens, AST, Symbols, Graphs) connected by arrows, with a one-line caption under each box describing what that stage contains.</desc>
 
     <g fontSize="14" fill="currentColor" textAnchor="middle">
       <g className="stage source">
@@ -206,7 +206,7 @@ The first row is the cheap demo. The last three rows are why a thirty-year-old i
   <figcaption>Each stage is a different representation of the same program, and each one answers questions the previous one cannot. The AST is highlighted because almost every other structure in this book is derived from it, directly or through one more pass.</figcaption>
 </figure>
 
-The pipeline is not a strict left-to-right waterfall in production tools — incremental parsers reuse old tree fragments, and language servers cache symbol tables between keystrokes — but the layers exist and the dependencies point in this direction. Chapters 02 through 04 walk each transition in detail.
+The pipeline is not a strict left-to-right waterfall in production tools. Incremental parsers reuse old tree fragments, and language servers cache symbol tables between keystrokes. But the layers exist and the dependencies point in this direction. Chapters 02 through 04 walk each transition in detail.
 
 <figure className="chapter-figure">
   <svg viewBox="0 0 820 360" width="100%" role="img" aria-labelledby="ast-title ast-desc" xmlns="http://www.w3.org/2000/svg" style={{color: 'currentColor'}}>
@@ -279,7 +279,7 @@ The pipeline is not a strict left-to-right waterfall in production tools — inc
       </marker>
     </defs>
   </svg>
-  <figcaption>The same five-token expression as a tree. Operator precedence (* binds tighter than +) is now structural rather than implicit; you can ask "what is the right-hand side of the assignment?" with a single field access. The text says nothing about precedence — the tree settles it once.</figcaption>
+  <figcaption>The same five-token expression as a tree. Operator precedence (* binds tighter than +) is now structural rather than implicit; you can ask "what is the right-hand side of the assignment?" with a single field access. The text says nothing about precedence. The tree settles it once.</figcaption>
 </figure>
 
 ## What shipped tooling actually uses
@@ -288,11 +288,11 @@ The pipeline is not abstract. You can name the projects that implement each stag
 
 **Tree-sitter** is an incremental parser generator that produces concrete syntax trees for a long list of languages and re-parses only the dirty regions on each edit<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>. Every modern editor that highlights syntax accurately, including Neovim, Helix, Zed, and GitHub's web UI, runs Tree-sitter or a derivative.
 
-**Language Server Protocol** servers — rust-analyzer for Rust, gopls for Go, pyright for Python, clangd for C and C++ — own the symbol table and the type system for a project and expose them to editors over a JSON-RPC protocol<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>. When you hit "go to definition" and it works across files, an LSP server resolved that name for you.
+**Language Server Protocol** servers (rust-analyzer for Rust, gopls for Go, pyright for Python, clangd for C and C++) own the symbol table and the type system for a project and expose them to editors over a JSON-RPC protocol<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>. When you hit "go to definition" and it works across files, an LSP server resolved that name for you.
 
-**Static analyzers** sit on top of the AST and the symbol table and add their own analyses. Semgrep matches structural patterns against the AST. CodeQL treats the program as a database and lets you write queries in a Datalog-flavored language<sup className="fn-ref"><a href="#fn-3">[3]</a></sup>. SonarQube ships a large rulebook with dataflow taint tracking. `zuit` — the author's Rust-based multi-language analyzer — emits findings as SARIF 2.1.0<sup className="fn-ref"><a href="#fn-4">[4]</a></sup>, the OASIS-standardized JSON format that lets analyzer output flow into CI, IDE, and review tooling without bespoke glue.
+**Static analyzers** sit on top of the AST and the symbol table and add their own analyses. Semgrep matches structural patterns against the AST. CodeQL treats the program as a database and lets you write queries in a Datalog-flavored language<sup className="fn-ref"><a href="#fn-3">[3]</a></sup>. SonarQube ships a large rulebook with dataflow taint tracking. `zuit` (my Rust-based multi-language analyzer) emits findings as SARIF 2.1.0<sup className="fn-ref"><a href="#fn-4">[4]</a></sup>, the OASIS-standardized JSON format that lets analyzer output flow into CI, IDE, and review tooling without bespoke glue.
 
-**AI assistants** are the newest entrants. Cursor, Copilot, and Continue increasingly mix retrieval-augmented generation with structural context — pulling the type of the symbol under the cursor, the call sites of the function being edited, the imports of the current file — because pure token windows over a million-line repository miss the things a junior engineer would notice on day two. The structural representations in this book are the ones those systems are quietly building underneath.
+**AI assistants** are the newest entrants. Cursor, Copilot, and Continue increasingly mix retrieval-augmented generation with structural context: the type of the symbol under the cursor, the call sites of the function being edited, the imports of the current file. Pure token windows over a million-line repository miss the things a junior engineer would notice on day two. The structural representations in this book are the ones those systems are quietly building underneath.
 
 <figure className="chapter-figure">
   <svg id="ch01ci-tool-stack" viewBox="0 0 820 280" width="100%" role="img" aria-labelledby="ch01ci-stack-title ch01ci-stack-desc" style={{color: 'currentColor'}}>
@@ -347,16 +347,16 @@ The pipeline is not abstract. You can name the projects that implement each stag
       </marker>
     </defs>
   </svg>
-  <figcaption>The same pipeline, read as a tool stack. Each tier consumes the structures produced by the one below — trees feed symbol tables, symbols feed analyzer rules, analyzer output and resolved context feed the prompt window. The language-server tier is the load-bearing middle; almost every productivity feature in a modern editor is built against its symbol table.</figcaption>
+  <figcaption>The same pipeline, read as a tool stack. Each tier consumes the structures produced by the one below: trees feed symbol tables, symbols feed analyzer rules, analyzer output and resolved context feed the prompt window. The language-server tier is the load-bearing middle; almost every productivity feature in a modern editor is built against its symbol table.</figcaption>
 </figure>
 
 ## Why this matters for the rest of the book
 
 Each subsequent chapter takes one box of the pipeline seriously.
 
-Chapter 02 covers lexing, parsing, and the CST/AST distinction, with worked examples in Tree-sitter. Chapter 03 builds the control-flow graph and the dataflow lattice and walks a small taint analysis from source to sink. Chapter 04 turns to language servers — how rust-analyzer keeps a symbol table coherent under incremental edits, and what the LSP protocol does and does not guarantee. Chapter 05 brings in embeddings and hybrid AI-plus-symbolic systems, with attention to where retrieval helps and where it quietly lies.
+Chapter 02 covers lexing, parsing, and the CST/AST distinction, with worked examples in Tree-sitter. Chapter 03 builds the control-flow graph and the dataflow lattice and walks a small taint analysis from source to sink. Chapter 04 turns to language servers: how rust-analyzer keeps a symbol table coherent under incremental edits, and what the LSP protocol does and does not guarantee. Chapter 05 brings in embeddings and hybrid AI-plus-symbolic systems, with attention to where retrieval helps and where it quietly lies.
 
-The thesis carries through every chapter. The text is the input. The structures are the program. Build the structures, query the structures, keep the structures in sync — and the rest of code intelligence falls out as engineering on top of that contract.
+The thesis carries through every chapter. The text is the input. The structures are the program. Build the structures, query the structures, keep the structures in sync. The rest of code intelligence falls out as engineering on top of that contract.
 
 ## Notes
 

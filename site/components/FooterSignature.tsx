@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 const QUIPS = [
-  'compiles on the first try about 12% of the time — a number that does not improve with seniority.',
+  'compiles on the first try about 12% of the time, a number that does not improve with seniority.',
   'thinks tabular numerals are a moral position.',
   'will explain the difference between an AST and a parse tree, unprompted, at parties.',
   'has strong opinions about SARIF, none of them load-bearing.',

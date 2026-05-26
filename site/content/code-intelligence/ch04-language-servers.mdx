@@ -2,7 +2,7 @@ export const meta = {
   number: '04',
   slug: 'language-servers',
   title: 'The language server as an incremental cache.',
-  summary: 'LSP, salsa-style query systems, and the cache-invalidation problem at the heart of every modern IDE — why latency, not algorithmic correctness, is the binding constraint.',
+  summary: 'LSP, salsa-style query systems, and the cache-invalidation problem at the heart of every modern IDE. Why latency, not algorithmic correctness, is the binding constraint.',
   reading: '12 min',
 };
 
@@ -14,7 +14,7 @@ export const meta = {
 
 Type a character. The editor expects, more or less immediately, a list of plausible completions, a hover tooltip if you pause, red squigglies under anything that no longer type-checks, and a working F12 if you ask to jump to the definition of the symbol your cursor is on. Find-references should return inside a second on a large monorepo.
 
-The informal latency budgets are well known. Completion needs to feel instant, which in practice means a round trip under about 100 ms. Diagnostics — the red and yellow underlines — can take a little longer, perhaps 300 ms, before the user notices the lag. Hover and go-to-definition sit somewhere in between. The input is not small: a working IDE session might have 30,000 source files open in the project graph and a few megabytes of code changing per minute.
+The informal latency budgets are well known. Completion needs to feel instant, which in practice means a round trip under about 100 ms. Diagnostics (the red and yellow underlines) can take a little longer, perhaps 300 ms, before the user notices the lag. Hover and go-to-definition sit somewhere in between. The input is not small: a working IDE session might have 30,000 source files open in the project graph and a few megabytes of code changing per minute.
 
 The engineering problem is not "understand the program." It is "understand the program in 80 milliseconds, again, after the user pressed one more key."
 
@@ -22,13 +22,13 @@ So the server caches. A lot.
 
 ## The user's view
 
-The red squiggle under a typo is the visible end of a chain of derived data: lexer tokens, a parse tree, name resolution, a type-check result, a list of diagnostics for the file. The completion popup is a query against the same name resolution plus a ranker. F12 — go-to-definition — walks from the cursor's syntactic position to the resolved symbol and back out to a source location. Find-references inverts that walk across every file that imports the symbol's containing module.
+The red squiggle under a typo is the visible end of a chain of derived data: lexer tokens, a parse tree, name resolution, a type-check result, a list of diagnostics for the file. The completion popup is a query against the same name resolution plus a ranker. F12 (go-to-definition) walks from the cursor's syntactic position to the resolved symbol and back out to a source location. Find-references inverts that walk across every file that imports the symbol's containing module.
 
 Each of these features corresponds to a different slice of derived data. The server's job is to keep all of those slices current as the user edits, without recomputing the slices that nothing has touched.
 
 ## LSP, the protocol
 
-LSP is the Language Server Protocol — a JSON-RPC interface between the editor (the client) and a separate language-server process (one per workspace, typically). The editor sends notifications and requests over stdio or a TCP socket; the server replies with results or pushes diagnostics back. The split matters: the parser, type checker, and indexer live in the server, not in the editor, which is why VS Code, Neovim, Emacs, and Zed can all light up Rust files identically as long as a `rust-analyzer` binary is on the path.
+LSP is the Language Server Protocol, a JSON-RPC interface between the editor (the client) and a separate language-server process (one per workspace, typically). The editor sends notifications and requests over stdio or a TCP socket; the server replies with results or pushes diagnostics back. The split matters: the parser, type checker, and indexer live in the server, not in the editor, which is why VS Code, Neovim, Emacs, and Zed can all light up Rust files identically as long as a `rust-analyzer` binary is on the path.
 
 The canonical request and notification kinds are a short list. `textDocument/didChange` tells the server a buffer's contents have changed. `textDocument/completion` asks for completion candidates at a position. `textDocument/definition` and `textDocument/references` are the navigation queries. `textDocument/hover` returns the tooltip. `textDocument/publishDiagnostics` is the server-to-client push that paints the squigglies.
 
@@ -65,7 +65,7 @@ A language server is the same idea applied to source code. Files are input cells
 
 **Where the analogy breaks:**
 - Spreadsheet cells hold a scalar; an AST or a symbol table is a large structured value, and "did this value change?" needs a real equality check or a content hash to be useful as a propagation guard.
-- Spreadsheet dependencies are declared by the formula's static references. In a language server, the dependencies of "the type of `foo`" depend on what `foo` resolves to, which is itself a query result — dependencies are discovered dynamically as queries execute.
+- Spreadsheet dependencies are declared by the formula's static references. In a language server, the dependencies of "the type of `foo`" depend on what `foo` resolves to, which is itself a query result. Dependencies are discovered dynamically as queries execute.
 - Spreadsheets recompute eagerly on edit. IDEs recompute lazily, on demand, because most derived facts are never asked for in a given second of editing.
 - A spreadsheet does not have to finish in 80 ms or lose to the user's perception of lag.
 
@@ -75,9 +75,9 @@ Phil Karlton was right about cache invalidation. A language server is the workin
 
 The inputs are concrete: the contents of every open buffer, file-watcher events from disk, the project manifest (`Cargo.toml`, `tsconfig.json`, `pyproject.toml`), and toolchain settings. The derived facts form a layered DAG: per-file token streams; per-file parse trees; per-module name resolution; cross-module symbol tables; type-check results; per-file diagnostics. A `find-references` result for a public symbol is a transitive consumer of half the project's name resolution.
 
-The question on every keystroke is: of all those derived facts, which ones depend on the byte that just changed, and which ones can be reused as-is? The naive answer — invalidate everything — is what makes a language server feel slow. The correct answer requires the server to have remembered which inputs each query actually read, so that on an edit it can mark only the affected subgraph dirty and leave the rest green.
+The question on every keystroke is: of all those derived facts, which ones depend on the byte that just changed, and which ones can be reused as-is? The naive answer, invalidate everything, is what makes a language server feel slow. The correct answer requires the server to have remembered which inputs each query actually read, so that on an edit it can mark only the affected subgraph dirty and leave the rest green.
 
-This is what a query system does. Every query is a memoised pure function of its inputs. The system records the dependency edge at the moment the query reads another query's result. On an input change, dependents are marked stale; when something asks for them again, they re-run. If their re-run produces a value equal to the previous one, the dirty mark stops propagating — downstream queries can stay cached. That last property is the difference between fast and slow.
+This is what a query system does. Every query is a memoised pure function of its inputs. The system records the dependency edge at the moment the query reads another query's result. On an input change, dependents are marked stale; when something asks for them again, they re-run. If their re-run produces a value equal to the previous one, the dirty mark stops propagating. Downstream queries can stay cached. That last property is the difference between fast and slow.
 
 If your IDE takes a coffee break on every keystroke, the IDE has lost.
 
@@ -210,7 +210,7 @@ The alternatives have similar shapes with different trade-offs. Roslyn, the .NET
       </marker>
     </defs>
   </svg>
-  <figcaption>One round trip over LSP. The editor pushes diffs to the server with `didChange` and asks structured questions with `definition`, `hover`, `references`, and friends. The server's job is to answer those questions in single-digit milliseconds — which is why every piece of work that <em>can</em> be cached, is.</figcaption>
+  <figcaption>One round trip over LSP. The editor pushes diffs to the server with `didChange` and asks structured questions with `definition`, `hover`, `references`, and friends. The server's job is to answer those questions in single-digit milliseconds, which is why every piece of work that <em>can</em> be cached, is.</figcaption>
 </figure>
 
 ## The monorepo problem
@@ -245,7 +245,7 @@ The third technique is, with some embarrassment, lying. If a node's content hash
           <rect x="0" y="0" width="240" height="60" rx="5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="5 4" />
           <text x="120" y="20" textAnchor="middle" fontWeight="600">function body</text>
           <text x="120" y="38" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace">let r = self.client.post(m)…</text>
-          <text x="120" y="54" textAnchor="middle" fontSize="10" fill="var(--pillar-color, var(--color-accent, currentColor))">edited — dirty</text>
+          <text x="120" y="54" textAnchor="middle" fontSize="10" fill="var(--pillar-color, var(--color-accent, currentColor))">edited, dirty</text>
         </g>
       </g>
 
@@ -303,7 +303,7 @@ A pattern worth naming: several of the fastest new language servers (rust-analyz
 
 Chapter 05 looks at AI coding assistants. The natural framing, once Chapter 04 is in your head, is that an assistant is a second cache sitting on top of the language server's cache. The retrieval index over a codebase has the same invalidation problem with the same DAG shape: file edits dirty embeddings, which dirty retrieved chunks, which dirty the prompt sent to a model. The model output is itself a derived fact with inputs that change.
 
-The latency budget is also similar — completion-style assistants live or die by sub-second responsiveness — and so are the techniques. Fingerprinting, sharding, content-addressed memoisation. The names change; the structure does not.
+The latency budget is also similar (completion-style assistants live or die by sub-second responsiveness), and so are the techniques. Fingerprinting, sharding, content-addressed memoisation. The names change; the structure does not.
 
 ## Notes
 
@@ -311,7 +311,7 @@ The latency budget is also similar — completion-style assistants live or die b
   <li id="fn-1">Microsoft. "Language Server Protocol Specification, version 3.17." <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/">https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/</a></li>
   <li id="fn-2">salsa-rs. "salsa: a generic framework for on-demand, incrementalized computation." Source repository. <a href="https://github.com/salsa-rs/salsa">https://github.com/salsa-rs/salsa</a></li>
   <li id="fn-3">rust-lang. "rust-analyzer architecture." Developer documentation. <a href="https://github.com/rust-lang/rust-analyzer/blob/master/docs/dev/architecture.md">https://github.com/rust-lang/rust-analyzer/blob/master/docs/dev/architecture.md</a></li>
-  <li id="fn-4">dotnet. "Roslyn — The .NET Compiler Platform." Source repository. <a href="https://github.com/dotnet/roslyn">https://github.com/dotnet/roslyn</a></li>
+  <li id="fn-4">dotnet. "Roslyn: The .NET Compiler Platform." Source repository. <a href="https://github.com/dotnet/roslyn">https://github.com/dotnet/roslyn</a></li>
   <li id="fn-5">Horwitz, S., Reps, T., and Sagiv, M. "Demand interprocedural dataflow analysis." Proceedings of SIGSOFT '95, ACM SIGSOFT Symposium on the Foundations of Software Engineering, 1995. The academic ancestor of demand-driven analysis used by modern query systems. <a href="https://dl.acm.org/doi/10.1145/222124.222146">https://dl.acm.org/doi/10.1145/222124.222146</a></li>
-  <li id="fn-6">Microsoft. "pyright — static type checker for Python." Source repository. <a href="https://github.com/microsoft/pyright">https://github.com/microsoft/pyright</a></li>
+  <li id="fn-6">Microsoft. "pyright: static type checker for Python." Source repository. <a href="https://github.com/microsoft/pyright">https://github.com/microsoft/pyright</a></li>
 </ol>

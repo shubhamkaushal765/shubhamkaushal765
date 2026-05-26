@@ -2,21 +2,21 @@ export const meta = {
   number: '05',
   slug: 'symbolic-and-neural',
   title: 'Symbolic and neural: hybrid code intelligence.',
-  summary: 'Embeddings over code, retrieval pipelines, and why the production system you actually want is a language server plus a vector index plus a model — wired up so each does what it is good at.',
+  summary: 'Embeddings over code, retrieval pipelines, and why the production system you actually want is a language server plus a vector index plus a model, wired up so each does what it is good at.',
   reading: '13 min',
 };
 
 # Symbolic and neural: hybrid code intelligence.
 
-<p className="chapter-lede">Most of the AI coding tools you have used — Copilot, Cursor, Continue, Cody — are not a single model. They are an editor, a parser, a retrieval index, and a model, wired together so that each does the part of the job it is good at. The interesting engineering is in the wiring, not in the model.</p>
+<p className="chapter-lede">Most of the AI coding tools you have used (Copilot, Cursor, Continue, Cody) are not a single model. They are an editor, a parser, a retrieval index, and a model, wired together so that each does the part of the job it is good at. The interesting engineering is in the wiring, not in the model.</p>
 
 ## The two kinds of "knowing"
 
 There are two ways a piece of software can "know" something about your code, and they are different all the way down.
 
-The first is *symbolic*. This is the world of chapters one through four: parse trees, symbol tables, call graphs, dataflow facts. The information is exact. The compiler either resolved the identifier or it did not. The call graph either has an edge or it does not. These structures are deterministic and they are brittle — they break the instant the input is syntactically broken, and they say nothing about code they have never seen.
+The first is *symbolic*. This is the world of chapters one through four: parse trees, symbol tables, call graphs, dataflow facts. The information is exact. The compiler either resolved the identifier or it did not. The call graph either has an edge or it does not. These structures are deterministic and they are brittle: they break the instant the input is syntactically broken, and they say nothing about code they have never seen.
 
-The second is *neural*. This knowledge lives in model weights and in vectors — long lists of numbers — produced by a network trained on a great deal of code. The information is approximate. The model can answer questions about code it has never seen, tolerate typos and partial input, and produce fluent prose about what a function probably does. It is also confidently wrong about specifics on a regular basis.
+The second is *neural*. This knowledge lives in model weights and in vectors (long lists of numbers) produced by a network trained on a great deal of code. The information is approximate. The model can answer questions about code it has never seen, tolerate typos and partial input, and produce fluent prose about what a function probably does. It is also confidently wrong about specifics on a regular basis.
 
 The LLM does not understand your code; it has very strong opinions about it.
 
@@ -24,7 +24,7 @@ A production code intelligence system wants both. They are not rivals. They are 
 
 ## Embeddings over code, in plain English
 
-An embedding is a fixed-length vector of numbers — say, 384 floats — that lives in a space where "similar code" lands near "similar code." Train an encoder (a neural network whose only job is to turn text into one of these vectors) so that two implementations of the same idea, or a function and its tests, get coordinates that are close together. Close in what sense? Usually cosine similarity: the angle between the two vectors is small<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>.
+An embedding is a fixed-length vector of numbers (say, 384 floats) that lives in a space where "similar code" lands near "similar code." Train an encoder (a neural network whose only job is to turn text into one of these vectors) so that two implementations of the same idea, or a function and its tests, get coordinates that are close together. Close in what sense? Usually cosine similarity: the angle between the two vectors is small<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>.
 
 This chapter is staying away from how the encoder is trained. That is its own book. The engineering question, the one you actually have to answer when building anything, is two-part: *which encoder* and *which input granularity*.
 
@@ -40,7 +40,7 @@ Each choice changes what the index is good at and what it silently fails on. We 
 
 ## Analogy: the city map of code
 
-Picture the embedding space as a city map. Every chunk of code in your repository has been dropped at a coordinate. Similar restaurants — sorry, similar functions — cluster in the same neighbourhood. When you query the index with "function that parses an ISO-8601 timestamp," the query string is itself encoded, dropped at a coordinate, and you walk outward in a widening radius collecting whatever you find.
+Picture the embedding space as a city map. Every chunk of code in your repository has been dropped at a coordinate. Similar restaurants (sorry, similar functions) cluster in the same neighbourhood. When you query the index with "function that parses an ISO-8601 timestamp," the query string is itself encoded, dropped at a coordinate, and you walk outward in a widening radius collecting whatever you find.
 
 **Where the analogy breaks:**
 - The map has 384 dimensions, not two. Most of the geometric intuition you have for cities is misleading; in high dimensions almost everything is roughly the same distance from everything else, and that "roughly" is what retrieval has to fight against.
@@ -50,11 +50,11 @@ Picture the embedding space as a city map. Every chunk of code in your repositor
 
 ## Retrieval-augmented generation, in one paragraph
 
-Retrieval-augmented generation, or RAG, is the standard plumbing<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>. A query arrives. It is optionally rewritten — expanded with synonyms, decomposed into sub-queries, or reformulated by a small model. The rewritten query is encoded and the vector index returns the top-k nearest chunks. Those chunks are concatenated into a prompt, along with the original query and some instructions, and the prompt is handed to a language model. The model emits an answer.
+Retrieval-augmented generation, or RAG, is the standard plumbing<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>. A query arrives. It is optionally rewritten: expanded with synonyms, decomposed into sub-queries, or reformulated by a small model. The rewritten query is encoded and the vector index returns the top-k nearest chunks. Those chunks are concatenated into a prompt, along with the original query and some instructions, and the prompt is handed to a language model. The model emits an answer.
 
 Retrieval is the unglamorous half of RAG, and also the half that decides whether the answer is right. Two systems with the same model and different retrievers produce very different output; two systems with the same retriever and different models, less so. Retrieval quality dominates final quality.
 
-And the index has to be kept in sync with the codebase. Every edit invalidates some embeddings. This is the same cache-invalidation problem from chapter four, with the difference that here a stale entry does not crash — it lies.
+And the index has to be kept in sync with the codebase. Every edit invalidates some embeddings. This is the same cache-invalidation problem from chapter four, with the difference that here a stale entry does not crash. It lies.
 
 ## Granularity trade-offs
 
@@ -165,7 +165,7 @@ def topk(query: str, k: int = 5) -> list[str]:
     return [chunks[i]["id"] for i in idx[np.argsort(-scores[idx])]]
 ```
 
-This is the entire neural side of a retrieval system at low resolution. Everything else — query rewriting, reranking, hybrid scoring with BM25, deduplication, freshness filters — is decoration on this loop.
+This is the entire neural side of a retrieval system at low resolution. Everything else (query rewriting, reranking, hybrid scoring with BM25, deduplication, freshness filters) is decoration on this loop.
 
 ## Where the symbolic side stays in the loop
 
@@ -175,7 +175,7 @@ Rename-symbol is symbolic. The language server knows every binding site of an id
 
 "Explain this function in English" is neural. There is no symbolic structure that produces English prose. Use the model.
 
-"Find me functions that look like this one" can be either. Symbolic clone detection compares AST subtrees and returns code that is structurally similar — same loop nest, same control flow shape. Neural similarity returns code that is semantically similar in the encoder's opinion — same idea, possibly very different syntax. The two sets are not the same. A mature system runs both and lets the user pick.
+"Find me functions that look like this one" can be either. Symbolic clone detection compares AST subtrees and returns code that is structurally similar: same loop nest, same control flow shape. Neural similarity returns code that is semantically similar in the encoder's opinion: same idea, possibly very different syntax. The two sets are not the same. A mature system runs both and lets the user pick.
 
 A useful trick at the boundary: hallucinated identifiers can be filtered after the fact. If the model emits `user.validate_email()`, ask the symbol table whether `validate_email` is a real method on the `User` class. If it is not, drop the suggestion or flag it. Yes, the model will confidently invent a function. The parser will not.
 
@@ -256,17 +256,17 @@ A useful trick at the boundary: hallucinated identifiers can be filtered after t
 
 ## Production landscape
 
-A non-exhaustive survey of how shipped tools wire this up. Cursor and Continue maintain a retrieval index over the open workspace and inject top-k results into the chat context. GitHub Copilot Chat performs workspace retrieval through its `@workspace` agent. Sourcegraph Cody combines symbolic graph search (its precise code intel infrastructure) with embeddings, and routes structural queries to the former and semantic queries to the latter. Aider takes a different route: it builds a `repo-map` using tree-sitter — a compact symbolic summary of the repository — and passes that to the model instead of, or alongside, retrieved chunks.
+A non-exhaustive survey of how shipped tools wire this up. Cursor and Continue maintain a retrieval index over the open workspace and inject top-k results into the chat context. GitHub Copilot Chat performs workspace retrieval through its `@workspace` agent. Sourcegraph Cody combines symbolic graph search (its precise code intel infrastructure) with embeddings, and routes structural queries to the former and semantic queries to the latter. Aider takes a different route: it builds a `repo-map` using tree-sitter (a compact symbolic summary of the repository) and passes that to the model instead of, or alongside, retrieved chunks.
 
-The author's `tell-me-why` is a local-first RAG pipeline over source code. It uses Ollama<sup className="fn-ref"><a href="#fn-3">[3]</a></sup> for inference, Chroma<sup className="fn-ref"><a href="#fn-4">[4]</a></sup> as the vector store, `sentence-transformers`<sup className="fn-ref"><a href="#fn-5">[5]</a></sup> for encoding, and six language parsers for chunk extraction. Everything stays on the operator's machine. No code leaves the laptop.
+My `tell-me-why` is a local-first RAG pipeline over source code. It uses Ollama<sup className="fn-ref"><a href="#fn-3">[3]</a></sup> for inference, Chroma<sup className="fn-ref"><a href="#fn-4">[4]</a></sup> as the vector store, `sentence-transformers`<sup className="fn-ref"><a href="#fn-5">[5]</a></sup> for encoding, and six language parsers for chunk extraction. Everything stays on the operator's machine. No code leaves the laptop.
 
 ## Operational complexity
 
-Things that go wrong in production, in roughly the order they will bite you. The index goes stale — a file changed, the embedding did not, retrieval returns code that no longer exists; tie the index to a content hash and re-embed on change. The context window overflows — top-k pulled in too much and the prompt is truncated mid-chunk; rerank and trim, or summarize before injection.
+Things that go wrong in production, in roughly the order they will bite you. The index goes stale: a file changed, the embedding did not, retrieval returns code that no longer exists. Tie the index to a content hash and re-embed on change. The context window overflows: top-k pulled in too much and the prompt is truncated mid-chunk. Rerank and trim, or summarize before injection.
 
 Embeddings drift between encoder versions. Old vectors and new vectors live in different geometric spaces, and cosine similarity between them is noise. Re-embed the entire corpus on encoder change. There is no shortcut.
 
-The query is the wrong granularity — the user asked about a class, the index is chunked by function, no single chunk matches; query at multiple granularities and fuse. Cold-cache retrieval latency hurts the first query after a restart; keep the index resident, or accept the cost as part of the UX.
+The query is the wrong granularity: the user asked about a class, the index is chunked by function, no single chunk matches. Query at multiple granularities and fuse. Cold-cache retrieval latency hurts the first query after a restart; keep the index resident, or accept the cost as part of the UX.
 
 <figure className="chapter-figure">
   <svg id="ch05ci-verify" viewBox="0 0 820 280" width="100%" role="img" aria-labelledby="ch05ci-v-title ch05ci-v-desc" style={{color: 'currentColor'}}>
@@ -331,7 +331,7 @@ The spine of this book has been the same idea in five variations: structure firs
 
 Symbolic and neural are not rivals. They are tiers of the same stack, each making different latency-correctness trade-offs. The interesting systems route each query to the tier that can answer it without lying.
 
-Three concrete next builds, in increasing order of effort. Write a tiny static analyzer that walks an AST and emits one structured finding — chapter three made real. Write a tiny LSP-speaking server that responds to `textDocument/hover` with a symbol table lookup — chapter four made real. Write a tiny RAG-over-repo pipeline that chunks at the function level, embeds with a small model, and answers a single fixed question — this chapter made real. Each fits in an afternoon and teaches more than any survey. The book closes here.
+Three concrete next builds, in increasing order of effort. Write a tiny static analyzer that walks an AST and emits one structured finding: chapter three made real. Write a tiny LSP-speaking server that responds to `textDocument/hover` with a symbol table lookup: chapter four made real. Write a tiny RAG-over-repo pipeline that chunks at the function level, embeds with a small model, and answers a single fixed question: this chapter made real. Each fits in an afternoon and teaches more than any survey. The book closes here.
 
 ## Notes
 

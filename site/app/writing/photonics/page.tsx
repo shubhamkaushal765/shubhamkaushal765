@@ -5,9 +5,9 @@ import FooterSignature from '@/components/FooterSignature';
 import { CHAPTERS } from './chapters';
 
 export const metadata: Metadata = {
-  title: 'Photonics — Shubham Kaushal',
+  title: 'Photonics | Shubham Kaushal',
   description:
-    'A working notebook on photonic quantum computing — continuous-variable encoding, Gaussian operations, measurement-induced nonlinearity, and where the architecture diverges from gate-model superconducting qubits.',
+    'A working notebook on photonic quantum computing: continuous-variable encoding, Gaussian operations, measurement-induced nonlinearity, and where the architecture diverges from gate-model superconducting qubits.',
 };
 
 export default function PhotonicsBookPage() {
@@ -17,8 +17,8 @@ export default function PhotonicsBookPage() {
       <p className="book-eyebrow">photonics · book</p>
       <h1>Photonics</h1>
       <p>
-        A working notebook on photonic quantum computing. The qumode — not the
-        qubit — is the native degree of freedom. Gaussian operations are cheap
+        A working notebook on photonic quantum computing. The qumode (not the
+        qubit) is the native degree of freedom. Gaussian operations are cheap
         and deterministic; non-Gaussian resources are expensive and discrete;
         photon loss replaces decoherence as the dominant error. The chapters
         develop those three claims from first principles to architecture.

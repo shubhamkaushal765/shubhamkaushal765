@@ -16,8 +16,8 @@ conformance as they reach active-development status.
 - No codenames that obscure function: `tell-me-why` is acceptable because it
   is the product name; `ball-of-fire` is not acceptable for a new repo.
 - Discipline prefixes for families:
-  - `zuit-*` — static analysis tooling family (e.g., `zuit-python-test-cases`)
-  - `qec-*` — quantum error correction research family (e.g., future `qec-surface-benchmarks`)
+  - `zuit-*`: static analysis tooling family (e.g., `zuit-python-test-cases`)
+  - `qec-*`: quantum error correction research family (e.g., future `qec-surface-benchmarks`)
   - No prefix required for standalone flagship repos (`zuit`, `tell-me-why`,
     `TransformerQEC`, `codestick` are their own namespaces).
 
@@ -46,11 +46,11 @@ A missing `## Status` section is a defect, not an omission.
 
 ### Status section guidance
 
-- **alpha** — API is unstable; breaking changes expected; not recommended for
+- **alpha**. API is unstable; breaking changes expected; not recommended for
   production use. Include a roadmap link (`ROADMAP.md` or a GitHub milestone).
-- **beta** — API is mostly stable; breaking changes will be announced in
+- **beta**. API is mostly stable; breaking changes will be announced in
   `CHANGELOG.md`; suitable for early adopters.
-- **stable** — Semver guarantees apply. Breaking changes require a major
+- **stable**. Semver guarantees apply. Breaking changes require a major
   version bump. `CHANGELOG.md` is kept current.
 
 ---

@@ -35,7 +35,7 @@ interface NumberedH3Props {
 
 function NumberedH3({ children, id, className, ...rest }: NumberedH3Props) {
   // If the h3 already has styling/structure applied (className), don't inject
-  // a prefix — that's a JSX-authored h3 inside a panel (pillar-tile, topic-card).
+  // a prefix: that's a JSX-authored h3 inside a panel (pillar-tile, topic-card).
   if (className !== undefined) {
     return <h3 id={id} className={className} {...rest}>{children}</h3>;
   }

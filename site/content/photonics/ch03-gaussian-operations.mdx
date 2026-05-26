@@ -8,21 +8,21 @@ export const meta = {
 
 # Gaussian operations on a photonic chip.
 
-<p className="chapter-lede">A continuous-variable photonic processor is built from a surprisingly small alphabet: phase shifters, beam splitters, displacements, and squeezers. Any Gaussian unitary on N modes is a recipe in those four ingredients, courtesy of the Bloch–Messiah and Reck–Clements decompositions. The catch — and there's always a catch — is that a chip restricted to this alphabet, fed Gaussian input, can be simulated on a laptop while you make a coffee.</p>
+<p className="chapter-lede">A continuous-variable photonic processor is built from a surprisingly small alphabet: phase shifters, beam splitters, displacements, and squeezers. Any Gaussian unitary on N modes is a recipe in those four ingredients, courtesy of the Bloch–Messiah and Reck–Clements decompositions. The catch (and there's always a catch) is that a chip restricted to this alphabet, fed Gaussian input, can be simulated on a laptop while you make a coffee.</p>
 
 ## Physical intuition: the Mach–Zehnder
 
 A Mach–Zehnder interferometer (MZI) is the smallest programmable Lego brick of a photonic mesh. Light enters two waveguides, a first beam splitter mixes them, a phase shifter slows one arm down a bit, and a second beam splitter recombines them. Twiddling that internal phase sweeps the output between "all the light goes here" and "all the light goes there," continuously and on demand.
 
-So an MZI is really a 2x2 variable beam splitter you can tune with a single DC voltage. Stack a grid of them on a shared waveguide layout, and you get a mesh that can implement any N-mode passive linear-optical unitary you like. Phase shifters set per-path delays; beam splitters mix neighboring paths. That's it — those are the only knobs in a passive Gaussian circuit.
+So an MZI is really a 2x2 variable beam splitter you can tune with a single DC voltage. Stack a grid of them on a shared waveguide layout, and you get a mesh that can implement any N-mode passive linear-optical unitary you like. Phase shifters set per-path delays; beam splitters mix neighboring paths. That's it. Those are the only knobs in a passive Gaussian circuit.
 
-Squeezers and displacements are the two active extras. A squeezer reshapes the mode's vacuum noise — sharper along one quadrature, blurrier along the perpendicular one. A displacement just shoves the state across phase space by adding a coherent amplitude. Throw squeezers and displacements onto the passive mesh and you can generate the full Gaussian group on N modes.
+Squeezers and displacements are the two active extras. A squeezer reshapes the mode's vacuum noise: sharper along one quadrature, blurrier along the perpendicular one. A displacement just shoves the state across phase space by adding a coherent amplitude. Throw squeezers and displacements onto the passive mesh and you can generate the full Gaussian group on N modes.
 
 ## Analogy: a programmable optical road network
 
-Picture N parallel roads. Phase shifters are adjustable speed bumps on a single lane, delaying that lane's traffic by whatever amount you like. Beam splitters are tunable T-junctions that redirect a programmable fraction of vehicles from one lane onto the next. Squeezers are weird road segments that asymmetrically stretch and compress vehicle spacing along one axis of position-momentum — like a stretch of highway where everyone tailgates the car in front but leaves enormous gaps to the side.
+Picture N parallel roads. Phase shifters are adjustable speed bumps on a single lane, delaying that lane's traffic by whatever amount you like. Beam splitters are tunable T-junctions that redirect a programmable fraction of vehicles from one lane onto the next. Squeezers are weird road segments that asymmetrically stretch and compress vehicle spacing along one axis of position-momentum, like a stretch of highway where everyone tailgates the car in front but leaves enormous gaps to the side.
 
-A circuit spec is a route plan: a sequence of bumps, junctions, and stretch zones that maps an input traffic pattern to an output one. Reck and Clements give two universal layouts for the junction grid — triangular and rectangular respectively — like two different schools of urban planning that both get you to the airport.
+A circuit spec is a route plan: a sequence of bumps, junctions, and stretch zones that maps an input traffic pattern to an output one. Reck and Clements give two universal layouts for the junction grid, triangular and rectangular respectively, like two different schools of urban planning that both get you to the airport.
 
 **Where the analogy breaks:**
 
@@ -172,7 +172,7 @@ The full recipe for any Gaussian unitary on N modes is therefore: a Clements mes
       </marker>
     </defs>
   </svg>
-  <figcaption>The complete alphabet of single- and two-mode Gaussian operations. A phase shifter rotates the phase-space coordinates; a beam splitter mixes two modes by a real angle θ (plus optionally a relative phase); a squeezer driven by a χ<sup>(2)</sup> pump compresses one quadrature while stretching the other. Everything else in a Gaussian chip — displacement, two-mode squeezing, Bogoliubov rotations — is some composition of these three.</figcaption>
+  <figcaption>The complete alphabet of single- and two-mode Gaussian operations. A phase shifter rotates the phase-space coordinates; a beam splitter mixes two modes by a real angle θ (plus optionally a relative phase); a squeezer driven by a χ<sup>(2)</sup> pump compresses one quadrature while stretching the other. Everything else in a Gaussian chip (displacement, two-mode squeezing, Bogoliubov rotations) is some composition of these three.</figcaption>
 </figure>
 
 ## Hardware today
@@ -247,11 +247,11 @@ Displacements are realized by interfering the signal mode with a strong coherent
 
 ## The Gaussian classical-simulability boundary
 
-A circuit built only from Gaussian unitaries, acting on Gaussian input states, and read out with Gaussian (homodyne or heterodyne) detection, can be simulated in polynomial time on a classical computer. Why? Because the entire state is captured by a 2N-dimensional mean vector and a 2N×2N covariance matrix — and both evolve through the circuit by ordinary symplectic matrix arithmetic. That's it. No exponential blowup; just linear algebra in a laptop-sized space.
+A circuit built only from Gaussian unitaries, acting on Gaussian input states, and read out with Gaussian (homodyne or heterodyne) detection, can be simulated in polynomial time on a classical computer. Why? Because the entire state is captured by a 2N-dimensional mean vector and a 2N×2N covariance matrix, and both evolve through the circuit by ordinary symplectic matrix arithmetic. That's it. No exponential blowup; just linear algebra in a laptop-sized space.
 
 Bartlett, Sanders, Braunstein, and de Guise (2002) proved the simulability result for Gaussian measurements<sup className="fn-ref"><a href="#fn-5">[5]</a></sup>. Mari and Eisert (2012) sharpened the boundary by showing that negativity of the Wigner function is a necessary resource for any quantum speedup in continuous-variable systems<sup className="fn-ref"><a href="#fn-6">[6]</a></sup>. Gaussian states have non-negative Wigner functions, so they cannot supply that resource.
 
-A Gaussian-only photonic chip, then, is a very sophisticated classical analog computer for symplectic linear algebra — impressive, but not a quantum computer in any meaningful sense. To escape simulability you have to add a non-Gaussian ingredient: a non-Gaussian input state (Fock, cat, GKP), a non-Gaussian gate (cubic phase), or a non-Gaussian measurement (photon-number-resolving detection, as in Gaussian boson sampling). One way or another, you have to smuggle some negativity in. Chapter 04 is about which smugglers we actually have and how much they charge.
+A Gaussian-only photonic chip, then, is a very sophisticated classical analog computer for symplectic linear algebra: impressive, but not a quantum computer in any meaningful sense. To escape simulability you have to add a non-Gaussian ingredient: a non-Gaussian input state (Fock, cat, GKP), a non-Gaussian gate (cubic phase), or a non-Gaussian measurement (photon-number-resolving detection, as in Gaussian boson sampling). One way or another, you have to smuggle some negativity in. Chapter 04 is about which smugglers we actually have and how much they charge.
 
 ## Notes
 

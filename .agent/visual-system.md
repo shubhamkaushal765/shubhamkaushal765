@@ -9,14 +9,14 @@ session; this document is the single source of truth for visual decisions.
 
 ## Hierarchy rules
 
-1. One H1 per page. H1 is the page title only — it does not appear in body
+1. One H1 per page. H1 is the page title only; it does not appear in body
    prose.
 2. H2 is the pillar level (Code Intelligence / Machine Learning / Quantum
    Computing on the About page; major section titles elsewhere). H2 uses
    small-caps styling and slightly larger leading than body prose.
 3. H3 is project or topic level.
 4. H4 is the deepest level permitted on site pages. H4 is never used in
-   `README.md` — H3 is the floor there.
+   `README.md`. H3 is the floor there.
 5. The hierarchy of trust: text > badges > stats > images. A claim supported
    by eight words of prose does not need a badge.
 
@@ -180,8 +180,8 @@ decoration, and is binding.
 
 ## Section numbering motif
 
-The three pillar headings on the About page — `Code intelligence`,
-`Machine learning`, `Quantum computing` — render with a small monospace
+The three pillar headings on the About page (`Code intelligence`,
+`Machine learning`, `Quantum computing`) render with a small monospace
 prefix `01` / `02` / `03` in the footnote-color, 0.75em, 0.1em
 letter-spacing. The prefix is `aria-hidden="true"` so screen readers do
 not announce it.
@@ -261,7 +261,7 @@ is never imported from a client component. Rendered only on `/`.
 
 - Syntax highlighting: Shiki.
 - Theme: `vesper` (preferred) or `vitesse-dark`.
-- Background: `--surface-base` (`#0a0a0a`) — no tint, no border, no box shadow.
+- Background: `--surface-base` (`#0a0a0a`). No tint, no border, no box shadow.
 - Line numbers: single left-aligned column. Font: code typeface, `--text-muted`
   color.
 - Horizontal scroll at `82ch`. No line wrapping inside code blocks.
@@ -279,7 +279,7 @@ When OG images are needed:
 
 - Generator: `@vercel/og` at build time (not at request time).
 - Background: `#0a0a0a` (solid, no gradient).
-- Text: white Inter Display — page name on one line, tagline on the next.
+- Text: white Inter Display. Page name on one line, tagline on the next.
   Weight 600 for the page name, 400 for the tagline.
 - Single hairline: `1px` white line at `60%` from the top of the image.
   Opacity `15%`.
@@ -299,7 +299,7 @@ plus the four inline-SVG diagram components in
 
 ### Pixel-coverage 60-30-10
 
-The single-accent rule is unchanged — there is still exactly one accent
+The single-accent rule is unchanged: there is still exactly one accent
 token (`--color-accent`). The 60-30-10 distribution is expressed as
 **pixel coverage** of the existing three-token surface system, not as
 introduction of new colors.
@@ -317,7 +317,7 @@ introduction of new colors.
 - Internal sub-grid (`.topic-card__body`) is 2-column at ≥640px (`table |
   diagram`), single column below.
 - Card padding `var(--spacing-5)`. Inter-card gap `var(--spacing-8)`.
-- Card background `var(--color-surface-card)`. **No hover state** — cards
+- Card background `var(--color-surface-card)`. **No hover state.** Cards
   read as static reference units. (Distinct from `.selected-work li` which
   does carry a hover background; the difference is deliberate.)
 - No box-shadow, no border. The card stands by background contrast only.
@@ -325,7 +325,7 @@ introduction of new colors.
 ### Diagrams
 
 - Hand-authored inline `<svg>` per topic. Sources of intent committed as
-  mermaid `.mmd` files under `site/diagrams/`. Never `<img src>` — `currentColor`
+  mermaid `.mmd` files under `site/diagrams/`. Never `<img src>`: `currentColor`
   cascading requires DOM-embedded SVG.
 - `viewBox="0 0 320 180"` consistent across all four diagrams.
 - Stroke width ≥ 1.5px so light-mode `--color-accent` (`#0284c7` at 5.7:1

@@ -10,7 +10,7 @@
   --spacing-13: 3.25rem;
   --spacing-21: 5.25rem;
 
-  /* surfaces (dark default) — warmer ink than pure neutral; reads less corporate */
+  /* surfaces (dark default): warmer ink than pure neutral; reads less corporate */
   --color-surface-base: #0a0a0f;
   --color-surface-card: #131320;
   --color-surface-hover: #1f1f2e;
@@ -19,21 +19,21 @@
   --color-border-hair: rgba(255, 255, 255, 0.07);
   --color-border-strong: rgba(255, 255, 255, 0.12);
 
-  /* text (dark default) — body is now a touch warm-white, like newsprint under lamp */
+  /* text (dark default): body is now a touch warm-white, like newsprint under lamp */
   --color-text-body: #f0ede5;
   --color-text-muted: #a3a098;
   --color-text-footnote: #757269;
 
-  /* primary accent (dark default) — leans toward riso cyan, more printed-feeling */
+  /* primary accent (dark default): leans toward riso cyan, more printed-feeling */
   --color-accent: #22d3ee;
 
-  /* pillar dimension family (dark) — bumped to -400 jewel tones with more presence */
-  --color-pillar-code:      #22d3ee;  /* cyan-400  — circuits */
-  --color-pillar-ml:        #a78bfa;  /* violet-400 — embeddings */
-  --color-pillar-quantum:   #34d399;  /* emerald-400 — superposition */
-  --color-pillar-photonics: #fbbf24;  /* amber-400 — light */
+  /* pillar dimension family (dark): bumped to -400 jewel tones with more presence */
+  --color-pillar-code:      #22d3ee;  /* cyan-400 (circuits) */
+  --color-pillar-ml:        #a78bfa;  /* violet-400 (embeddings) */
+  --color-pillar-quantum:   #34d399;  /* emerald-400 (superposition) */
+  --color-pillar-photonics: #fbbf24;  /* amber-400 (light) */
 
-  /* typography — serif display vs. neutral sans vs. mono terminal.
+  /* typography: serif display vs. neutral sans vs. mono terminal.
      The variable fallbacks pick up the next/font-injected face when available. */
   --font-sans: var(--font-sans-var), "Inter", system-ui, sans-serif;
   --font-display: var(--font-display-var), "Fraunces", "Iowan Old Style",
@@ -42,7 +42,7 @@
     "Geist Mono", ui-monospace, monospace;
 }
 
-/* Light mode tokens — slightly warm paper, deeper pillar inks */
+/* Light mode tokens: slightly warm paper, deeper pillar inks */
 [data-theme="light"] {
   --color-surface-base: #faf7f2;
   --color-surface-card: #f1ede5;
@@ -374,7 +374,7 @@
   gap: 0.35em;
 }
 
-/* Pillar words break out of the monospace voice and into the serif — the
+/* Pillar words break out of the monospace voice and into the serif. The
    tagline reads as: terminal prompt, then a thought, then a cursor. */
 .hero-tagline__pillar--code,
 .hero-tagline__pillar--quantum {
@@ -397,7 +397,7 @@
   border-bottom: 1px dashed color-mix(in oklab, var(--color-pillar-quantum) 50%, transparent);
 }
 
-/* Drop cap — only on opted-in elements. Pulls the eye into the first
+/* Drop cap: only on opted-in elements. Pulls the eye into the first
    paragraph and quietly signals "this was edited, not generated." */
 .drop-cap::first-letter {
   font-family: var(--font-display);
@@ -421,7 +421,7 @@
 
 /* ── Personality bits ── */
 
-/* Blinking terminal cursor — square block that announces a live prompt. */
+/* Blinking terminal cursor: square block that announces a live prompt. */
 .blink-cursor {
   display: inline-block;
   width: 0.55em;
@@ -441,7 +441,7 @@
   .blink-cursor { animation: none; opacity: 0.85; }
 }
 
-/* Dry-wit aside — italic, slightly muted, set off by a small bracket glyph. */
+/* Dry-wit aside: italic, slightly muted, set off by a small bracket glyph. */
 .aside {
   font-family: var(--font-mono);
   font-size: 0.82em;
@@ -472,7 +472,7 @@
   margin-right: 0.4em;
 }
 
-/* Keyboard-key chip — for the witty footer hint. */
+/* Keyboard-key chip, for the witty footer hint. */
 .kbd {
   font-family: var(--font-mono);
   font-size: 0.72em;
@@ -492,7 +492,7 @@
   border-color: color-mix(in oklab, var(--color-pillar-photonics) 30%, var(--color-border-hair));
 }
 
-/* Footer signature — let the segments stand apart and add a subtle hover Easter egg. */
+/* Footer signature: let the segments stand apart and add a subtle hover Easter egg. */
 .footer-signature__segment {
   display: inline-block;
   margin: 0 0.4em;

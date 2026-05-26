@@ -10,7 +10,7 @@ rules stated here.
 
 Shubham Kaushal is an independent engineer and researcher working across three
 equal domains: code intelligence and static analysis, applied machine learning,
-and quantum computing. The work is characterized by shipped tooling — a
+and quantum computing. The work is characterized by shipped tooling: a
 Rust-based multi-language static analyzer (`zuit`), a local-first RAG pipeline
 over source code (`tell-me-why`), and a transformer-based quantum error
 correction decoder (`TransformerQEC`). The archetype is research-lab
@@ -23,9 +23,9 @@ independent operator, not portfolio developer.
 > Parsers to qubits.
 
 This is the locked tagline. It appears verbatim in the `README.md` hero block.
-Do not paraphrase it. Do not change the punctuation. Do not expand it inline
-(the em-dash expansion "Code intelligence, ML, and quantum error correction"
-is a subtitle only, not part of the tagline itself).
+Do not paraphrase it. Do not change the punctuation. Do not expand it inline.
+The subtitle "Code intelligence, ML, and quantum error correction" is a
+subtitle only, not part of the tagline itself.
 
 ---
 
@@ -34,9 +34,9 @@ is a subtitle only, not part of the tagline itself).
 These three lines appear verbatim in `README.md` and on the site About page.
 Do not reword them under any circumstances.
 
-- Structure first, syntax second — work on the AST, the syndrome graph, the embedding, not the surface form.
-- Run local until proven otherwise — code, models, and quantum simulators belong on the operator's machine.
-- Reproducibility is the deliverable — fixtures, seeds, SARIF, `expected.json` — the artifact is the contract.
+- **Structure first, syntax second.** Work on the AST, the syndrome graph, the embedding, not the surface form. It's more work up front and it pays off later.
+- **Run local until proven otherwise.** Code, models, and quantum simulators belong on the operator's machine. Your data stays yours.
+- **Reproducibility is the deliverable.** Fixtures, seeds, SARIF, `expected.json`. If you can't re-run it and get the same result, the job isn't done.
 
 ---
 
@@ -44,32 +44,32 @@ Do not reword them under any circumstances.
 
 ### Code intelligence
 
-Primary artifact: `zuit` — multi-language static-analysis CLI in Rust.
+Primary artifact: `zuit`. Multi-language static-analysis CLI in Rust.
 Emits SARIF 2.1.0 with CWE and OWASP anchors.
 Correctness verified by `zuit-python-test-cases` fixture corpus.
 
 ### Machine learning
 
-Primary artifact: `tell-me-why` — local-first RAG over source code.
+Primary artifact: `tell-me-why`. Local-first RAG over source code.
 Multi-language parsing + Ollama inference + Chroma + sentence-transformers.
 All computation stays on the operator's machine.
 
 ### Quantum computing
 
-Primary artifact: `TransformerQEC` — transformer-based decoder for surface-code QEC.
+Primary artifact: `TransformerQEC`. Transformer-based decoder for surface-code QEC.
 Syndrome graph encoding, Stim simulation, PyTorch Lightning training.
 
 ### Bridge artifacts
 
-- `TransformerQEC` bridges ML to Quantum: transformer sequence modeling applied to syndrome graph decoding.
-- `tell-me-why` bridges Code to ML: source code treated as a structured corpus for embedding and retrieval.
+- `TransformerQEC` bridges ML to Quantum. Transformer sequence modeling applied to syndrome graph decoding.
+- `tell-me-why` bridges Code to ML. Source code treated as a structured corpus for embedding and retrieval.
 
 ---
 
 ## Pin slate
 
 The GitHub profile shows 5 pinned repositories. The 6th slot is intentionally
-empty as a discipline signal — it will not be filled until `verbose-noodles`
+empty as a discipline signal. It will not be filled until `verbose-noodles`
 or another artifact ships with at least 30 meaningful commits, a real README,
 and real CI.
 
@@ -80,7 +80,7 @@ and real CI.
 | 3 | tell-me-why | Code × ML bridge; local-first AI infrastructure |
 | 4 | qosf_excercises | Quantum credential (QOSF Cohort 9); peer-reviewed cohort |
 | 5 | codestick | Breadth proof; published TypeScript library; shows full-stack range |
-| 6 | *(empty)* | Intentionally empty — discipline signal; not a gap to fill reflexively |
+| 6 | *(empty)* | Intentionally empty. Discipline signal; not a gap to fill reflexively |
 
 To change the pin slate, follow the procedure in `AGENTS.md` § Adding a new repo.
 
@@ -97,24 +97,33 @@ These are absolute constraints. Any output that violates them is incorrect.
 - No section headers deeper than H3 in `README.md`.
 - No tables-of-contents in `README.md`.
 - No invented facts: no fake star counts, no invented release dates, no fabricated metrics, no projects not listed in the approved spec.
-- No motivational language: no "passionate developer," no "love coding," no "always learning," no "excited about," no "dedicated to."
-- No hype language: no "bleeding edge," no "cutting-edge," no "revolutionary," no "world-class."
+- Genuine first-person enthusiasm is encouraged when it is grounded in shipped work ("the project I'm most invested in right now," "the part I like digging into"). What stays banned is empty hype and try-hard performance: no "passionate developer," no "always learning," no "I'll talk your ear off," no "genuinely thrilling."
+- No marketing-grade hype words: no "bleeding edge," no "cutting-edge," no "revolutionary," no "world-class," no "boasts."
+- No em dashes (U+2014) in prose anywhere in the repository. Use a period, comma, colon, parentheses, or a restructured sentence instead. This does not apply to math or technical Unicode (minus sign, en dash, arrows) or to anything inside code.
+- No AI-tell phrasing: no "delve," "tapestry," "in the realm of," "it's worth noting," "navigating the landscape," or forced "not only X but also Y" constructions.
 - No co-author tags on commits. No `Co-Authored-By: Claude` lines.
 
 ---
 
 ## Voice rules
 
-Tone: calm, precise, technical. The register is engineering documentation, not
-a personal pitch. The model is `oilshell.org`, `nullprogram.com`, Stripe Press
-whitepaper — not a developer portfolio.
+Tone: enthusiastic, knowledgeable, dependable, and human. First person is
+allowed and encouraged ("I build...", "the part I like digging into"). The
+register is a working engineer talking about real, shipped work: warm and
+genuinely interested, but grounded, never hype and never performative.
 
-What to write: declarative statements about what things are and what they do.
-What to avoid: first-person enthusiasm, rhetorical questions, forward-looking
-hype, vague capability claims, jargon used for signaling rather than precision.
+What to write: confident, concrete statements about what things are and what
+they do, with room for the author's perspective on why a problem is worth the
+effort. Lead with the shipped artifact; let the enthusiasm follow from it.
+
+What to avoid: empty hype, try-hard lines ("I'll talk your ear off,"
+"genuinely thrilling"), AI-tell phrasing (see Hard rules), vague capability
+claims, and jargon used for signaling rather than precision. Never use the em
+dash character (U+2014) in prose.
 
 Sentences should be short enough to parse on first read. Paragraphs in the
-profile README are 2–3 sentences. Subsection prose does not exceed 4 sentences.
+profile README run 2-3 sentences; subsection prose stays under 4 sentences.
+The current `README.md` is the canonical exemplar of this voice. Match it.
 
 ---
 
@@ -151,7 +160,7 @@ Used on `/about`, `/now`, and all essays. Format: `[N] Author et al. "Title." Ve
 
 ### Pillar dimension family
 
-The visual system carries one *primary accent* and a *pillar dimension family* of three hues — one per research pillar. The primary accent governs all non-pillar UI; the pillar hues are used only on pillar-coded elements.
+The visual system carries one *primary accent* and a *pillar dimension family* of three hues (one per research pillar). The primary accent governs all non-pillar UI; the pillar hues are used only on pillar-coded elements.
 
 Primary accent (sky, doubles as the code-intelligence pillar hue):
 

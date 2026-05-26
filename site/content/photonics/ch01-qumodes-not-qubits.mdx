@@ -8,25 +8,25 @@ export const meta = {
 
 # Why photonics? Qumodes, not qubits.
 
-<p className="chapter-lede">Photonic quantum computing is not just "qubits, but make it photons." The natural unit of information here isn't a tidy two-level system — it's a mode of the electromagnetic field, an infinite-dimensional harmonic oscillator with a state space much bigger than a qubit's. That single fact rewrites the whole bill: room-temperature operation, optical fiber as a built-in interconnect, and photons going AWOL as the failure mode you actually have to budget for.</p>
+<p className="chapter-lede">Photonic quantum computing is not just "qubits, but make it photons." The natural unit of information here isn't a tidy two-level system. It's a mode of the electromagnetic field: an infinite-dimensional harmonic oscillator with a state space much bigger than a qubit's. That single fact rewrites the whole bill: room-temperature operation, optical fiber as a built-in interconnect, and photons going AWOL as the failure mode you actually have to budget for.</p>
 
 ## Physical intuition
 
-In this book a photon is a single quantum of excitation of a mode of the electromagnetic field. A mode is just a particular pattern Maxwell's equations allow: a definite direction, polarization, beam shape, and frequency window. Think of the mode as the bucket and the photon count as how full it is. Saying "a photon" without naming its mode is like saying "I have one" without finishing the sentence — one what, where, and going which way?
+In this book a photon is a single quantum of excitation of a mode of the electromagnetic field. A mode is just a particular pattern Maxwell's equations allow: a definite direction, polarization, beam shape, and frequency window. Think of the mode as the bucket and the photon count as how full it is. Saying "a photon" without naming its mode is like saying "I have one" without finishing the sentence: one what, where, and going which way?
 
-Light is appealing as a carrier of quantum information for three reasons, all of which loosely amount to "photons keep to themselves." First, photons barely interact with each other or with most of their environment, which gives them long coherence times even at room temperature — no dilution fridge, no vacuum chamber the size of a small car. Second, the same optical fibers and waveguides that already move classical telecom signals around the planet are perfectly happy moving quantum states in the 1550 nm band. Third, the dominant error isn't thermal decoherence — it's a photon simply not arriving. That's an erasure with a known address ("the click I expected at detector 17 didn't happen"), and erasures are much friendlier to error correction than the everything-is-corrupted-but-we-don't-know-how flavor of noise<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>.
+Light is appealing as a carrier of quantum information for three reasons, all of which loosely amount to "photons keep to themselves." First, photons barely interact with each other or with most of their environment, which gives them long coherence times even at room temperature (no dilution fridge, no vacuum chamber the size of a small car). Second, the same optical fibers and waveguides that already move classical telecom signals around the planet are perfectly happy moving quantum states in the 1550 nm band. Third, the dominant error isn't thermal decoherence. It's a photon simply not arriving. That's an erasure with a known address ("the click I expected at detector 17 didn't happen"), and erasures are much friendlier to error correction than the everything-is-corrupted-but-we-don't-know-how flavor of noise<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>.
 
-The flip side: the same antisocial streak that protects photons also makes it hard to convince two of them to do anything together. Deterministic two-photon gates — "you two, interact, on cue" — aren't natively available in any current platform. Photonic architectures get around this in one of two ways. Either you use measurement-induced nonlinearity (KLM-style linear optics with helper photons and a lot of "if you see a click here, do this over there" feed-forward), or you encode information in continuous variables, where Gaussian operations are practically free and you only have to splurge on one non-Gaussian resource state to make the whole thing work.
+The flip side: the same antisocial streak that protects photons also makes it hard to convince two of them to do anything together. Deterministic two-photon gates ("you two, interact, on cue") aren't natively available in any current platform. Photonic architectures get around this in one of two ways. Either you use measurement-induced nonlinearity (KLM-style linear optics with helper photons and a lot of "if you see a click here, do this over there" feed-forward), or you encode information in continuous variables, where Gaussian operations are practically free and you only have to splurge on one non-Gaussian resource state to make the whole thing work.
 
 ## Analogy: pipes and droplets
 
-Picture a network of pipes carrying water. Each pipe is a mode — a defined path with a defined cross-section. The water droplets sloshing inside are photons: discrete, countable little excitations of that pipe. A beam splitter is a Y-junction that mixes the contents of two pipes into two new pipes, and a phase shifter is a length of pipe that delays one stream relative to another. So far, so plumbing.
+Picture a network of pipes carrying water. Each pipe is a mode: a defined path with a defined cross-section. The water droplets sloshing inside are photons: discrete, countable little excitations of that pipe. A beam splitter is a Y-junction that mixes the contents of two pipes into two new pipes, and a phase shifter is a length of pipe that delays one stream relative to another. So far, so plumbing.
 
 **Where the analogy breaks:**
 - Droplets are classical and distinguishable; photons in the same mode are indistinguishable bosons that bunch (Hong–Ou–Mandel interference has no fluid analog).
-- Pipes can be entangled — the joint state of two modes can be non-separable in a way two water pipes never are.
+- Pipes can be entangled: the joint state of two modes can be non-separable in a way two water pipes never are.
 - A pipe can hold a superposition of "zero droplets" and "one droplet" simultaneously; a real pipe cannot.
-- Measurement destroys droplets in a way draining a pipe does not — photon-number-resolving detection is itself the nonlinear primitive in many architectures.
+- Measurement destroys droplets in a way draining a pipe does not. Photon-number-resolving detection is itself the nonlinear primitive in many architectures.
 
 ## Encodings: dual-rail, polarization, time-bin, continuous-variable
 
@@ -44,7 +44,7 @@ The same photon can carry information in surprisingly different ways, and every 
   </tbody>
 </table>
 
-The first three are qubit encodings: each logical qubit lives in a tiny two-dimensional slice of a much larger Hilbert space, and the rest of the space is either wasted or feared as "leakage." The fourth treats the entire infinite-dimensional space of the mode as the resource — no slicing, no leftover. That's the qumode picture, and it's what flips the cost model on its head.
+The first three are qubit encodings: each logical qubit lives in a tiny two-dimensional slice of a much larger Hilbert space, and the rest of the space is either wasted or feared as "leakage." The fourth treats the entire infinite-dimensional space of the mode as the resource: no slicing, no leftover. That's the qumode picture, and it's what flips the cost model on its head.
 
 <figure className="chapter-figure">
   <svg viewBox="0 0 880 220" width="100%" role="img" aria-labelledby="enc-title enc-desc" xmlns="http://www.w3.org/2000/svg" style={{color: 'currentColor'}}>
@@ -110,11 +110,11 @@ The first three are qubit encodings: each logical qubit lives in a tiny two-dime
 
 ## Mathematical structure
 
-A single mode of the field is, mathematically, just a quantum harmonic oscillator — a spring with a quantum mechanic's union card. Its algebra is generated by the bosonic annihilation and creation operators *a* and *a*<sup>†</sup>, satisfying [*a*, *a*<sup>†</sup>] = 1. The number operator n̂ = *a*<sup>†</sup>*a* has eigenstates |n⟩ for non-negative integers *n* — the Fock basis — which is just a fancy way of counting how many photons are in the mode.
+A single mode of the field is, mathematically, just a quantum harmonic oscillator: a spring with a quantum mechanic's union card. Its algebra is generated by the bosonic annihilation and creation operators *a* and *a*<sup>†</sup>, satisfying [*a*, *a*<sup>†</sup>] = 1. The number operator n̂ = *a*<sup>†</sup>*a* has eigenstates |n⟩ for non-negative integers *n* (the Fock basis), which is just a fancy way of counting how many photons are in the mode.
 
 Coherent states |α⟩ are eigenstates of *a* with complex eigenvalue α, and they are the closest quantum analog of a classical laser field: *a*|α⟩ = α|α⟩. Expanded in Fock states, |α⟩ = exp(−|α|²/2) Σ<sub>n</sub> α<sup>n</sup>/√(n!) |n⟩, a Poissonian distribution over photon number. Coherent states are Gaussian and classical-like; they cannot by themselves do anything a classical computer cannot simulate efficiently.
 
-Phase-space coordinates x̂ = (*a* + *a*<sup>†</sup>)/√2 and p̂ = (*a* − *a*<sup>†</sup>)/(i√2) are the position-like and momentum-like quadratures of the field, obeying [x̂, p̂] = i. Continuous-variable quantum information is encoded in these quadratures. Universal CV computation requires at least one non-Gaussian element — for example, a cubic phase gate, a photon-number measurement, or a Gottesman–Kitaev–Preskill (GKP) state — to escape the Gaussian regime that is classically simulable<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>.
+Phase-space coordinates x̂ = (*a* + *a*<sup>†</sup>)/√2 and p̂ = (*a* − *a*<sup>†</sup>)/(i√2) are the position-like and momentum-like quadratures of the field, obeying [x̂, p̂] = i. Continuous-variable quantum information is encoded in these quadratures. Universal CV computation requires at least one non-Gaussian element (for example, a cubic phase gate, a photon-number measurement, or a Gottesman–Kitaev–Preskill (GKP) state) to escape the Gaussian regime that is classically simulable<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>.
 
 <figure className="chapter-figure">
   <svg id="qubit-vs-qumode" viewBox="0 0 800 360" width="100%" role="img" aria-labelledby="qvm-title qvm-desc" style={{color: 'currentColor'}}>
@@ -179,7 +179,7 @@ Phase-space coordinates x̂ = (*a* + *a*<sup>†</sup>)/√2 and p̂ = (*a* − 
 
 Three hardware lanes are worth distinguishing. Linear-optical photonic chips combine on-chip squeezers, programmable interferometers, and photon-number-resolving detectors; Xanadu's Borealis demonstrated Gaussian boson sampling at programmable scale<sup className="fn-ref"><a href="#fn-3">[3]</a></sup>, and PsiQuantum has proposed a fusion-based architecture targeting fault tolerance from small entangled resource states<sup className="fn-ref"><a href="#fn-4">[4]</a></sup>. Quandela builds single-photon sources based on quantum dots and operates a cloud-accessible linear-optical processor.
 
-Integrated silicon photonics — the same CMOS-compatible fabrication that ships classical transceivers — provides waveguides, ring resonators, and Mach–Zehnder meshes that are reused for quantum protocols. Trapped-photon resonators (high-Q cavities, including superconducting microwave cavities for bosonic codes) are a different lane: they confine a single mode for long times so that GKP, cat, and binomial codes can be prepared and stabilized. Microwave bosonic codes have been demonstrated at the break-even point for memory<sup className="fn-ref"><a href="#fn-5">[5]</a></sup>; optical-frequency analogs remain proposed.
+Integrated silicon photonics (the same CMOS-compatible fabrication that ships classical transceivers) provides waveguides, ring resonators, and Mach–Zehnder meshes that are reused for quantum protocols. Trapped-photon resonators (high-Q cavities, including superconducting microwave cavities for bosonic codes) are a different lane: they confine a single mode for long times so that GKP, cat, and binomial codes can be prepared and stabilized. Microwave bosonic codes have been demonstrated at the break-even point for memory<sup className="fn-ref"><a href="#fn-5">[5]</a></sup>; optical-frequency analogs remain proposed.
 
 What is demonstrated today: programmable Gaussian boson sampling at hundreds of modes, small entangled cluster states, GKP states in microwave cavities, single-photon sources with high indistinguishability. What is proposed but not yet demonstrated at scale: fault-tolerant fusion-based photonic architectures, optical-frequency GKP encoded qubits, room-temperature universal CV computation.
 
@@ -227,7 +227,7 @@ What is demonstrated today: programmable Gaussian boson sampling at hundreds of 
 
 ## Why this matters for the rest of the book
 
-The qumode picture rearranges the price list. Gaussian operations — squeezing, displacement, beam splitting, homodyne detection — are deterministic and cheap. The non-Gaussian stuff is what costs you. That's a complete inversion of the qubit world, where two-qubit entangling gates are the expensive item on every menu. Later chapters take this seriously: the engineering problem stops being "how do I make every gate deterministic" and becomes "how do I manufacture weird, non-Gaussian states at industrial scale."
+The qumode picture rearranges the price list. Gaussian operations (squeezing, displacement, beam splitting, homodyne detection) are deterministic and cheap. The non-Gaussian stuff is what costs you. That's a complete inversion of the qubit world, where two-qubit entangling gates are the expensive item on every menu. Later chapters take this seriously: the engineering problem stops being "how do I make every gate deterministic" and becomes "how do I manufacture weird, non-Gaussian states at industrial scale."
 
 Chapter 02 develops the Fock and coherent-state machinery in detail and works through the optical transfer matrix formalism that the rest of the book uses. Chapter 03 then treats the encoding zoo above as concrete circuits, with loss budgets attached.
 

@@ -5,9 +5,9 @@ import FooterSignature from '@/components/FooterSignature';
 import { CHAPTERS } from './chapters';
 
 export const metadata: Metadata = {
-  title: 'Code intelligence — Shubham Kaushal',
+  title: 'Code intelligence | Shubham Kaushal',
   description:
-    'A working notebook on code intelligence — parsers, static analysis, language servers, and the hybrid symbolic-plus-neural systems that ship in modern developer tools.',
+    'A working notebook on code intelligence: parsers, static analysis, language servers, and the hybrid symbolic-plus-neural systems that ship in modern developer tools.',
 };
 
 export default function CodeIntelligenceBookPage() {
