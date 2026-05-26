@@ -18,6 +18,45 @@ So an MZI is really a 2x2 variable beam splitter you can tune with a single DC v
 
 Squeezers and displacements are the two active extras. A squeezer reshapes the mode's vacuum noise: sharper along one quadrature, blurrier along the perpendicular one. A displacement just shoves the state across phase space by adding a coherent amplitude. Throw squeezers and displacements onto the passive mesh and you can generate the full Gaussian group on N modes.
 
+<figure className="chapter-figure">
+  <svg role="img" aria-labelledby="mzi-single-title mzi-single-desc" width="100%" viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" style={{color: 'currentColor'}}>
+    <title id="mzi-single-title">A single Mach–Zehnder interferometer</title>
+    <desc id="mzi-single-desc">Two horizontal waveguides carrying input modes a and b on the left pass through a first beam splitter, separate into two arms, traverse an internal phase shifter of angle phi on the upper arm, recombine at a second beam splitter, and exit as outputs a-prime and b-prime on the right. Tuning the internal phase phi sweeps the optical power continuously between the two outputs.</desc>
+    <g id="mzi-waveguides" stroke="currentColor" strokeWidth="1.6" fill="none">
+      <line x1="30" y1="70" x2="160" y2="70" />
+      <line x1="30" y1="150" x2="160" y2="150" />
+      <line x1="200" y1="70" x2="440" y2="70" />
+      <line x1="200" y1="150" x2="440" y2="150" />
+      <line x1="480" y1="70" x2="610" y2="70" />
+      <line x1="480" y1="150" x2="610" y2="150" />
+    </g>
+    <g id="mzi-bs" stroke="currentColor" strokeWidth="1.6" fill="var(--color-surface-card, none)">
+      <rect x="160" y="58" width="40" height="104" rx="4" />
+      <rect x="440" y="58" width="40" height="104" rx="4" />
+    </g>
+    <g id="mzi-bs-labels" fill="currentColor" fontSize="11" fontFamily="ui-monospace, monospace" textAnchor="middle">
+      <text x="180" y="114">BS₁</text>
+      <text x="460" y="114">BS₂</text>
+    </g>
+    <g id="mzi-output-beams" stroke="var(--pillar-color, var(--color-accent))" strokeWidth="3.2" fill="none" strokeLinecap="round">
+      <line className="mzi-beam mzi-beam--a" x1="480" y1="70" x2="610" y2="70" />
+      <line className="mzi-beam mzi-beam--b" x1="480" y1="150" x2="610" y2="150" />
+    </g>
+    <g id="mzi-phase">
+      <circle className="mzi-phase-dot" cx="320" cy="70" r="8" fill="var(--pillar-color, var(--color-accent))" stroke="currentColor" strokeWidth="1.6" />
+      <text x="320" y="48" textAnchor="middle" fontSize="13" fontFamily="ui-monospace, monospace" fill="var(--pillar-color, var(--color-accent))">φ</text>
+    </g>
+    <g id="mzi-io-labels" fill="currentColor" fontSize="12" fontFamily="ui-monospace, monospace">
+      <text x="16" y="74" textAnchor="end">a</text>
+      <text x="16" y="154" textAnchor="end">b</text>
+      <text x="624" y="74">a'</text>
+      <text x="624" y="154">b'</text>
+    </g>
+    <text x="320" y="200" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">tuning φ sweeps power between a' and b'</text>
+  </svg>
+  <figcaption>A single Mach–Zehnder interferometer: two input modes mix at a first beam splitter, pick up a relative phase φ on the upper arm, and recombine at a second beam splitter. The accented phase shifter is the only tunable element; sweeping its DC-controlled angle continuously varies how the input power splits between the two outputs, making the MZI a programmable 2x2 variable beam splitter. The animated accent beams trace that power oscillating between a' and b' as φ runs through a full cycle.</figcaption>
+</figure>
+
 ## Analogy: a programmable optical road network
 
 Picture N parallel roads. Phase shifters are adjustable speed bumps on a single lane, delaying that lane's traffic by whatever amount you like. Beam splitters are tunable T-junctions that redirect a programmable fraction of vehicles from one lane onto the next. Squeezers are weird road segments that asymmetrically stretch and compress vehicle spacing along one axis of position-momentum, like a stretch of highway where everyone tailgates the car in front but leaves enormous gaps to the side.

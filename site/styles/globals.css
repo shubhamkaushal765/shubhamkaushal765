@@ -829,11 +829,35 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* Mach–Zehnder power-sweep: outputs oscillate in antiphase as φ runs a cycle */
+@keyframes mzi-sweep-a {
+  0%, 100% { opacity: 0.95; }
+  50%      { opacity: 0.08; }
+}
+@keyframes mzi-sweep-b {
+  0%, 100% { opacity: 0.08; }
+  50%      { opacity: 0.95; }
+}
+@keyframes mzi-phase-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+
+.mzi-beam--a { animation: mzi-sweep-a 4s ease-in-out infinite; }
+.mzi-beam--b { animation: mzi-sweep-b 4s ease-in-out infinite; }
+.mzi-phase-dot { animation: mzi-phase-pulse 4s ease-in-out infinite; }
+
 /* Reduced motion overrides */
 @media (prefers-reduced-motion: reduce) {
   .hero-tagline { animation: none; }
   a, .blog-entry, .selected-work li {
     transition: none;
+  }
+  .mzi-beam--a,
+  .mzi-beam--b,
+  .mzi-phase-dot {
+    animation: none;
+    opacity: 0.55;
   }
 }
 
