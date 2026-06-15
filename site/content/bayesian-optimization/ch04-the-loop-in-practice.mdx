@@ -4,20 +4,28 @@ export const meta = {
   title: 'The loop in practice: priors, noise, and where it breaks.',
   summary:
     'Kernel and length-scale priors matter more than most tutorials admit. Noisy observations, input warping, high-dimensional search spaces, and batch parallelism each require specific design choices that the basic loop glosses over.',
-  reading: '12 min',
+  reading: '15 min',
 };
 
 # The loop in practice: priors, noise, and where it breaks.
 
 <p className="chapter-lede">The derivation in Chapter 02 assumes noiseless observations and a well-specified kernel. Real problems have heteroskedastic noise, poorly-chosen length scales, discrete and conditional search spaces, and evaluation budgets that demand batch parallelism. Each of these issues has a known fix and a known failure mode.</p>
 
+In Chapter 03 we picked a scouting rule on the assumption that the belief map is trustworthy; this chapter answers the question that assumption left open: what happens when the map is built on the wrong length scale, noisy clues, or no clues at all.
+
+A useful mental model: the failures here are all bad assumptions about the terrain. A length scale that is too short means assuming a single clue carries no distance, so the fog snaps back to full thickness between digs; a length scale that is too long means assuming the island is one smooth hill, so real bumps get ironed flat. Tuning the loop is mostly tuning how lumpy you believe the terrain is.
+
+<p className="aside">A confident map drawn from three clues is more dangerous than an honest blank one. Most of this chapter is about keeping the map honest while the data is still thin.</p>
+
 ## Kernel and length-scale priors
 
-With fewer than roughly 20 observations, maximum likelihood estimation of the GP hyperparameters is unreliable. The length scale collapses toward zero -- memorizing every observed value, leaving no generalization between points -- or inflates toward infinity, reducing the posterior to the prior mean everywhere. Both failures look like reasonable GP fits on training data and produce useless acquisition functions.
+With only a handful of observations, say fewer than 20, fitting the GP hyperparameters by maximum likelihood is unreliable, and the two ways it fails are worth recognizing on sight. The length scale collapses toward zero -- memorizing every observed value, leaving no generalization between points -- or inflates toward infinity, reducing the posterior to the prior mean everywhere. Both failures look like reasonable GP fits on training data and produce useless acquisition functions.
 
 The standard remedy is to place priors on the length scale and signal variance before optimizing. A log-normal prior on the length scale encodes the belief that the function varies meaningfully over the scale of the search space, without ruling out fast or slow variation at the extremes. Snoek et al. 2012<sup className="fn-ref"><a href="#fn-1">[1]</a></sup> handle this by marginalizing over hyperparameters with slice sampling rather than committing to a single maximum-likelihood estimate. The marginal is more expensive but substantially more robust when data are scarce.
 
 The practical heuristic: set the prior mean of the log length scale to the log of the search-space diameter divided by four. That anchors the prior in the regime where the function is neither flat nor wildly oscillatory, and the data can pull it toward the truth as observations accumulate.
+
+The chunk-size task shows the stakes directly. The knob spans 64 to 2048 tokens, so the length-scale prior should expect recall@10 to change meaningfully over a few hundred tokens, not over a single token and not only across the whole range. The heuristic above, log length scale anchored at the log of the search-space diameter over four, lands the prior near a few hundred tokens, which is the right order of magnitude before any trial has run.
 
 <figure className="chapter-figure">
   <svg
@@ -136,6 +144,8 @@ The objective must have some structure for BO to exploit. Discontinuous objectiv
 
 BO overhead grows with the number of observations. GP fitting is cubic in the observation count. At 500 observations, fitting the GP on every iteration is slow; at 5000, it becomes a bottleneck. The practical threshold depends on hardware and implementation, but when it is reached, the standard remedies are sparse GP approximations or switching to a cheaper surrogate such as a random forest, which is the approach taken by SMAC.
 
+Cold start is visible in the chunk-size run too: the first five trials come from a Sobol design over 64 to 2048 tokens, not from the GP, because with zero observations the belief map is pure prior and has nothing to recommend. Those five digs buy the map its first shape, and only then does EI take over.
+
 <table className="encoding-table">
   <thead>
     <tr>
@@ -172,6 +182,22 @@ BO overhead grows with the number of observations. GP fitting is cubic in the ob
     </tr>
   </tbody>
 </table>
+
+## Check your understanding
+
+1. A short length scale and a long length scale both produce a GP that looks like a reasonable fit on the training points. Explain how each one nonetheless sabotages the acquisition step, using the fog image.
+2. Shot noise in an RB estimate goes onto the kernel diagonal as a tuned noise variance. Reason about what happens to the posterior, and to exploration, if that noise variance is fixed at zero instead.
+3. Cold start spends the first 5 to 20 evaluations on a space-filling design rather than on the acquisition function. Argue why this is a cost of starting without information rather than a flaw in the method.
+
+## What to remember
+
+**The clean loop assumes noiseless data and a well-specified kernel; real runs fight bad length scales, observation noise, high dimension, batching, and cold start, each with a known fix and a known failure mode.**
+
+- With scarce data, put priors on the length scale and noise variance so maximum likelihood cannot collapse the fit to memorization or to a flat prior.
+- High dimension hurts the acquisition optimization, not the GP fit; additive decomposition or random embedding is the usual escape.
+- Cold start is unavoidable: spend the first few digs on a space-filling design because the map has nothing to say yet.
+
+Key insight: **most BO failures are not bugs in the algorithm but wrong assumptions about how lumpy and how noisy the terrain is.**
 
 ## Notes
 

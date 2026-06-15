@@ -4,16 +4,24 @@ export const meta = {
   title: 'Bayesian optimization in the wild: hyperparameters and qubit calibration.',
   summary:
     'Two worked domains: tuning ML embedding models (the RAG pipeline from the code-intelligence pillar) and qubit gate calibration (RB, T1, T2, gate tomography) framed as sequential black-box optimization. Reproducibility via seeds and fixtures.',
-  reading: '13 min',
+  reading: '16 min',
 };
 
 # Bayesian optimization in the wild: hyperparameters and qubit calibration.
 
-<p className="chapter-lede">Two domains, one algorithm. Hyperparameter tuning of an embedding model and single-qubit gate calibration both present as expensive black-box optimization with a small evaluation budget. The structure is identical; only the lab bench changes. This chapter also closes the cross-pillar loop: the embedding model is the one powering the code-intelligence RAG pipeline described in the code-intelligence book; the qubit calibration work connects to "Qubit calibration as an orchestration problem" in the writing pipeline.</p>
+<p className="chapter-lede">Two domains, one algorithm. Tuning an embedding pipeline and calibrating a single-qubit gate both show up as expensive black-box optimization on a small budget, which means both are the same treasure hunt with a different island. The structure is identical; only the lab bench changes. This chapter also closes the cross-pillar loop: the embedding model is the one powering the code-intelligence RAG pipeline described in the code-intelligence book; the qubit calibration work connects to "Qubit calibration as an orchestration problem" in the writing pipeline.</p>
+
+In Chapter 04 we hardened the loop against bad priors, noise, and cold start on a single knob; this chapter answers the question that hardening left open: does the same structure survive a real mixed search space, and does it transfer to a second domain that looks nothing like the first.
+
+A useful mental model: it is the same treasure hunter on a foggy island, only now the island has more than one dimension and the second island is a quantum chip. The belief map, the fog, the kernel assumption, and the scouting rule do not change when the terrain becomes hyperparameters or drive pulses. Two domains, one map.
+
+<p className="aside">The qubit chip and the retrieval benchmark have never met. The treasure hunter does not notice the difference.</p>
 
 ## Domain 1: tuning ML embedding models
 
 The code-intelligence book's retrieval pipeline -- built around `tell-me-why` -- uses an embedding model to represent code chunks and queries in a shared vector space. Three parameters govern retrieval quality: the choice of embedding model, the chunk size at indexing time, and the top-k value used at query time. Evaluating any single configuration requires running the full retrieval benchmark against a fixed held-out query set. That benchmark takes minutes per trial on a GPU, and the search space mixes discrete choices (model name) with continuous ones (chunk size, top-k threshold). This is the mixed continuous-discrete regime where BO earns its keep.<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>
+
+The chunk-size knob from the earlier chapters was a deliberate one-dimensional slice of exactly this problem. Here it rejoins its two companions: the chunk size from 64 to 2048 tokens becomes one continuous axis alongside the discrete embedding-model choice and the continuous top-k threshold. The objective is unchanged, recall@10 on the fixed held-out query set, and the budget per trial is the same roughly 8 minutes of GPU time. BO does not care that one axis is now discrete; it just optimizes the acquisition over a mixed space.
 
 The loop runs as follows. Five initial configurations are drawn from a Sobol low-discrepancy sequence, covering the search space without clustering. A Matern 5/2 GP is fitted to those five observations, then EI selects the sixth configuration, the benchmark runs, and the result is appended to the dataset. Repeat until the budget is exhausted. The objective is recall@10 on the held-out query set: the fraction of ground-truth relevant chunks that appear in the top-10 retrieved results.
 
@@ -22,6 +30,8 @@ The implementation uses BoTorch for the acquisition optimization step.<sup class
 ## Domain 2: qubit gate calibration as BO
 
 Single-qubit gate calibration requires sweeping drive parameters -- primarily drive amplitude and drive frequency -- to maximize gate fidelity. Each candidate parameter setting is evaluated by running a randomized benchmarking (RB) circuit sequence on the QPU and fitting the decay curve to extract an error-per-gate estimate. One RB sequence takes minutes of device time. The total calibration budget is typically 20 to 100 trials per qubit, depending on how tight the fidelity target is and how stable the device is.
+
+Read the qubit task against the chunk-size task and the structure lines up point for point: drive amplitude and frequency replace chunk size and top-k, gate fidelity from randomized benchmarking replaces recall@10, and minutes of QPU time replace minutes of GPU time. The map, the kernel, and the acquisition rule are identical; only the lab bench changed.
 
 This connects to "Qubit calibration as an orchestration problem" in the writing pipeline, which frames the same workflow as resource allocation across multiple qubits and calibration types (T1, T2, RB, gate tomography). The BO perspective and the orchestration perspective are complementary: BO decides which parameter setting to try next within a single calibration task; the orchestration layer decides which calibration tasks to run and in what order.
 
@@ -184,6 +194,22 @@ For the qubit calibration domain, the fixture also records the RB circuit parame
 The three pillars -- ML, quantum, code-intelligence -- share the problem structure of expensive black-box evaluation with a limited budget. BO is one instance of a broader principle: the structured artifact carries more information than its surface form. The GP posterior is that structured artifact; it encodes not just the best observed value but the full landscape of uncertainty over the search space. The raw evaluation budget is the surface form, and querying it without a surrogate discards the information you already have.
 
 The code-intelligence connection is direct: the embedding model whose hyperparameters are being tuned by BO is the same model powering the retrieval layer described in the code-intelligence book. The quantum connection runs through the orchestration layer: BO decides which parameter to try next within a calibration task, while the orchestration problem -- described in "Qubit calibration as an orchestration problem" -- decides which tasks to schedule across a multi-qubit device. Both decisions are instances of information-theoretic resource allocation under constraint, and the GP posterior is what makes the within-task decision principled.
+
+## Check your understanding
+
+1. The comparison table lists the chunk-size domain as low-noise and the qubit domain as moderate-noise. Reason about how that single difference should change the kernel diagonal and the choice between EI and GP-UCB.
+2. Replaying a saved BO fixture reproduces the chunk-size run exactly but not the qubit run's fidelity values. Explain which part of the run is reproducible regardless of hardware, and why that is the part that matters for verification.
+3. The chapter claims the GP posterior carries more information than the raw evaluation budget. Argue what specifically is lost if you keep only the best observed value and discard the posterior.
+
+## What to remember
+
+**Hyperparameter tuning and qubit gate calibration are the same Bayesian optimization problem wearing different hardware, and the GP posterior is the artifact that makes both reproducible.**
+
+- The mixed continuous-discrete chunk-size, model, top-k space and the continuous amplitude-frequency space are both just search spaces the acquisition optimizes over.
+- Device drift breaks exact reproduction of fidelity values, but the optimization logic stays verifiable from a seeded fixture.
+- Fix all three sources of randomness, the Sobol design, the acquisition restarts, and the GP hyperparameter initialization, or two runs diverge.
+
+Key insight: **once you see the loop as a treasure hunt over a belief map, the domain stops mattering; the structure is what transfers.**
 
 ## Notes
 

@@ -4,20 +4,28 @@ export const meta = {
   title: 'Gaussian processes: a surrogate that quantifies its own doubt.',
   summary:
     'A GP places a prior over functions and updates it with observations to produce a posterior mean and variance at every untried point. The kernel encodes prior beliefs about smoothness; the marginal likelihood tunes it automatically.',
-  reading: '11 min',
+  reading: '14 min',
 };
 
 # Gaussian processes: a surrogate that quantifies its own doubt.
 
 <p className="chapter-lede">The key property of a GP surrogate is that it returns not just a predicted value but a confidence interval at every untried input. That uncertainty is what feeds the acquisition function. Without it, you have a point estimate and no principled way to trade off exploration and exploitation.</p>
 
+In Chapter 01 we described a loop that fits a surrogate and then queries it; this chapter answers the question that loop left open: what kind of model can stand in for an expensive objective and also say how much it does not yet know.
+
+A useful mental model: a Gaussian process is a belief map over the search space, continuously redrawn, shaded darker where the model is confident and lighter where it is unsure. The posterior mean is the map's best guess at the height of the terrain; the posterior variance is the thickness of the fog over each spot. The kernel, introduced below, is your assumption about how lumpy the terrain is, and how far a single clue carries.
+
+<p className="aside">A model that never reports doubt cannot be surprised, and a treasure hunter who is never surprised stops looking. The variance is the point.</p>
+
 ## What a GP is
 
-A Gaussian process is a probability distribution over functions. Any finite collection of function values drawn from a GP follows a joint Gaussian distribution, indexed by the input points. This is a strong statement: the model does not commit to a single function but maintains a distribution over all functions consistent with the prior and the data.
+A Gaussian process is a probability distribution over functions. Pick any finite set of input points, and the function values at those points follow one joint Gaussian distribution. That is the whole definition, and it is what makes the math tractable. This is a strong statement: the model does not commit to a single function but maintains a distribution over all functions consistent with the prior and the data.
 
 Two objects fully specify a GP prior: a mean function m(x), most often set to zero, and a kernel (covariance function) k(x, x'). The kernel encodes what the model believes about how function values co-vary across input space -- how smooth the function is expected to be, how quickly correlations decay with distance. <sup className="fn-ref"><a href="#fn-1">[1]</a></sup>
 
 The mean function sets the baseline prediction in regions with no observations. The kernel determines how information from one point propagates to nearby points. Both choices matter; the kernel matters more.
+
+For the `tell-me-why` chunk-size task, the GP is exactly this belief map: its input axis is the chunk size from 64 to 2048 tokens, and its output is the predicted recall@10. After a handful of trials the map is sharp near the chunk sizes you have already benchmarked and foggy everywhere between them. That fog is what tells the next chapter where it is still worth digging.
 
 ## Kernels: encoding prior beliefs about smoothness
 
@@ -63,6 +71,8 @@ The linear kernel is degenerate in the GP sense -- it does not produce stationar
 
 After observing n data points x_1 through x_n with corresponding outputs y, the GP posterior at a new test point x* has a closed-form mean and variance. These follow directly from the standard Gaussian conditioning identities. <sup className="fn-ref"><a href="#fn-1">[1]</a></sup>
 
+Before the equations, walk one number through by hand. Say you have benchmarked three chunk sizes and the GP is asked about a new one sitting close to a trial that scored recall@10 of 0.50. Because the new point is near a known clue, the kernel gives it a high cross-covariance, so the posterior mean is pulled close to 0.50 and the posterior variance is small: little fog, a confident guess. Now ask about a chunk size far from every trial. The cross-covariances are near zero, the mean falls back toward the prior (say 0.0 after centering), and the variance climbs back toward the full prior variance: thick fog, the model admits it is guessing. The two equations below are just the bookkeeping that produces those two numbers at every point.
+
 ```
 // pseudocode
 // GP conditioning equations
@@ -80,6 +90,8 @@ sigma_post^2(x*) = k_ss - k_s^T * K^{-1} * k_s
 ```
 
 Two properties follow immediately. The posterior variance collapses to the noise floor sigma_n^2 at observed points (or to zero in the noiseless case), because the GP interpolates (or near-interpolates) through the data. In regions far from all observations, the posterior variance approaches the prior variance k_ss -- the model returns to its prior when it has no relevant evidence.
+
+Read termwise: `k_s^T K^{-1} y` is the data pulling the mean toward nearby observed scores, and `k_ss - k_s^T K^{-1} k_s` is the prior fog minus however much the nearby data has burned off. When a test point is far from all data, `k_s` goes to zero, the mean returns to the prior, and the variance returns to `k_ss`.
 
 The acquisition function in Bayesian optimization reads both outputs: the posterior mean tells it where the objective is expected to be good, and the posterior variance tells it where there is still meaningful uncertainty. The balance between them determines the exploration-exploitation tradeoff.
 
@@ -272,6 +284,22 @@ The standard approach is Type-II maximum likelihood, also called empirical Bayes
 With few observations -- fewer than roughly 20 -- the marginal likelihood can be maximized to pathological values. The length scale collapses to zero, memorizing each data point exactly, or inflates to infinity, collapsing the posterior to the prior mean. Placing log-normal priors over the length scale and signal variance and then marginalizing over hyperparameters (via MCMC or HMC slice sampling) is more principled and more stable. <sup className="fn-ref"><a href="#fn-2">[2]</a></sup>
 
 The practical takeaway is that automatic hyperparameter tuning via marginal likelihood works well when the observation count is moderate (20 to 100 points). Below that threshold, prior specification over the hyperparameters matters as much as the choice of kernel.
+
+## Check your understanding
+
+1. At an observed point the posterior variance collapses to the noise floor, and far from all data it returns to the prior variance. Explain, in terms of the kernel matrix, why both behaviors fall out of the same conditioning equations.
+2. Two practitioners fit a GP to the same five chunk-size trials but choose different kernels, one RBF and one Matern 3/2. Predict where their posterior means will disagree most, and why the choice matters more in the gaps than at the data.
+3. With only eight observations, maximum marginal likelihood can drive the length scale to zero. Describe what the belief map looks like in that failure, and why it makes the next acquisition step useless.
+
+## What to remember
+
+**A Gaussian process is a surrogate that returns a predicted value and an honest confidence interval at every untried input, which is exactly what the acquisition function needs.**
+
+- The kernel encodes how smooth the objective is and how far one observation informs its neighbors; Matern 5/2 is the standard default.
+- The posterior mean says where the objective is likely good; the posterior variance, the thickness of the fog, says where the model is still unsure.
+- Marginal likelihood tunes the hyperparameters automatically, but with fewer than about 20 points it needs priors to stay sane.
+
+Key insight: **the value the GP returns is cheap; the uncertainty it returns alongside the value is what makes the whole loop work.**
 
 ## Notes
 

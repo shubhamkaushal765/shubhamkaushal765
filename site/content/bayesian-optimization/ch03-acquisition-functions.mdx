@@ -4,16 +4,22 @@ export const meta = {
   title: 'Acquisition functions: turning uncertainty into the next query.',
   summary:
     'Expected improvement, probability of improvement, GP-UCB, and Thompson sampling each define a different policy for trading off exploration against exploitation. Optimizing the acquisition is cheap relative to the black-box objective.',
-  reading: '10 min',
+  reading: '13 min',
 };
 
 # Acquisition functions: turning uncertainty into the next query.
 
 <p className="chapter-lede">The acquisition function is the decision rule. It takes the GP posterior at every candidate point and outputs a scalar score. The next query goes to the candidate with the highest score. The entire explore-exploit balance is encoded in which acquisition function you choose and how you parameterize it.</p>
 
+In Chapter 02 we built a belief map that reports both a best guess and a fog thickness everywhere; this chapter answers the question that map left open: given the guess and the fog, where exactly should the next costly evaluation go.
+
+A useful mental model: the acquisition function is the scouting rule that decides where to dig next. It reads the belief map and scores every candidate by weighing two pulls against each other, looking where the map is still blank versus digging where treasure is most likely. Every acquisition function in this chapter is just a different scouting rule over the same map.
+
+<p className="aside">A scouting rule that only digs where treasure is most likely will happily mine the same hole forever. EI is what keeps the hunter glancing at the blank parts of the map.</p>
+
 ## Probability of improvement (PI)
 
-PI is the probability that evaluating point x produces a value above the current best y*. Under the GP posterior the value at x is Gaussian, so this probability is a CDF evaluation and is cheap to compute. The formula is compact and the computation is cheap.
+PI asks a simple question at each candidate: what is the chance that evaluating it beats the best score seen so far, y*. Under the GP posterior the value at that candidate is Gaussian, so the answer is one CDF lookup and costs almost nothing.
 
 The practical drawback is that PI tends to exploit. Near the current best, the mean is high and the probability of a small gain is large. Regions with high variance but a lower mean get lower PI scores even when their expected gain is substantial. Kushner introduced PI in 1964 as a sequential optimization procedure for noisy curve-fitting, predating the modern BO literature.<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>
 
@@ -21,11 +27,17 @@ Adding a small positive jitter xi to the improvement threshold -- scoring P(f(x)
 
 ## Expected improvement (EI)
 
-EI replaces the probability of any improvement with the expected magnitude of improvement. The score is E[max(f(x) - y*, 0)] under the GP posterior, which weights large gains more than small ones. Under a Gaussian posterior, the integral has a closed form: EI(x) = (mu(x) - y*) * Phi(Z) + sigma(x) * phi(Z), where Z = (mu(x) - y*) / sigma(x), and Phi and phi are the standard normal CDF and PDF.
+EI replaces the probability of any improvement with the expected magnitude of improvement. The score is E[max(f(x) - y*, 0)] under the GP posterior, which weights large gains more than small ones.
+
+Walk two candidate chunk sizes through it. The current best recall@10 is y* = 0.50. Candidate A has posterior mean 0.52 and tiny variance: it almost certainly beats y*, but only by about 0.02, so its expected improvement is small. Candidate B has mean 0.48, just under y*, but large variance: most draws miss, yet the occasional draw lands at 0.60, and because improvement only counts the upside and ignores the downside, those rare big wins make B's expected improvement larger than A's. EI prefers B. That asymmetry, upside counts and downside is floored at zero, is the entire idea, and the closed form below just integrates it.
+
+Under a Gaussian posterior, the integral has a closed form: EI(x) = (mu(x) - y*) * Phi(Z) + sigma(x) * phi(Z), where Z = (mu(x) - y*) / sigma(x), and Phi and phi are the standard normal CDF and PDF. Read the two terms: (mu(x) - y*) * Phi(Z) is the exploitation pull, large when the mean already clears y*, and sigma(x) * phi(Z) is the exploration pull, large when the fog is thick. Z just measures how many standard deviations the mean sits above y*.
 
 EI naturally balances exploration and exploitation without a tuning parameter. A point with a moderate mean and large variance can outscore a point with a high mean and near-zero variance if the integrated gain is larger. Jones, Schonlau, and Welch formalized this in the EGO algorithm for engineering design optimization, which remains the most-cited acquisition function paper.<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>
 
 The closed form makes EI fast to evaluate and differentiate, so acquisition optimization by gradient ascent is straightforward. EI is the starting point for any new BO project.
+
+On the `tell-me-why` chunk-size task this is the step that turns the map into a decision. The GP has a best observed recall@10 so far, call it y*, and EI scans chunk sizes from 64 to 2048, scoring each by how much it expects to beat y*. The next 8-minute trial goes to the single chunk size with the highest score, not to the one with the highest predicted mean.
 
 ## GP-UCB
 
@@ -276,6 +288,22 @@ BoTorch is the practical standard for acquisition optimization in Python.<sup cl
     </tr>
   </tbody>
 </table>
+
+## Check your understanding
+
+1. PI and EI both compare candidates to y*, yet PI tends to exploit while EI stays balanced. Using the two-candidate walkthrough as a guide, explain what EI counts that PI throws away.
+2. GP-UCB is the only classical acquisition here with a regret bound, but most practitioners use a fixed beta rather than the schedule from the theorem. Reason about what the fixed-beta choice gains and what guarantee it gives up.
+3. The chunk-size budget allowed parallel reindexing of four corpora at once. Explain why Thompson sampling extends to that batch for free while EI needs a separate qEI formulation.
+
+## What to remember
+
+**The acquisition function turns the GP's mean and variance into a single score per candidate, and the next query goes to the highest score.**
+
+- PI exploits, EI balances exploration and exploitation with no tuning knob, GP-UCB exposes the balance through beta, and Thompson sampling gets it through randomness.
+- EI counts the expected size of an improvement and floors the downside at zero, which is why a foggy near-miss can outscore a confident small win.
+- The inner maximization over candidates is cheap relative to the black box, so it is solved with multi-start gradient ascent over a Sobol design.
+
+Key insight: **choosing where to dig next is a scoring problem, and the scoring happens entirely on the cheap surrogate, never on the expensive objective.**
 
 ## Notes
 

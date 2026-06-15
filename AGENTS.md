@@ -181,6 +181,14 @@ To add one, create the following files and registrations:
 - Inline SVG figures use `currentColor` and `var(--pillar-color, currentColor)`
   for accent strokes, with unique chapter-prefixed `id` attributes.
 - Citations appear as footnotes (not naked inline links).
+- Retention scaffolding (reference implementation: `bayesian-optimization`):
+  - Open each chapter with a memorable mental model introduced as "A useful mental model: ..." (a single sustained metaphor carried across all chapters).
+  - Thread a single running example through all five chapters.
+  - Chapters 2-5 open with a one-sentence bridge: "In Chapter NN we ...; this chapter answers the question that left open: ..."
+  - Intuition-before-equation: include a short numeric walkthrough before any key equation (GP posterior, Expected Improvement, etc.).
+  - End each chapter with two retention blocks in this order, placed BEFORE the final `## Notes` section: `## Check your understanding` (3 reasoning questions) and `## What to remember` (bold one-sentence summary, 3-bullet list, bold `Key insight:` line). `## Notes` must remain the last section.
+  - Include exactly one `<p className="aside">` memory hook per chapter.
+  - Use plain Markdown plus the existing `.aside` primitive only. No new CSS, no new components, no new SVG.
 
 ## Adding a new repo to the profile
 
