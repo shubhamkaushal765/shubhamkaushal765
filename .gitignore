@@ -41,3 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 .grepai
+
+# Vendored superpowers skills installed for the working session (not part of the
+# profile deliverable). Remove this line if you want them committed to persist.
+.claude/skills/

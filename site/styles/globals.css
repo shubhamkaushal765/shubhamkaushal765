@@ -871,6 +871,11 @@ main[data-pillar="code-int"] {
   --pillar-color: var(--color-pillar-code);
 }
 
+/* -- Machine learning / Bayesian optimization book -- */
+main[data-pillar="ml"] {
+  --pillar-color: var(--color-pillar-ml);
+}
+
 .book-eyebrow,
 .chapter-eyebrow {
   font-family: var(--font-mono);

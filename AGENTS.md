@@ -143,6 +143,45 @@ of it was deleted in this session: `index.html`, `404.html`, `images/`,
 `2018/`, `about/`, `tag/`, `styleguide/`, `js/`, `favicon.ico`, `robots.txt`,
 `search.json`, `sitemap.xml`, `zolanREADME.md`. Do not reintroduce.
 
+## Adding a book to the writing section
+
+A "book" is a multi-chapter long-form series rendered under `/writing/<slug>/`.
+To add one, create the following files and registrations:
+
+**File layout:**
+
+- `site/app/writing/<slug>/chapters.ts` -- exports a `Chapter` type and a
+  `CHAPTERS` array (id, title, description, date per chapter).
+- `site/app/writing/<slug>/page.tsx` -- book index page; lists all chapters.
+- `site/app/writing/<slug>/[slug]/page.tsx` -- chapter renderer; imports the
+  MDX file for each chapter slug.
+- `site/content/<slug>/chNN-<title>.mdx` -- one MDX file per chapter
+  (e.g., `ch01-intro.mdx` through `ch05-...mdx`).
+
+**Registration:**
+
+- In `site/app/writing/page.tsx`, import the book's `CHAPTERS` and add an
+  entry to the `POSTS` array with `pillar`, `label`, `date`, `status`, `href`,
+  and a `chapters` field mapping from `CHAPTERS`.
+
+**IMPORTANT -- pillar color gotcha:**
+
+- Add a CSS rule to `site/styles/globals.css`:
+  `main[data-pillar="<pillar>"] { --pillar-color: var(--color-pillar-<pillar>); }`
+  Without this, chapter pages render with the wrong accent color. The `ml`,
+  `code-int`, and `photonics` rules already exist as reference.
+
+**Existing books (5 chapters each):** `code-intelligence`, `photonics`,
+`bayesian-optimization`.
+
+**MDX authoring rules (all chapters):**
+
+- Follow the voice and citation rules in `.agent/writing-strategy.md`.
+- Tables use `<table className="encoding-table">`.
+- Inline SVG figures use `currentColor` and `var(--pillar-color, currentColor)`
+  for accent strokes, with unique chapter-prefixed `id` attributes.
+- Citations appear as footnotes (not naked inline links).
+
 ## Adding a new repo to the profile
 
 1. Update the pin slate in `.agent/profile-system.md` first. Record the reasoning in the commit message.

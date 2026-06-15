@@ -4,6 +4,7 @@ import Hero from '@/components/Hero';
 import FooterSignature from '@/components/FooterSignature';
 import { CHAPTERS as PHOTONICS_CHAPTERS } from './photonics/chapters';
 import { CHAPTERS as CODE_INTELLIGENCE_CHAPTERS } from './code-intelligence/chapters';
+import { CHAPTERS as BAYESIAN_OPTIMIZATION_CHAPTERS } from './bayesian-optimization/chapters';
 
 export const metadata: Metadata = {
   title: 'Blog | Shubham Kaushal',
@@ -54,6 +55,20 @@ const POSTS: Post[] = [
     chapters: PHOTONICS_CHAPTERS.map((c) => ({
       title: c.title,
       href: `/writing/photonics/${c.slug}/`,
+    })),
+  },
+  {
+    title: 'Bayesian optimization',
+    summary:
+      'A working notebook on Bayesian optimization: surrogate models, acquisition functions, and the feedback loop that makes each expensive evaluation count. Covers GPs, EI, GP-UCB, Thompson sampling, and worked examples in ML hyperparameter tuning and qubit gate calibration.',
+    pillar: 'ml',
+    pillarLabel: 'machine learning',
+    date: '2026-Q2',
+    status: 'draft',
+    href: '/writing/bayesian-optimization/',
+    chapters: BAYESIAN_OPTIMIZATION_CHAPTERS.map((c) => ({
+      title: c.title,
+      href: `/writing/bayesian-optimization/${c.slug}/`,
     })),
   },
   {

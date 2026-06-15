@@ -1,0 +1,182 @@
+export const meta = {
+  number: '04',
+  slug: 'the-loop-in-practice',
+  title: 'The loop in practice: priors, noise, and where it breaks.',
+  summary:
+    'Kernel and length-scale priors matter more than most tutorials admit. Noisy observations, input warping, high-dimensional search spaces, and batch parallelism each require specific design choices that the basic loop glosses over.',
+  reading: '12 min',
+};
+
+# The loop in practice: priors, noise, and where it breaks.
+
+<p className="chapter-lede">The derivation in Chapter 02 assumes noiseless observations and a well-specified kernel. Real problems have heteroskedastic noise, poorly-chosen length scales, discrete and conditional search spaces, and evaluation budgets that demand batch parallelism. Each of these issues has a known fix and a known failure mode.</p>
+
+## Kernel and length-scale priors
+
+With fewer than roughly 20 observations, maximum likelihood estimation of the GP hyperparameters is unreliable. The length scale collapses toward zero -- memorizing every observed value, leaving no generalization between points -- or inflates toward infinity, reducing the posterior to the prior mean everywhere. Both failures look like reasonable GP fits on training data and produce useless acquisition functions.
+
+The standard remedy is to place priors on the length scale and signal variance before optimizing. A log-normal prior on the length scale encodes the belief that the function varies meaningfully over the scale of the search space, without ruling out fast or slow variation at the extremes. Snoek et al. 2012<sup className="fn-ref"><a href="#fn-1">[1]</a></sup> handle this by marginalizing over hyperparameters with slice sampling rather than committing to a single maximum-likelihood estimate. The marginal is more expensive but substantially more robust when data are scarce.
+
+The practical heuristic: set the prior mean of the log length scale to the log of the search-space diameter divided by four. That anchors the prior in the regime where the function is neither flat nor wildly oscillatory, and the data can pull it toward the truth as observations accumulate.
+
+<figure className="chapter-figure">
+  <svg
+    id="bo-ch04-length-scale"
+    viewBox="0 0 820 280"
+    width="100%"
+    role="img"
+    aria-labelledby="bo-ch04-ls-title bo-ch04-ls-desc"
+    style={{color: 'currentColor'}}
+  >
+    <title id="bo-ch04-ls-title">Two GP fits showing pathological length-scale values</title>
+    <desc id="bo-ch04-ls-desc">Side-by-side panels. Left panel labeled "Length scale too short" shows a GP posterior that wiggles wildly between five observed points with variance collapsing only at the data. Right panel labeled "Length scale too long" shows a posterior that is nearly flat at the prior mean with wide variance bands everywhere.</desc>
+
+    {/* Dividing line */}
+    <line x1="410" y1="10" x2="410" y2="265" stroke="currentColor" strokeWidth="0.75" strokeDasharray="4 4" opacity="0.3" />
+
+    {/* -- LEFT PANEL: length scale too short -- */}
+    <g transform="translate(20, 20)">
+      <text x="175" y="14" textAnchor="middle" fontSize="12" fontWeight="600" fill="currentColor">Length scale too short</text>
+
+      {/* Axes */}
+      <line x1="30" y1="200" x2="360" y2="200" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="30" y1="20" x2="30" y2="200" stroke="currentColor" strokeWidth="1.5" />
+
+      {/* Variance band -- wiggly polygon approximation */}
+      {/* Upper envelope follows the mean curve + offset; lower follows mean - offset */}
+      {/* Five data points at x positions: 50, 110, 175, 255, 320 (in local coords) */}
+      {/* Between data points, mean wiggles; variance collapses at data, opens between */}
+      <path
+        d="M30,100 C40,100 45,40 50,100 C55,160 60,190 70,180 C80,170 90,100 110,100 C125,100 135,60 145,100 C155,140 160,170 175,100 C185,40 195,70 210,100 C220,130 225,155 255,100 C270,60 280,50 295,100 C310,150 315,170 320,100 C325,50 330,30 340,60 C345,80 355,100 360,100 L360,130 C355,130 345,110 340,90 C330,60 325,80 320,130 C315,200 310,180 295,130 C280,80 270,90 255,130 C225,185 220,160 210,130 C195,100 185,70 175,130 C160,200 155,170 145,130 C135,90 125,130 110,130 C90,130 80,200 70,210 C60,220 55,190 50,130 C45,70 40,130 30,130 Z"
+        fill="var(--pillar-color, currentColor)"
+        fillOpacity="0.13"
+      />
+
+      {/* Posterior mean -- wiggly */}
+      <path
+        d="M30,115 C40,115 45,40 50,115 C55,175 65,185 70,195 C80,185 90,115 110,115 C125,115 135,60 145,115 C155,155 162,165 175,115 C185,55 195,80 210,115 C218,142 228,158 255,115 C270,72 282,58 295,115 C308,162 316,175 320,115 C324,62 330,38 340,72 C348,94 354,115 360,115"
+        fill="none"
+        stroke="var(--pillar-color, currentColor)"
+        strokeWidth="2"
+      />
+
+      {/* Data points */}
+      <circle cx="50" cy="115" r="4.5" fill="currentColor" />
+      <circle cx="110" cy="115" r="4.5" fill="currentColor" />
+      <circle cx="175" cy="115" r="4.5" fill="currentColor" />
+      <circle cx="255" cy="115" r="4.5" fill="currentColor" />
+      <circle cx="320" cy="115" r="4.5" fill="currentColor" />
+
+      {/* Label */}
+      <text x="175" y="228" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.75" fontStyle="italic">overfits</text>
+    </g>
+
+    {/* -- RIGHT PANEL: length scale too long -- */}
+    <g transform="translate(430, 20)">
+      <text x="175" y="14" textAnchor="middle" fontSize="12" fontWeight="600" fill="currentColor">Length scale too long</text>
+
+      {/* Axes */}
+      <line x1="30" y1="200" x2="360" y2="200" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="30" y1="20" x2="30" y2="200" stroke="currentColor" strokeWidth="1.5" />
+
+      {/* Variance band -- nearly flat, wide */}
+      <path
+        d="M30,85 L360,88 L360,148 L30,145 Z"
+        fill="var(--pillar-color, currentColor)"
+        fillOpacity="0.13"
+      />
+
+      {/* Posterior mean -- nearly flat near prior mean (y=116) */}
+      <path
+        d="M30,116 C100,116 260,117 360,118"
+        fill="none"
+        stroke="var(--pillar-color, currentColor)"
+        strokeWidth="2"
+      />
+
+      {/* Data points -- observed values scattered, mean doesn't track them */}
+      <circle cx="50" cy="95" r="4.5" fill="currentColor" />
+      <circle cx="110" cy="140" r="4.5" fill="currentColor" />
+      <circle cx="175" cy="80" r="4.5" fill="currentColor" />
+      <circle cx="255" cy="145" r="4.5" fill="currentColor" />
+      <circle cx="320" cy="90" r="4.5" fill="currentColor" />
+
+      {/* Label */}
+      <text x="175" y="228" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.75" fontStyle="italic">underfits</text>
+    </g>
+  </svg>
+  <figcaption>Pathological length-scale values from maximum likelihood estimation when data are scarce. A log-normal prior on the length scale keeps the fit in the plausible middle.</figcaption>
+</figure>
+
+## Noisy observations
+
+Standard GP regression adds a noise term to the kernel diagonal: the observed value at point x is treated as the true function value plus independent Gaussian noise with variance sigma-squared-n. This is the homoskedastic Gaussian likelihood assumption, and it handles the common case where measurement error is approximately constant across the search space.
+
+The noise variance is a hyperparameter and should be estimated alongside the kernel parameters, again with a prior if data are few. A half-normal or log-normal prior on sigma-n avoids the degenerate solution of driving noise to zero (which reverts to interpolation) or infinity (which makes the posterior useless). Snoek et al. 2012<sup className="fn-ref"><a href="#fn-1">[1]</a></sup> recommend treating noise as an additional hyperparameter in the slice-sampling procedure.
+
+Heteroskedastic noise -- where variance depends on the input -- requires a more expressive model. The noise variance itself becomes a latent function, typically modeled with a second GP. This doubles the complexity of the inference and is rarely worth the cost unless the noise structure is pronounced and the budget is large enough to learn it.
+
+## High-dimensional search spaces
+
+GP inference is cubic in the number of observations, not the input dimension. With a budget of 200 evaluations, fitting a GP over 50-dimensional inputs is computationally feasible. The hard problem is that the acquisition function must be maximized over that same 50-dimensional space, and standard multi-start gradient ascent or Sobol-sequence restarts degrade rapidly as dimension grows.
+
+Two approaches have traction. The first is additive decomposition: assume the objective splits into a sum of lower-dimensional components, each governed by its own kernel. The acquisition then factors, and the per-component maximizations are cheap. The second is random embedding: project the high-dimensional input space down to a low-dimensional subspace, solve the BO problem there, and embed the result back. Both approaches rest on the assumption that the effective intrinsic dimensionality of the objective is low even when the nominal input space is large. Shahriari et al. 2016<sup className="fn-ref"><a href="#fn-2">[2]</a></sup> survey both families in detail.
+
+## Batch and parallel BO
+
+Sequential BO selects one point per iteration and waits for the evaluation to complete before selecting the next. Many settings -- distributed hyperparameter search, parallel assay runs, multi-qubit calibration sweeps -- can evaluate k points simultaneously. The natural extension is to select a batch of k points before any results return.
+
+The textbook acquisition functions (EI, PI, GP-UCB) are defined for a single next point. Extending to batch selection requires either heuristics (select the best point, update a fantasy model assuming some outcome, repeat k times) or exact batch formulations. Batch EI (qEI) has a well-defined integral form but is expensive to compute analytically. Monte Carlo estimators make it tractable: BoTorch<sup className="fn-ref"><a href="#fn-3">[3]</a></sup> implements qEI and qUCB using pathwise derivatives through the MC estimate, which allows gradient-based optimization of the batch acquisition. Thompson sampling avoids the problem entirely by sampling k independent GP posterior functions and taking each one's argmax.
+
+## Where BO breaks
+
+Cold start is unavoidable. The first handful of evaluations -- typically 5 to 20 -- are drawn from the prior or from a space-filling design (Latin hypercube, Sobol sequence) because the GP posterior is too uncertain to guide the acquisition usefully. This is not a failure of BO; it is the cost of starting without information.
+
+The objective must have some structure for BO to exploit. Discontinuous objectives, objectives with many discrete jumps, or objectives where the relevant length scale is much smaller than the search space all produce GPs that fit poorly. The Matern 5/2 kernel is more robust to modest roughness than the RBF kernel, but it is not a remedy for a fundamentally unsmooth objective. Alternative surrogate models -- random forests, neural networks, or Bayesian neural networks -- are better suited to those cases.
+
+BO overhead grows with the number of observations. GP fitting is cubic in the observation count. At 500 observations, fitting the GP on every iteration is slow; at 5000, it becomes a bottleneck. The practical threshold depends on hardware and implementation, but when it is reached, the standard remedies are sparse GP approximations or switching to a cheaper surrogate such as a random forest, which is the approach taken by SMAC.
+
+<table className="encoding-table">
+  <thead>
+    <tr>
+      <th>Problem</th>
+      <th>Symptom</th>
+      <th>Fix</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Short length scale</td>
+      <td>GP interpolates, no exploration</td>
+      <td>Log-normal prior on length scale</td>
+    </tr>
+    <tr>
+      <td>Long length scale</td>
+      <td>Posterior near prior mean</td>
+      <td>Increase initial random samples</td>
+    </tr>
+    <tr>
+      <td>High noise variance</td>
+      <td>Wide posterior everywhere</td>
+      <td>Noise prior; more observations</td>
+    </tr>
+    <tr>
+      <td>High dimensionality</td>
+      <td>Acquisition hard to optimize</td>
+      <td>Additive GP or random embedding</td>
+    </tr>
+    <tr>
+      <td>Large batch required</td>
+      <td>qEI expensive</td>
+      <td>Thompson sampling for batch</td>
+    </tr>
+  </tbody>
+</table>
+
+## Notes
+
+<ol className="footnotes">
+  <li id="fn-1">Snoek, J., Larochelle, H., and Adams, R. P. "Practical Bayesian Optimization of Machine Learning Algorithms." NIPS 2012. <a href="https://arxiv.org/abs/1206.2944">https://arxiv.org/abs/1206.2944</a></li>
+  <li id="fn-2">Shahriari, B., Swersky, K., Wang, Z., Adams, R. P., and de Freitas, N. "Taking the Human Out of the Loop: A Review of Bayesian Optimization." Proceedings of the IEEE 104(1), 2016. <a href="https://ieeexplore.ieee.org/document/7352306">https://ieeexplore.ieee.org/document/7352306</a></li>
+  <li id="fn-3">Balandat, M., Karrer, B., Jiang, D. R., Daulton, S., Letham, B., Wilson, A. G., and Bakshy, E. "BoTorch: A Framework for Efficient Monte-Carlo Bayesian Optimization." NeurIPS 2020. <a href="https://arxiv.org/abs/1910.06403">https://arxiv.org/abs/1910.06403</a></li>
+</ol>
