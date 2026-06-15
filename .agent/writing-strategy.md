@@ -155,3 +155,17 @@ stable CLI interface.
 Every post references at least one of the other pillars. Maintain a curated
 reading list (`awesome-transformer-qec`) as a slow-growth community anchor.
 Community discussion lives on the site itself, not on Discord.
+
+### Existing long-form books
+
+A "book" on the site is a multi-chapter series registered in the writing
+section. Currently published books:
+
+- **Bayesian optimization** (ML pillar, violet, 5 chapters). Covers Gaussian
+  processes, acquisition functions (EI/PI/GP-UCB/Thompson sampling), practical
+  loop concerns, ML hyperparameter tuning, and qubit gate calibration. A direct
+  instantiation of the defensible niche: it cross-links the code-intelligence
+  RAG/embedding pipeline (EI over embedding-model search spaces), the qubit
+  calibration work (gate-pulse BO), and core ML infrastructure. Fits narrative
+  theme 1 (structured artifact reasoning) and theme 2 (local-first
+  infrastructure).

@@ -1,0 +1,287 @@
+export const meta = {
+  number: '03',
+  slug: 'acquisition-functions',
+  title: 'Acquisition functions: turning uncertainty into the next query.',
+  summary:
+    'Expected improvement, probability of improvement, GP-UCB, and Thompson sampling each define a different policy for trading off exploration against exploitation. Optimizing the acquisition is cheap relative to the black-box objective.',
+  reading: '10 min',
+};
+
+# Acquisition functions: turning uncertainty into the next query.
+
+<p className="chapter-lede">The acquisition function is the decision rule. It takes the GP posterior at every candidate point and outputs a scalar score. The next query goes to the candidate with the highest score. The entire explore-exploit balance is encoded in which acquisition function you choose and how you parameterize it.</p>
+
+## Probability of improvement (PI)
+
+PI is the probability that evaluating point x produces a value above the current best y*. Under the GP posterior the value at x is Gaussian, so this probability is a CDF evaluation and is cheap to compute. The formula is compact and the computation is cheap.
+
+The practical drawback is that PI tends to exploit. Near the current best, the mean is high and the probability of a small gain is large. Regions with high variance but a lower mean get lower PI scores even when their expected gain is substantial. Kushner introduced PI in 1964 as a sequential optimization procedure for noisy curve-fitting, predating the modern BO literature.<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>
+
+Adding a small positive jitter xi to the improvement threshold -- scoring P(f(x) > y* + xi) instead -- shifts the balance toward exploration. In practice, tuning xi by hand is tedious, which is why EI became the default.
+
+## Expected improvement (EI)
+
+EI replaces the probability of any improvement with the expected magnitude of improvement. The score is E[max(f(x) - y*, 0)] under the GP posterior, which weights large gains more than small ones. Under a Gaussian posterior, the integral has a closed form: EI(x) = (mu(x) - y*) * Phi(Z) + sigma(x) * phi(Z), where Z = (mu(x) - y*) / sigma(x), and Phi and phi are the standard normal CDF and PDF.
+
+EI naturally balances exploration and exploitation without a tuning parameter. A point with a moderate mean and large variance can outscore a point with a high mean and near-zero variance if the integrated gain is larger. Jones, Schonlau, and Welch formalized this in the EGO algorithm for engineering design optimization, which remains the most-cited acquisition function paper.<sup className="fn-ref"><a href="#fn-2">[2]</a></sup>
+
+The closed form makes EI fast to evaluate and differentiate, so acquisition optimization by gradient ascent is straightforward. EI is the starting point for any new BO project.
+
+## GP-UCB
+
+GP-UCB scores each point as mu(x) + beta * sigma(x). The beta parameter sets the relative weight of the variance term and controls the explore-exploit tradeoff directly. Large beta drives the algorithm toward unexplored regions; small beta focuses it on refining the current best.
+
+The appeal of GP-UCB is its theoretical grounding. Srinivas, Krause, Kakade, and Seeger proved that, with a schedule for beta that grows logarithmically with iteration count, GP-UCB achieves sublinear cumulative regret under mild assumptions on the kernel.<sup className="fn-ref"><a href="#fn-3">[3]</a></sup> This is the only classical acquisition function with a regret bound in this sense.
+
+The schedule from the theorem is conservative in practice. Most implementations use a fixed beta chosen by informal tuning or cross-validation. The regret bound still motivates the functional form even when the schedule is not followed exactly.
+
+## Thompson sampling
+
+Thompson sampling works differently from the three preceding methods. Rather than defining a score function and maximizing it, the algorithm samples a full function from the GP posterior and evaluates the black box at the argmax of that sample. The next iteration re-conditions the GP on the new observation and repeats.
+
+The argmax of a posterior sample shifts around stochastically, which gives Thompson sampling its explore-exploit balance without any explicit tuning parameter. More importantly, batch parallelism is immediate: sample k functions, compute each argmax independently, and evaluate the black box at all k points in parallel. No modification to the algorithm is needed. EI and GP-UCB require separate batch extensions (qEI, qUCB) to achieve the same effect.
+
+Sampling from a GP posterior exactly requires a Cholesky factor of the kernel matrix, which is cubic in the number of observations. For large batches or high-dimensional inputs, Matheron's rule and random Fourier feature approximations reduce the cost to something tractable.
+
+## Inner optimization of the acquisition
+
+Every acquisition function -- PI, EI, GP-UCB, and the argmax step in Thompson sampling -- requires maximizing a scalar function over the input space. This inner maximization is cheap in one sense: the GP itself evaluates in O(n) time for a posterior query once the Cholesky factor is cached. But the acquisition surface is typically non-convex, and gradient ascent from a single starting point will find a local maximum.
+
+The standard approach is multi-start optimization: draw a set of candidate points from a quasi-random design (Sobol sequences are common), evaluate the acquisition at each, run gradient ascent from the top-k candidates, and return the overall argmax. The Sobol initialization covers the input space more uniformly than uniform random sampling at the same count.
+
+BoTorch is the practical standard for acquisition optimization in Python.<sup className="fn-ref"><a href="#fn-4">[4]</a></sup> It wraps PyTorch's autograd to differentiate through GP posterior evaluations, supports batched acquisition functions (qEI, qUCB) via Monte Carlo integration, and integrates directly with GPyTorch's structured kernel approximations. The library handles the inner optimization loop so that the caller specifies the acquisition function and the search bounds.
+
+<figure className="chapter-figure">
+  <svg
+    id="bo-ch03-ei"
+    viewBox="0 0 820 340"
+    width="100%"
+    role="img"
+    aria-labelledby="bo-ch03-ei-title bo-ch03-ei-desc"
+    style={{color: 'currentColor'}}
+  >
+    <title id="bo-ch03-ei-title">GP posterior and EI acquisition curve</title>
+    <desc id="bo-ch03-ei-desc">Two stacked sub-plots sharing an x-axis from 0 to 10. The top sub-plot shows the GP posterior mean as a curved line with a two-sigma shaded band, and a horizontal dashed line marking the current best y-star at approximately y equals 0.9. The bottom sub-plot shows the EI acquisition curve, which peaks to the right near x approximately 8 where variance is high, with a filled circle marking the peak.</desc>
+
+    {/* Top sub-plot: GP posterior, height ~200px, y 10..210 */}
+    <g id="bo-ch03-gp-panel">
+      {/* Axes */}
+      <line x1="60" y1="15" x2="60" y2="205" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="60" y1="205" x2="800" y2="205" stroke="currentColor" strokeWidth="1.5" />
+
+      {/* y-axis label */}
+      <text x="20" y="110" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7" transform="rotate(-90 20 110)">f(x)</text>
+
+      {/* y-axis ticks */}
+      <line x1="55" y1="50"  x2="60" y2="50"  stroke="currentColor" strokeWidth="1" />
+      <text x="50" y="54"  textAnchor="end" fontSize="10" fill="currentColor" opacity="0.7">1.5</text>
+      <line x1="55" y1="105" x2="60" y2="105" stroke="currentColor" strokeWidth="1" />
+      <text x="50" y="109" textAnchor="end" fontSize="10" fill="currentColor" opacity="0.7">0.0</text>
+      <line x1="55" y1="160" x2="60" y2="160" stroke="currentColor" strokeWidth="1" />
+      <text x="50" y="164" textAnchor="end" fontSize="10" fill="currentColor" opacity="0.7">-1.5</text>
+
+      {/*
+        Coordinate mapping for top panel:
+          x: input 0..10 -> svg 60..800 (740 px wide, 74 px per unit)
+          y: f value 2.0..-2.0 -> svg 15..205 (190 px, 47.5 px per unit, center at 105)
+        y_svg = 105 - f_val * 47.5
+        Observations at: (1.5, 0.8), (4.0, -0.3), (7.5, 1.1)
+        obs1: x_svg=171, y_svg=105-0.8*47.5=67
+        obs2: x_svg=356, y_svg=105+0.3*47.5=119
+        obs3: x_svg=615, y_svg=105-1.1*47.5=53
+      *)*/}
+
+      {/* Two-sigma band (upper and lower envelope polygon) */}
+      <path
+        d="
+          M60,105
+          C111,90 130,55 171,67
+          C200,76 230,62 260,68
+          C290,74 310,80 356,119
+          C390,148 420,160 460,155
+          C500,150 540,130 560,115
+          C580,100 595,68 615,53
+          C650,32 680,28 740,35
+          C770,38 790,42 800,44
+          L800,95
+          C790,93 770,88 740,85
+          C680,78 650,82 615,103
+          C595,118 580,150 560,165
+          C540,180 500,200 460,205
+          C420,210 390,208 356,169
+          C310,130 290,124 260,118
+          C230,112 200,126 171,117
+          C130,105 111,140 60,105
+          Z
+        "
+        fill="var(--pillar-color, currentColor)"
+        fillOpacity="0.13"
+        stroke="none"
+      />
+
+      {/* Posterior mean curve */}
+      <path
+        d="
+          M60,105
+          C111,95 130,72 171,67
+          C200,63 230,70 260,88
+          C290,106 310,115 356,119
+          C390,122 420,118 460,112
+          C500,106 540,88 560,78
+          C580,68 595,60 615,53
+          C650,43 680,40 740,44
+          C770,46 790,47 800,48
+        "
+        fill="none"
+        stroke="var(--pillar-color, currentColor)"
+        strokeWidth="2"
+      />
+
+      {/* Current best y* dashed line: y* ~ 0.9, y_svg = 105 - 0.9*47.5 = 62.25 ~ 62 */}
+      <line x1="60" y1="62" x2="800" y2="62" stroke="currentColor" strokeWidth="1.5" strokeDasharray="6 4" opacity="0.6" />
+      <text x="805" y="66" fontSize="10" fill="currentColor" opacity="0.75">y*</text>
+
+      {/* Observed data points */}
+      {/* obs1 at (1.5, 0.8): x=171, y=67 */}
+      <circle cx="171" cy="67" r="4.5" fill="currentColor" />
+      {/* obs2 at (4.0, -0.3): x=356, y=119 */}
+      <circle cx="356" cy="119" r="4.5" fill="currentColor" />
+      {/* obs3 at (7.5, 1.1): x=615, y=53 */}
+      <circle cx="615" cy="53" r="4.5" fill="currentColor" />
+
+      {/* Panel label */}
+      <text x="72" y="30" fontSize="11" fill="currentColor" opacity="0.7">GP posterior</text>
+    </g>
+
+    {/* Divider between panels */}
+    <line x1="40" y1="220" x2="810" y2="220" stroke="currentColor" strokeWidth="0.75" strokeDasharray="2 4" opacity="0.3" />
+
+    {/* Bottom sub-plot: EI acquisition, y 228..325 */}
+    <g id="bo-ch03-ei-panel">
+      {/* Axes */}
+      <line x1="60" y1="228" x2="60" y2="325" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="60" y1="325" x2="800" y2="325" stroke="currentColor" strokeWidth="1.5" />
+
+      {/* x-axis ticks and labels */}
+      <line x1="60"  y1="325" x2="60"  y2="330" stroke="currentColor" strokeWidth="1" />
+      <text x="60"  y="338" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.7">0</text>
+      <line x1="208" y1="325" x2="208" y2="330" stroke="currentColor" strokeWidth="1" />
+      <text x="208" y="338" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.7">2</text>
+      <line x1="356" y1="325" x2="356" y2="330" stroke="currentColor" strokeWidth="1" />
+      <text x="356" y="338" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.7">4</text>
+      <line x1="504" y1="325" x2="504" y2="330" stroke="currentColor" strokeWidth="1" />
+      <text x="504" y="338" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.7">6</text>
+      <line x1="652" y1="325" x2="652" y2="330" stroke="currentColor" strokeWidth="1" />
+      <text x="652" y="338" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.7">8</text>
+      <line x1="800" y1="325" x2="800" y2="330" stroke="currentColor" strokeWidth="1" />
+      <text x="800" y="338" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.7">10</text>
+      <text x="430" y="340" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">x</text>
+
+      {/* y-axis label */}
+      <text x="28" y="280" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7" transform="rotate(-90 28 280)">EI(x)</text>
+
+      {/*
+        EI curve: nearly zero near observations, rises in unexplored right region.
+        Peak around x=7 (x_svg ~ 578), then decreases.
+        y mapping: EI 0..1 -> svg 325..235 (90px range)
+        y_svg = 325 - EI_val * 90
+        Peak EI ~ 0.95 at x~7 -> y_svg ~ 239.5 ~ 240
+      *)*/}
+      <path
+        d="
+          M60,324
+          C100,323 140,322 171,322
+          C200,322 230,322 260,321
+          C290,320 310,318 356,316
+          C390,314 420,310 460,305
+          C500,299 530,289 560,278
+          C580,267 595,252 615,240
+          C630,231 645,230 652,231
+          C665,233 680,240 700,258
+          C720,272 750,295 780,312
+          C790,318 795,321 800,323
+        "
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        opacity="0.5"
+      />
+
+      {/* Fill under EI curve */}
+      <path
+        d="
+          M60,324
+          C100,323 140,322 171,322
+          C200,322 230,322 260,321
+          C290,320 310,318 356,316
+          C390,314 420,310 460,305
+          C500,299 530,289 560,278
+          C580,267 595,252 615,240
+          C630,231 645,230 652,231
+          C665,233 680,240 700,258
+          C720,272 750,295 780,312
+          C790,318 795,321 800,323
+          L800,325 L60,325 Z
+        "
+        fill="var(--pillar-color, currentColor)"
+        fillOpacity="0.10"
+        stroke="none"
+      />
+
+      {/* Peak marker at x~652, y~231 (EI peak) */}
+      <circle cx="652" cy="231" r="5.5" fill="var(--pillar-color, currentColor)" />
+      {/* Label for peak */}
+      <text x="665" y="227" fontSize="10" fill="var(--pillar-color, currentColor)" opacity="0.9">next query</text>
+
+      {/* Panel label */}
+      <text x="72" y="243" fontSize="11" fill="currentColor" opacity="0.7">EI acquisition</text>
+    </g>
+  </svg>
+  <figcaption>EI peaks where the GP is both uncertain and has a reasonable chance of exceeding the current best y*. A region with high variance but low mean contributes less than a region with moderate variance and a mean near y*. The next query goes to the EI peak at x approximately 8, where the posterior variance is large and the mean is close to y*.</figcaption>
+</figure>
+
+<table className="encoding-table">
+  <thead>
+    <tr>
+      <th>Acquisition</th>
+      <th>Explore-exploit balance</th>
+      <th>Parallelizable</th>
+      <th>Regret bound</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PI</td>
+      <td>Exploitative</td>
+      <td>No (standard)</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>EI</td>
+      <td>Balanced (default choice)</td>
+      <td>No (standard)</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>GP-UCB</td>
+      <td>Tunable via beta</td>
+      <td>No (standard)</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Thompson</td>
+      <td>Balanced, stochastic</td>
+      <td>Yes (natural)</td>
+      <td>Yes</td>
+    </tr>
+  </tbody>
+</table>
+
+## Notes
+
+<ol className="footnotes">
+  <li id="fn-1">Kushner, H. J. "A New Method of Locating the Maximum Point of an Arbitrary Multipeak Curve in the Presence of Noise." Journal of Basic Engineering, ASME, 1964. Historical reference for probability of improvement; no arXiv or stable URL available.</li>
+  <li id="fn-2">Jones, D. R., Schonlau, M., and Welch, W. J. "Efficient Global Optimization of Expensive Black-Box Functions." Journal of Global Optimization 13(4), 1998. <a href="https://link.springer.com/article/10.1023/A:1008306431147">https://link.springer.com/article/10.1023/A:1008306431147</a></li>
+  <li id="fn-3">Srinivas, N., Krause, A., Kakade, S. M., and Seeger, M. "Gaussian Process Optimization in the Bandit Setting: No Regret and Experimental Design." ICML 2010. <a href="https://arxiv.org/abs/0912.3995">https://arxiv.org/abs/0912.3995</a></li>
+  <li id="fn-4">Balandat, M., Karrer, B., Jiang, D. R., Daulton, S., Letham, B., Wilson, A. G., and Bakshy, E. "BoTorch: A Framework for Efficient Monte-Carlo Bayesian Optimization." NeurIPS 2020. <a href="https://arxiv.org/abs/1910.06403">https://arxiv.org/abs/1910.06403</a></li>
+</ol>

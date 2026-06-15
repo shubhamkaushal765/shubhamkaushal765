@@ -1,0 +1,102 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import ChapterSidebar from '@/components/ChapterSidebar';
+import FooterSignature from '@/components/FooterSignature';
+import Hero from '@/components/Hero';
+import { CHAPTERS } from '../chapters';
+
+import Ch01 from '@/content/bayesian-optimization/ch01-why-bayesian-optimization.mdx';
+import Ch02 from '@/content/bayesian-optimization/ch02-gaussian-processes.mdx';
+import Ch03 from '@/content/bayesian-optimization/ch03-acquisition-functions.mdx';
+import Ch04 from '@/content/bayesian-optimization/ch04-the-loop-in-practice.mdx';
+import Ch05 from '@/content/bayesian-optimization/ch05-bo-in-the-wild.mdx';
+
+type ChapterComponent = (props: Record<string, unknown>) => React.ReactElement;
+
+const COMPONENTS: Record<string, ChapterComponent> = {
+  'why-bayesian-optimization': Ch01 as ChapterComponent,
+  'gaussian-processes': Ch02 as ChapterComponent,
+  'acquisition-functions': Ch03 as ChapterComponent,
+  'the-loop-in-practice': Ch04 as ChapterComponent,
+  'bo-in-the-wild': Ch05 as ChapterComponent,
+};
+
+export function generateStaticParams() {
+  return CHAPTERS.map((c) => ({ slug: c.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const chapter = CHAPTERS.find((c) => c.slug === slug);
+  if (chapter === undefined) return { title: 'Bayesian optimization | Shubham Kaushal' };
+  return {
+    title: `${chapter.title} | Bayesian optimization | Shubham Kaushal`,
+    description: chapter.summary,
+  };
+}
+
+export default async function BayesianOptimizationChapterPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const chapter = CHAPTERS.find((c) => c.slug === slug);
+  const Body = COMPONENTS[slug];
+  if (chapter === undefined || Body === undefined) {
+    notFound();
+  }
+
+  const index = CHAPTERS.findIndex((c) => c.slug === slug);
+  const prev = index > 0 ? CHAPTERS[index - 1] : undefined;
+  const next = index >= 0 && index < CHAPTERS.length - 1 ? CHAPTERS[index + 1] : undefined;
+
+  return (
+    <main id="main" data-pillar="ml" className="chapter-main">
+      <Hero variant="compact" />
+      <p className="chapter-eyebrow">
+        <Link href="/writing/bayesian-optimization/">Bayesian optimization</Link>
+        <span aria-hidden="true"> · </span>
+        <span>{`Chapter ${chapter.number}`}</span>
+        <span aria-hidden="true"> · </span>
+        <span>{chapter.reading}</span>
+      </p>
+      <div className="chapter-layout">
+        <ChapterSidebar
+          bookLabel="Bayesian opt"
+          bookHref="/writing/bayesian-optimization/"
+          basePath="/writing/bayesian-optimization/"
+          chapters={CHAPTERS}
+          currentSlug={slug}
+        />
+        <article className="chapter-article">
+          <Body />
+        </article>
+      </div>
+      <nav className="chapter-nav" aria-label="Chapter navigation">
+        {prev !== undefined ? (
+          <Link href={`/writing/bayesian-optimization/${prev.slug}/`} className="chapter-nav__prev">
+            <span className="chapter-nav__direction">{`← Chapter ${prev.number}`}</span>
+            <span className="chapter-nav__title">{prev.title}</span>
+          </Link>
+        ) : (
+          <span className="chapter-nav__placeholder" />
+        )}
+        {next !== undefined ? (
+          <Link href={`/writing/bayesian-optimization/${next.slug}/`} className="chapter-nav__next">
+            <span className="chapter-nav__direction">{`Chapter ${next.number} →`}</span>
+            <span className="chapter-nav__title">{next.title}</span>
+          </Link>
+        ) : (
+          <span className="chapter-nav__placeholder" />
+        )}
+      </nav>
+      <FooterSignature />
+    </main>
+  );
+}

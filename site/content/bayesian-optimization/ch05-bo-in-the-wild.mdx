@@ -1,0 +1,194 @@
+export const meta = {
+  number: '05',
+  slug: 'bo-in-the-wild',
+  title: 'Bayesian optimization in the wild: hyperparameters and qubit calibration.',
+  summary:
+    'Two worked domains: tuning ML embedding models (the RAG pipeline from the code-intelligence pillar) and qubit gate calibration (RB, T1, T2, gate tomography) framed as sequential black-box optimization. Reproducibility via seeds and fixtures.',
+  reading: '13 min',
+};
+
+# Bayesian optimization in the wild: hyperparameters and qubit calibration.
+
+<p className="chapter-lede">Two domains, one algorithm. Hyperparameter tuning of an embedding model and single-qubit gate calibration both present as expensive black-box optimization with a small evaluation budget. The structure is identical; only the lab bench changes. This chapter also closes the cross-pillar loop: the embedding model is the one powering the code-intelligence RAG pipeline described in the code-intelligence book; the qubit calibration work connects to "Qubit calibration as an orchestration problem" in the writing pipeline.</p>
+
+## Domain 1: tuning ML embedding models
+
+The code-intelligence book's retrieval pipeline -- built around `tell-me-why` -- uses an embedding model to represent code chunks and queries in a shared vector space. Three parameters govern retrieval quality: the choice of embedding model, the chunk size at indexing time, and the top-k value used at query time. Evaluating any single configuration requires running the full retrieval benchmark against a fixed held-out query set. That benchmark takes minutes per trial on a GPU, and the search space mixes discrete choices (model name) with continuous ones (chunk size, top-k threshold). This is the mixed continuous-discrete regime where BO earns its keep.<sup className="fn-ref"><a href="#fn-1">[1]</a></sup>
+
+The loop runs as follows. Five initial configurations are drawn from a Sobol low-discrepancy sequence, covering the search space without clustering. A Matern 5/2 GP is fitted to those five observations, then EI selects the sixth configuration, the benchmark runs, and the result is appended to the dataset. Repeat until the budget is exhausted. The objective is recall@10 on the held-out query set: the fraction of ground-truth relevant chunks that appear in the top-10 retrieved results.
+
+The implementation uses BoTorch for the acquisition optimization step.<sup className="fn-ref"><a href="#fn-2">[2]</a></sup> The random restarts for acquisition optimization are seeded; see the Reproducibility section for why that matters.
+
+## Domain 2: qubit gate calibration as BO
+
+Single-qubit gate calibration requires sweeping drive parameters -- primarily drive amplitude and drive frequency -- to maximize gate fidelity. Each candidate parameter setting is evaluated by running a randomized benchmarking (RB) circuit sequence on the QPU and fitting the decay curve to extract an error-per-gate estimate. One RB sequence takes minutes of device time. The total calibration budget is typically 20 to 100 trials per qubit, depending on how tight the fidelity target is and how stable the device is.
+
+This connects to "Qubit calibration as an orchestration problem" in the writing pipeline, which frames the same workflow as resource allocation across multiple qubits and calibration types (T1, T2, RB, gate tomography). The BO perspective and the orchestration perspective are complementary: BO decides which parameter setting to try next within a single calibration task; the orchestration layer decides which calibration tasks to run and in what order.
+
+The GP surrogate is defined over the two-dimensional space of drive amplitude and frequency. The kernel is Matern 5/2 or RBF, depending on how smooth the fidelity landscape is expected to be for the device under calibration. Some practitioners prefer GP-UCB in drift-prone settings because the beta parameter gives an explicit handle on how aggressively to explore, though neither GP-UCB nor EI is intrinsically robust to the non-stationarity that device drift introduces. Shot noise in the RB estimate introduces moderate observation noise, which goes into the kernel diagonal as a tuned noise variance parameter.<sup className="fn-ref"><a href="#fn-3">[3]</a></sup>
+
+<figure className="chapter-figure">
+  <svg
+    id="bo-ch05-calibration-loop"
+    viewBox="0 0 820 220"
+    width="100%"
+    role="img"
+    aria-labelledby="bo-ch05-cal-title bo-ch05-cal-desc"
+    style={{color: 'currentColor'}}
+  >
+    <title id="bo-ch05-cal-title">Bayesian optimization loop for qubit gate calibration</title>
+    <desc id="bo-ch05-cal-desc">A cyclic diagram with four stages. The QPU / gate sequence box contains a sine-wave path suggesting a drive pulse. An arrow labeled drive amplitude, frequency leads to the Fidelity measurement (RB) box. An arrow leads from there to the GP posterior update box. An arrow leads down to the EI acquisition: next parameters box. A return arrow curves back left to the QPU box, completing the loop.</desc>
+
+    <defs>
+      <marker
+        id="bo-ch05-cal-arrow"
+        viewBox="0 0 10 10"
+        refX="9"
+        refY="5"
+        markerWidth="6"
+        markerHeight="6"
+        orient="auto"
+      >
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--pillar-color, currentColor)" />
+      </marker>
+    </defs>
+
+    {/* Box 1: QPU / gate sequence */}
+    <g transform="translate(20, 60)">
+      <rect x="0" y="0" width="170" height="70" rx="6" fill="var(--pillar-color, currentColor)" fillOpacity="0.12" stroke="var(--pillar-color, currentColor)" strokeWidth="2" />
+      <text x="85" y="22" textAnchor="middle" fontSize="12" fontWeight="600" fill="currentColor">QPU / gate sequence</text>
+      {/* Sine wave to suggest a drive pulse */}
+      <path
+        d="M12,48 C25,34 38,62 51,48 C64,34 77,62 90,48 C103,34 116,62 129,48 C142,34 155,62 160,50"
+        fill="none"
+        stroke="var(--pillar-color, currentColor)"
+        strokeWidth="1.8"
+        opacity="0.75"
+      />
+    </g>
+
+    {/* Arrow 1: QPU -> Fidelity measurement */}
+    <line
+      x1="190" y1="95"
+      x2="268" y2="95"
+      stroke="var(--pillar-color, currentColor)"
+      strokeWidth="2"
+      markerEnd="url(#bo-ch05-cal-arrow)"
+    />
+    <text x="229" y="85" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.75">drive amplitude,</text>
+    <text x="229" y="97" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.75">frequency</text>
+
+    {/* Box 2: Fidelity measurement */}
+    <g transform="translate(270, 60)">
+      <rect x="0" y="0" width="165" height="70" rx="6" fill="none" stroke="currentColor" strokeWidth="1.8" />
+      <text x="82" y="30" textAnchor="middle" fontSize="12" fontWeight="600" fill="currentColor">Fidelity measurement</text>
+      <text x="82" y="50" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.8">(RB)</text>
+    </g>
+
+    {/* Arrow 2: Fidelity -> GP posterior */}
+    <line
+      x1="435" y1="95"
+      x2="513" y2="95"
+      stroke="var(--pillar-color, currentColor)"
+      strokeWidth="2"
+      markerEnd="url(#bo-ch05-cal-arrow)"
+    />
+
+    {/* Box 3: GP posterior update */}
+    <g transform="translate(515, 60)">
+      <rect x="0" y="0" width="165" height="70" rx="6" fill="none" stroke="currentColor" strokeWidth="1.8" />
+      <text x="82" y="30" textAnchor="middle" fontSize="12" fontWeight="600" fill="currentColor">GP posterior update</text>
+      <text x="82" y="50" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.8">Matern 5/2 or RBF</text>
+    </g>
+
+    {/* Arrow 3: GP posterior -> EI acquisition (downward) */}
+    <line
+      x1="597" y1="130"
+      x2="597" y2="158"
+      stroke="var(--pillar-color, currentColor)"
+      strokeWidth="2"
+      markerEnd="url(#bo-ch05-cal-arrow)"
+    />
+
+    {/* Box 4: EI acquisition */}
+    <g transform="translate(440, 160)">
+      <rect x="0" y="0" width="315" height="48" rx="6" fill="none" stroke="currentColor" strokeWidth="1.8" />
+      <text x="157" y="28" textAnchor="middle" fontSize="12" fontWeight="600" fill="currentColor">EI acquisition: next parameters</text>
+    </g>
+
+    {/* Arrow 4: EI acquisition -> QPU (return loop, left) */}
+    <path
+      d="M440,184 L105,184 L105,130"
+      fill="none"
+      stroke="var(--pillar-color, currentColor)"
+      strokeWidth="2"
+      markerEnd="url(#bo-ch05-cal-arrow)"
+    />
+    <text x="270" y="200" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.75">next trial</text>
+  </svg>
+  <figcaption>The qubit calibration loop as Bayesian optimization. The QPU is the expensive black box; drive amplitude and frequency are the inputs; gate fidelity from randomized benchmarking is the objective. Each iteration is one full RB circuit run, taking minutes of device time.</figcaption>
+</figure>
+
+<table className="encoding-table">
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>ML hyperparameter tuning</th>
+      <th>Qubit gate calibration</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Input space</td>
+      <td>Continuous + discrete (mixed)</td>
+      <td>Continuous (amplitude, frequency)</td>
+    </tr>
+    <tr>
+      <td>Evaluation cost</td>
+      <td>Minutes to hours (GPU)</td>
+      <td>Minutes (QPU time, circuit depth)</td>
+    </tr>
+    <tr>
+      <td>Observation noise</td>
+      <td>Low (deterministic val loss)</td>
+      <td>Moderate (shot noise in RB)</td>
+    </tr>
+    <tr>
+      <td>Budget (typical)</td>
+      <td>50-200 trials</td>
+      <td>20-100 trials per qubit</td>
+    </tr>
+    <tr>
+      <td>Kernel choice</td>
+      <td>Matern 5/2 (standard)</td>
+      <td>Matern 5/2 or RBF (smooth surface)</td>
+    </tr>
+    <tr>
+      <td>Acquisition (typical)</td>
+      <td>EI</td>
+      <td>GP-UCB or EI</td>
+    </tr>
+  </tbody>
+</table>
+
+## Reproducibility
+
+BO runs are stochastic in two places: the Sobol initial design uses a seed, and the acquisition function is maximized with multi-start gradient ascent from randomly drawn initial points. Without fixing both seeds, two runs on the same objective return different trial sequences. The GP hyperparameter initialization is also random unless seeded. Fix all three.
+
+The `expected.json` pattern applies directly. After each trial, write the configuration and result to a JSON fixture alongside the run script. The fixture records the seed, the full trial history, and the final GP hyperparameters. A reviewer can reproduce the run by loading the fixture and verifying that the BO loop, re-run with the same seed and initial design, produces the same sequence of queries. This is the "reproducibility as deliverable" principle from the writing strategy: the fixture is the artifact, not the summary statistic.
+
+For the qubit calibration domain, the fixture also records the RB circuit parameters (number of Clifford gates, number of sequences, number of shots) used for each trial. Device drift means that replaying the fixture on a different device or at a different time will not reproduce the same fidelity values -- but the optimization logic is verifiable independently of the physical hardware.
+
+## Connecting the pillars
+
+The three pillars -- ML, quantum, code-intelligence -- share the problem structure of expensive black-box evaluation with a limited budget. BO is one instance of a broader principle: the structured artifact carries more information than its surface form. The GP posterior is that structured artifact; it encodes not just the best observed value but the full landscape of uncertainty over the search space. The raw evaluation budget is the surface form, and querying it without a surrogate discards the information you already have.
+
+The code-intelligence connection is direct: the embedding model whose hyperparameters are being tuned by BO is the same model powering the retrieval layer described in the code-intelligence book. The quantum connection runs through the orchestration layer: BO decides which parameter to try next within a calibration task, while the orchestration problem -- described in "Qubit calibration as an orchestration problem" -- decides which tasks to schedule across a multi-qubit device. Both decisions are instances of information-theoretic resource allocation under constraint, and the GP posterior is what makes the within-task decision principled.
+
+## Notes
+
+<ol className="footnotes">
+  <li id="fn-1">Snoek, J., Larochelle, H., and Adams, R. P. "Practical Bayesian Optimization of Machine Learning Algorithms." NIPS 2012. <a href="https://arxiv.org/abs/1206.2944">https://arxiv.org/abs/1206.2944</a></li>
+  <li id="fn-2">Balandat, M., Karrer, B., Jiang, D. R., Daulton, S., Letham, B., Wilson, A. G., and Bakshy, E. "BoTorch: A Framework for Efficient Monte-Carlo Bayesian Optimization." NeurIPS 2020. <a href="https://arxiv.org/abs/1910.06403">https://arxiv.org/abs/1910.06403</a></li>
+  <li id="fn-3">Rol, M. A. et al. "Restless Tuneup of High-Fidelity Qubit Gates." Physical Review Applied 7, 2017. <a href="https://arxiv.org/abs/1611.04815">https://arxiv.org/abs/1611.04815</a></li>
+</ol>

@@ -1,0 +1,281 @@
+export const meta = {
+  number: '02',
+  slug: 'gaussian-processes',
+  title: 'Gaussian processes: a surrogate that quantifies its own doubt.',
+  summary:
+    'A GP places a prior over functions and updates it with observations to produce a posterior mean and variance at every untried point. The kernel encodes prior beliefs about smoothness; the marginal likelihood tunes it automatically.',
+  reading: '11 min',
+};
+
+# Gaussian processes: a surrogate that quantifies its own doubt.
+
+<p className="chapter-lede">The key property of a GP surrogate is that it returns not just a predicted value but a confidence interval at every untried input. That uncertainty is what feeds the acquisition function. Without it, you have a point estimate and no principled way to trade off exploration and exploitation.</p>
+
+## What a GP is
+
+A Gaussian process is a probability distribution over functions. Any finite collection of function values drawn from a GP follows a joint Gaussian distribution, indexed by the input points. This is a strong statement: the model does not commit to a single function but maintains a distribution over all functions consistent with the prior and the data.
+
+Two objects fully specify a GP prior: a mean function m(x), most often set to zero, and a kernel (covariance function) k(x, x'). The kernel encodes what the model believes about how function values co-vary across input space -- how smooth the function is expected to be, how quickly correlations decay with distance. <sup className="fn-ref"><a href="#fn-1">[1]</a></sup>
+
+The mean function sets the baseline prediction in regions with no observations. The kernel determines how information from one point propagates to nearby points. Both choices matter; the kernel matters more.
+
+## Kernels: encoding prior beliefs about smoothness
+
+The radial basis function (RBF) kernel, also called the squared exponential kernel, produces infinitely differentiable sample paths. It is the mathematically convenient default and works well when the latent objective is known to be very smooth.
+
+Matern kernels parameterize differentiability directly. The Matern 5/2 kernel produces sample paths that are twice mean-square differentiable; Matern 3/2 produces once-differentiable paths. In practice, the Bayesian optimization community defaults to Matern 5/2 because most real objectives are not infinitely smooth, and RBF can overstate regularity. <sup className="fn-ref"><a href="#fn-2">[2]</a></sup>
+
+The linear kernel is degenerate in the GP sense -- it does not produce stationary covariances -- but is useful as a trend component inside a composite kernel when the objective has a dominant monotone structure.
+
+<table className="encoding-table">
+  <thead>
+    <tr>
+      <th>Kernel</th>
+      <th>Differentiability</th>
+      <th>Typical use case</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>RBF</td>
+      <td>Infinitely smooth</td>
+      <td>Very smooth latent functions</td>
+    </tr>
+    <tr>
+      <td>Matern 5/2</td>
+      <td>Twice differentiable</td>
+      <td>Standard BO default</td>
+    </tr>
+    <tr>
+      <td>Matern 3/2</td>
+      <td>Once differentiable</td>
+      <td>Rougher objectives</td>
+    </tr>
+    <tr>
+      <td>Linear</td>
+      <td>n/a (degenerate)</td>
+      <td>Monotone trend component</td>
+    </tr>
+  </tbody>
+</table>
+
+## The posterior: mean and variance
+
+After observing n data points x_1 through x_n with corresponding outputs y, the GP posterior at a new test point x* has a closed-form mean and variance. These follow directly from the standard Gaussian conditioning identities. <sup className="fn-ref"><a href="#fn-1">[1]</a></sup>
+
+```
+// pseudocode
+// GP conditioning equations
+// Inputs: training points X, outputs y, test point x*, kernel k, noise variance sigma_n^2
+
+K    = k(X, X) + sigma_n^2 * I      // n x n kernel matrix with noise diagonal
+k_s  = k(X, x*)                     // n x 1 vector of cross-covariances
+k_ss = k(x*, x*)                    // scalar prior variance at x*
+
+// Posterior mean
+mu_post(x*) = k_s^T * K^{-1} * y
+
+// Posterior variance
+sigma_post^2(x*) = k_ss - k_s^T * K^{-1} * k_s
+```
+
+Two properties follow immediately. The posterior variance collapses to the noise floor sigma_n^2 at observed points (or to zero in the noiseless case), because the GP interpolates (or near-interpolates) through the data. In regions far from all observations, the posterior variance approaches the prior variance k_ss -- the model returns to its prior when it has no relevant evidence.
+
+The acquisition function in Bayesian optimization reads both outputs: the posterior mean tells it where the objective is expected to be good, and the posterior variance tells it where there is still meaningful uncertainty. The balance between them determines the exploration-exploitation tradeoff.
+
+<figure className="chapter-figure">
+  <svg
+    id="bo-ch02-posterior"
+    viewBox="0 0 820 260"
+    width="100%"
+    role="img"
+    aria-labelledby="bo-ch02-post-title bo-ch02-post-desc"
+    style={{color: 'currentColor'}}
+  >
+    <title id="bo-ch02-post-title">GP posterior mean and two-sigma band after three observations</title>
+    <desc id="bo-ch02-post-desc">A 1D GP posterior plot. A shaded band represents the two-sigma posterior variance, wide in unobserved regions and narrow near data points. A solid curve is the posterior mean. Three filled circles mark observed data points near x equals 1.5, 4.0, and 7.5. A dashed horizontal line marks the prior mean at zero. Horizontal and vertical axis lines are drawn.</desc>
+
+    {/* Axis lines */}
+    <line x1="60" y1="210" x2="790" y2="210" stroke="currentColor" strokeWidth="1.5" />
+    <line x1="60" y1="20" x2="60" y2="210" stroke="currentColor" strokeWidth="1.5" />
+
+    {/* Axis tick labels */}
+    <g fontSize="11" fill="currentColor" opacity="0.65" textAnchor="middle">
+      <text x="60" y="228">0</text>
+      <text x="134" y="228">1</text>
+      <text x="208" y="228">2</text>
+      <text x="282" y="228">3</text>
+      <text x="356" y="228">4</text>
+      <text x="430" y="228">5</text>
+      <text x="504" y="228">6</text>
+      <text x="578" y="228">7</text>
+      <text x="652" y="228">8</text>
+      <text x="726" y="228">9</text>
+      <text x="790" y="228">10</text>
+    </g>
+
+    {/* Prior mean dashed horizontal line at y=0, mapped to y=115 in SVG coordinates */}
+    <line
+      x1="60" y1="115" x2="790" y2="115"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeDasharray="6 4"
+      opacity="0.4"
+    />
+    <text x="795" y="119" fontSize="10" fill="currentColor" opacity="0.55">prior mean</text>
+
+    {/*
+      Two-sigma variance band (polygon approximation).
+      x maps linearly: x_data in [0,10] -> svg_x in [60,790], scale=73 px/unit, offset=60
+      y maps: y_data -> svg_y = 115 - y_data * 60  (center=115, scale=60 px/unit)
+
+      Upper envelope (mean + 2*sigma) and lower envelope (mean - 2*sigma).
+      The band is wide in gaps [0..1.5], [1.5..4], [4..7.5], [7.5..10]
+      and narrow near the three observed points.
+
+      Rough approximation for illustration:
+      x=0:    mean~0.0,  sigma~1.50  -> upper=3.0, lower=-3.0
+      x=1.0:  mean~0.5,  sigma~0.90  -> upper=2.3, lower=-1.3
+      x=1.5:  mean~0.8,  sigma~0.05  -> upper=0.9, lower=0.7  (observation)
+      x=2.0:  mean~0.5,  sigma~0.60  -> upper=1.7, lower=-0.7
+      x=2.5:  mean~0.2,  sigma~0.90  -> upper=2.0, lower=-1.6
+      x=3.0:  mean~0.0,  sigma~1.10  -> upper=2.2, lower=-2.2
+      x=3.5:  mean~-0.2, sigma~0.85  -> upper=1.5, lower=-1.9
+      x=4.0:  mean~-0.3, sigma~0.05  -> upper=-0.2,lower=-0.4  (observation)
+      x=4.5:  mean~-0.1, sigma~0.55  -> upper=1.0, lower=-1.2
+      x=5.0:  mean~0.1,  sigma~0.85  -> upper=1.8, lower=-1.6
+      x=5.5:  mean~0.2,  sigma~1.05  -> upper=2.3, lower=-1.9
+      x=6.0:  mean~0.3,  sigma~1.10  -> upper=2.5, lower=-1.9
+      x=6.5:  mean~0.5,  sigma~0.95  -> upper=2.4, lower=-1.4
+      x=7.0:  mean~0.8,  sigma~0.70  -> upper=2.2, lower=-0.6
+      x=7.5:  mean~1.1,  sigma~0.05  -> upper=1.2, lower=1.0  (observation)
+      x=8.0:  mean~0.8,  sigma~0.60  -> upper=2.0, lower=-0.4
+      x=8.5:  mean~0.4,  sigma~0.90  -> upper=2.2, lower=-1.4
+      x=9.0:  mean~0.1,  sigma~1.15  -> upper=2.4, lower=-2.2
+      x=10.0: mean~0.0,  sigma~1.45  -> upper=2.9, lower=-2.9
+
+      svg_x = 60 + x_data * 73
+      svg_y = 115 - y_data * 60
+
+      Upper polygon points (left to right), then lower points (right to left):
+    */}
+    <path
+      d="
+        M 60,115
+        C 60,25 134,48 170,63
+        C 170,63 170,63 170,63
+        L 174,60
+        C 210,40 230,55 265,83
+        C 282,92 310,83 329,72
+        C 348,62 356,99 356,103
+        L 360,103
+        C 384,48 430,62 467,71
+        C 504,80 540,23 578,12
+        C 578,12 614,12 652,27
+        L 670,48
+        C 694,68 726,67 760,55
+        C 790,28 790,28 790,25
+        L 790,205
+        C 760,185 726,195 670,185
+        L 652,183
+        C 614,195 578,218 540,215
+        C 504,210 467,195 430,172
+        C 384,182 360,127 356,127
+        L 356,127
+        C 348,128 329,148 310,147
+        C 282,148 265,147 230,155
+        C 210,175 170,167 174,170
+        L 170,167
+        C 134,182 60,205 60,205
+        Z
+      "
+      fill="var(--pillar-color, currentColor)"
+      fillOpacity="0.15"
+      stroke="none"
+    />
+
+    {/* Posterior mean line */}
+    <polyline
+      points="
+        60,115
+        97,103
+        134,97
+        170,66
+        208,103
+        245,109
+        282,127
+        319,121
+        356,133
+        393,109
+        430,109
+        467,103
+        504,103
+        541,91
+        578,49
+        615,73
+        652,79
+        689,91
+        726,109
+        790,115
+      "
+      fill="none"
+      stroke="var(--pillar-color, currentColor)"
+      strokeWidth="2"
+      strokeLinejoin="round"
+    />
+
+    {/* Observed data points: (1.5,0.8), (4.0,-0.3), (7.5,1.1) */}
+    {/* x=1.5 -> svg_x = 60+1.5*73=169.5~170, y=0.8 -> svg_y=115-0.8*60=67 */}
+    <circle
+      cx="170" cy="67"
+      r="5"
+      fill="var(--pillar-color, currentColor)"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    />
+    {/* x=4.0 -> svg_x = 60+4*73=352, y=-0.3 -> svg_y=115+0.3*60=133 */}
+    <circle
+      cx="352" cy="133"
+      r="5"
+      fill="var(--pillar-color, currentColor)"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    />
+    {/* x=7.5 -> svg_x = 60+7.5*73=607.5~608, y=1.1 -> svg_y=115-1.1*60=49 */}
+    <circle
+      cx="608" cy="49"
+      r="5"
+      fill="var(--pillar-color, currentColor)"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    />
+
+    {/* Legend */}
+    <g fontSize="11" fill="currentColor" opacity="0.75">
+      <line x1="640" y1="235" x2="668" y2="235" stroke="var(--pillar-color, currentColor)" strokeWidth="2" />
+      <text x="672" y="239">posterior mean</text>
+      <rect x="640" y="243" width="28" height="10" fill="var(--pillar-color, currentColor)" fillOpacity="0.15" stroke="none" />
+      <text x="672" y="252">two-sigma band</text>
+      <circle cx="654" cy="260" r="4" fill="var(--pillar-color, currentColor)" />
+      <text x="672" y="264">observation</text>
+    </g>
+  </svg>
+  <figcaption>Posterior mean and two-sigma band after three observations. Uncertainty is small near the data and large in the gaps. The acquisition function reads from this picture to decide where to evaluate next.</figcaption>
+</figure>
+
+## Marginal likelihood and hyperparameter tuning
+
+The GP has hyperparameters: the kernel length scale, the signal variance, and the observation noise variance. These are not the parameters of the function being optimized -- they govern the shape of the prior over functions. They must be set somehow.
+
+The standard approach is Type-II maximum likelihood, also called empirical Bayes. The log marginal likelihood p(y | X, theta) integrates over all possible functions and can be computed in closed form for a GP with Gaussian likelihood. Maximizing it with respect to theta (by gradient ascent on the kernel hyperparameters) is efficient and automatic.
+
+With few observations -- fewer than roughly 20 -- the marginal likelihood can be maximized to pathological values. The length scale collapses to zero, memorizing each data point exactly, or inflates to infinity, collapsing the posterior to the prior mean. Placing log-normal priors over the length scale and signal variance and then marginalizing over hyperparameters (via MCMC or HMC slice sampling) is more principled and more stable. <sup className="fn-ref"><a href="#fn-2">[2]</a></sup>
+
+The practical takeaway is that automatic hyperparameter tuning via marginal likelihood works well when the observation count is moderate (20 to 100 points). Below that threshold, prior specification over the hyperparameters matters as much as the choice of kernel.
+
+## Notes
+
+<ol className="footnotes">
+  <li id="fn-1">Rasmussen, C. E. and Williams, C. K. I. "Gaussian Processes for Machine Learning." MIT Press 2006. <a href="https://gaussianprocess.org/gpml/">https://gaussianprocess.org/gpml/</a></li>
+  <li id="fn-2">Snoek, J., Larochelle, H., and Adams, R. P. "Practical Bayesian Optimization of Machine Learning Algorithms." NIPS 2012. <a href="https://arxiv.org/abs/1206.2944">https://arxiv.org/abs/1206.2944</a></li>
+</ol>
