@@ -4,12 +4,16 @@ export const meta = {
   title: 'Why Bayesian optimization? Sample efficiency, not scale.',
   summary:
     'Training a neural network, running a lab assay, and calibrating a qubit share one property: each evaluation is expensive and you cannot afford many. Bayesian optimization formalizes the surrogate-plus-acquisition loop that gets the most information per query.',
-  reading: '9 min',
+  reading: '12 min',
 };
 
 # Why Bayesian optimization? Sample efficiency, not scale.
 
-<p className="chapter-lede">Training a neural network, running a wet-lab assay, and calibrating a qubit gate each have the same structural property: one evaluation is expensive, the number of evaluations is small, and the objective has no closed-form gradient. Bayesian optimization addresses this class of problem directly. It maintains a probabilistic model of the objective -- the surrogate -- and uses that model to decide where to evaluate next, extracting the most information from every call to the black box.</p>
+<p className="chapter-lede">Training a neural network, running a wet-lab assay, and calibrating a qubit gate each have the same structural property: one evaluation is expensive, the number of evaluations is small, and the objective has no closed-form gradient. Bayesian optimization addresses this class of problem directly. It keeps a probabilistic model of the objective, the surrogate, and uses that model to decide where to evaluate next. The goal is to extract the most information from every call to the black box.</p>
+
+A useful mental model: Bayesian optimization is a treasure hunter on a huge foggy island who is allowed only a few digs. Every dig is costly, the map starts blank, and the only way to win is to let each dig sharpen the guess about where to dig next. The rest of this book is about building that map and choosing those digs well.
+
+<p className="aside">A treasure hunter with infinite digs does not need a strategy. Bayesian optimization only exists because the digs run out.</p>
 
 ## The expensive-evaluation regime
 
@@ -18,6 +22,8 @@ An evaluation is expensive when it takes seconds to hours of wall time, consumes
 Grid search does not solve this problem. It evaluates a Cartesian product of parameter values, most of which lie in regions the objective is already known to be poor. Random search is an improvement -- it avoids the curse of the grid corners -- but it ignores everything it has already learned. Each random trial is drawn from the same prior regardless of what previous trials returned.
 
 The regime that Bayesian optimization targets is roughly 10 to 500 evaluations of a function that takes more than a few seconds per call and has no accessible gradient. Below that budget, random search or a single educated guess is often enough. Above it, the surrogate overhead becomes less justified and cheaper alternatives (evolutionary methods, quasi-random designs) compete more favorably.
+
+A running example makes the regime concrete. Behind `tell-me-why`, the local-first RAG pipeline, sits one knob worth tuning: the indexing chunk size, a single continuous value from 64 to 2048 tokens. Each setting is scored by recall@10 on a fixed held-out query set, and each trial reindexes the corpus and reruns the benchmark, about 8 minutes on a GPU. The budget is roughly 25 trials, which is squarely the expensive-evaluation regime where guessing blindly wastes the few digs you have.
 
 ## The surrogate-plus-acquisition loop
 
@@ -91,6 +97,22 @@ Jones, Schonlau, and Welch formalized this loop in 1998 under the name Efficient
 The black-box objective is typically not differentiable in any accessible way. The training loss of a model as a function of its hyperparameters is not differentiable because the training run is a discrete, stochastic process. A lab assay returns a scalar measurement with no gradient attached. Even when an automatic differentiation framework could in principle compute a gradient through the simulation, the cost of that computation equals or exceeds the cost of the forward evaluation itself -- which doubles the budget rather than saving it.
 
 Finite-difference gradient estimation is one escape route, but it requires at least one extra evaluation per input dimension. A ten-dimensional hyperparameter space demands eleven evaluations to estimate a single gradient, consuming the entire sample budget in one step. The surrogate avoids this by modeling the objective globally and cheaply, letting the acquisition function be optimized by gradient ascent over the surrogate rather than over the black box.
+
+## Check your understanding
+
+1. Random search ignores everything it has already learned, yet it often beats grid search. Explain why the surrogate-plus-acquisition loop should beat random search specifically in the expensive-evaluation regime, and where that advantage disappears.
+2. The chunk-size tuning task has a budget of about 25 trials at 8 minutes each. Suppose someone proposes estimating a finite-difference gradient at the starting chunk size and following it. Reason through how much of the budget that consumes and what it buys you.
+3. The loop has four steps but only one of them touches the black box. Identify which step that is, and argue why moving work out of that step and into the other three is the entire point of the method.
+
+## What to remember
+
+**Bayesian optimization is for problems where each evaluation is expensive, the budget is tiny, and there is no usable gradient, so every query has to earn its cost.**
+
+- The loop is surrogate, then acquisition, then one black-box evaluation, then update, repeated until the budget runs out.
+- Only the black-box step is expensive; all the reasoning happens cheaply on the surrogate.
+- The regime is roughly 10 to 500 gradient-free evaluations that each take more than a few seconds; below it random search is fine, above it cheaper methods compete.
+
+Key insight: **sample efficiency, not scale, is the whole game; you are buying information per query, not throughput.**
 
 ## Notes
 

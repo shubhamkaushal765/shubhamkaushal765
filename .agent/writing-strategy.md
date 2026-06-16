@@ -168,4 +168,4 @@ section. Currently published books:
   RAG/embedding pipeline (EI over embedding-model search spaces), the qubit
   calibration work (gate-pulse BO), and core ML infrastructure. Fits narrative
   theme 1 (structured artifact reasoning) and theme 2 (local-first
-  infrastructure).
+  infrastructure). The book is written to a retention-oriented teaching structure: each chapter anchors on a single sustained mental-model metaphor, threads one running example (tuning the `tell-me-why` retrieval pipeline's indexing chunk size), and introduces intuition before equations. Every chapter ends with "Check your understanding" and "What to remember" blocks placed before the closing notes section.
