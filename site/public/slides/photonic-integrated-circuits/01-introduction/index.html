@@ -729,17 +729,18 @@ section.present .fragment:not(.visible) .appear { animation: none; }
 <!-- ═══════════════════════════════ 11 · Faces of photonics (table) ═══════════════════════════════ -->
 <section>
   <p class="eyebrow"><span class="num">[ 10 ]</span><span class="sep">|</span>the faces of photonics</p>
-  <h2>Four sub-fields, one question each: what controls the light?</h2>
+  <h2>Five sub-fields, one question each: what controls the light?</h2>
   <table>
     <thead><tr><th>sub-field</th><th>control knob</th><th>what happens</th><th>example device</th></tr></thead>
     <tbody>
       <tr class="fragment" data-fragment-index="1"><td>electro-optics</td><td>electric field or current</td><td>flow of light is controlled electrically</td><td>modulator, electro-absorption</td></tr>
       <tr class="fragment" data-fragment-index="2"><td>acousto-optics</td><td>acoustic wave (piezo or phonons)</td><td>acoustic wave steers or filters the light</td><td>acousto-optic deflector</td></tr>
-      <tr class="fragment" data-fragment-index="3"><td>opto-electronics</td><td>electron processes</td><td>electronic process ends in photon generation or starts from photon detection</td><td>LED, semiconductor laser, photodetector</td></tr>
-      <tr class="fragment" data-fragment-index="4"><td>quantum optics</td><td>single photons</td><td>generate, manipulate, interfere, and detect individual photons</td><td>single-photon source, QKD link, optical amplifier</td></tr>
+      <tr class="fragment" data-fragment-index="3"><td>thermo-optics</td><td>temperature (a micro-heater)</td><td>refractive index follows temperature, so the phase of the light is tuned thermally</td><td>thermo-optic phase shifter, tunable ring</td></tr>
+      <tr class="fragment" data-fragment-index="4"><td>opto-electronics</td><td>electron processes</td><td>electronic process ends in photon generation or starts from photon detection</td><td>LED, semiconductor laser, photodetector</td></tr>
+      <tr class="fragment" data-fragment-index="5"><td>quantum optics</td><td>single photons</td><td>generate, manipulate, interfere, and detect individual photons</td><td>single-photon source, QKD link, optical amplifier</td></tr>
     </tbody>
   </table>
-  <p class="fragment small muted" data-fragment-index="5" style="margin-top:18px">Opto-electronics sits on the border between electronics and photonics, which is exactly why it is a good example of the two fields merging.</p>
+  <p class="fragment small muted" data-fragment-index="6" style="margin-top:18px">Opto-electronics sits on the border between electronics and photonics, which is exactly why it is a good example of the two fields merging.</p>
 </section>
 
 <!-- ═══════════════════════════════ 12 · Electro-optics ═══════════════════════════════ -->
@@ -820,9 +821,58 @@ section.present .fragment:not(.visible) .appear { animation: none; }
   </div>
 </section>
 
-<!-- ═══════════════════════════════ 14 · Opto-electronics + quantum optics ═══════════════════════════════ -->
+<!-- ═══════════════════════════════ 14 · Thermo-optics ═══════════════════════════════ -->
 <section>
-  <p class="eyebrow"><span class="num">[ 13 ]</span><span class="sep">|</span>opto-electronics and quantum optics</p>
+  <p class="eyebrow"><span class="num">[ 13 ]</span><span class="sep">|</span>thermo-optics</p>
+  <h2>Heat as a slow, cheap phase knob</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p>The refractive index of a material depends on <strong>temperature</strong>. A metal micro-heater on top of a waveguide warms it locally; the light travelling underneath sees a slightly different index and picks up an extra <strong>phase delay</strong>.</p>
+      <ul class="small">
+        <li class="fragment" data-fragment-index="1"><strong>Simple to make:</strong> no special material, just a resistor next to the guide. On silicon the effect is strong (dn/dT ≈ 1.8 × 10<sup>-4</sup> per K).</li>
+        <li class="fragment" data-fragment-index="2"><strong>Slow and hungry:</strong> microsecond response and milliwatts per heater, so it is used for <strong>tuning and trimming</strong> (rings, interferometers, switches), not for data modulation.</li>
+      </ul>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="t-title t-desc">
+      <title id="t-title">Thermo-optic phase shifter</title>
+      <desc id="t-desc">A waveguide runs left to right. A heater strip sits above its middle section, driven by a current. Heat spreads into the waveguide and the light leaving the heated section is delayed in phase relative to an unheated reference.</desc>
+      <text x="10" y="24" class="tiny">reference (no heat)</text>
+      <path class="guide" d="M10 40 H510 V50 H10 Z" style="opacity:0.5"/>
+      <path class="beam flowing slow" d="M10 45 H510" style="opacity:0.5"/>
+      <text x="10" y="110" class="tiny">heated section</text>
+      <path class="guide" d="M10 150 H510 V160 H10 Z"/>
+      <path class="beam flowing slow" d="M10 155 H180"/>
+      <!-- heater -->
+      <rect class="box" x="180" y="118" width="160" height="12" rx="2" style="fill:var(--ml);stroke:none;opacity:0.8"/>
+      <text x="200" y="112" class="tiny" style="fill:var(--ml)">micro-heater</text>
+      <path class="elec draw" style="--len:120;--dur:800ms" d="M120 124 H180"/>
+      <path class="elec draw" style="--len:120;--dur:800ms" d="M340 124 H400"/>
+      <text x="60" y="128" class="tiny" style="fill:var(--code)">I</text>
+      <g class="fragment" data-fragment-index="1" style="stroke:var(--ml);stroke-width:1.5;fill:none;opacity:0.5">
+        <path d="M200 132 q4 6 0 12 q-4 6 0 12"/>
+        <path d="M230 132 q4 6 0 12 q-4 6 0 12"/>
+        <path d="M260 132 q4 6 0 12 q-4 6 0 12"/>
+        <path d="M290 132 q4 6 0 12 q-4 6 0 12"/>
+        <path d="M320 132 q4 6 0 12 q-4 6 0 12"/>
+      </g>
+      <g class="fragment" data-fragment-index="1">
+        <rect x="180" y="150" width="160" height="10" style="fill:var(--ml);opacity:0.25"/>
+        <text x="186" y="182" class="tiny" style="fill:var(--ml)">n(T) = n<tspan baseline-shift="sub" font-size="70%">0</tspan> + (dn/dT) ΔT</text>
+        <path class="beam draw" style="--len:180;--dur:1400ms" d="M340 155 H510"/>
+        <text x="390" y="182" class="tiny acc">delayed by Δφ</text>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <text x="10" y="222" class="tiny">phase shift</text>
+        <text x="100" y="222" class="tiny acc">Δφ = (2π/λ) · (dn/dT) · ΔT · L</text>
+        <text x="100" y="242" class="tiny">longer heater, more heat, more phase. Response time set by how fast the chip cools.</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 15 · Opto-electronics + quantum optics ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 14 ]</span><span class="sep">|</span>opto-electronics and quantum optics</p>
   <h2>Electrons in, photons out. And then single photons.</h2>
   <div class="cols">
     <div class="stack">
@@ -866,9 +916,9 @@ section.present .fragment:not(.visible) .appear { animation: none; }
   </div>
 </section>
 
-<!-- ═══════════════════════════════ 15 · Application disciplines ═══════════════════════════════ -->
+<!-- ═══════════════════════════════ 16 · Application disciplines ═══════════════════════════════ -->
 <section>
-  <p class="eyebrow"><span class="num">[ 14 ]</span><span class="sep">|</span>application disciplines</p>
+  <p class="eyebrow"><span class="num">[ 15 ]</span><span class="sep">|</span>application disciplines</p>
   <h2>Generate, transport, manipulate: the applications follow</h2>
   <svg class="fig" viewBox="0 0 900 230" role="img" aria-labelledby="p-title p-desc" style="max-width:100%">
     <title id="p-title">Three capabilities feeding four application areas</title>
@@ -897,15 +947,15 @@ section.present .fragment:not(.visible) .appear { animation: none; }
   <p class="small muted" style="margin-top:20px">Short-distance and long-distance data communication were enabled by photonics and are studied as part of it. The rest of the list exists because we learned to generate, transport, and manipulate light well.</p>
 </section>
 
-<!-- ═══════════════════════════════ 16 · Integrated photonics history ═══════════════════════════════ -->
+<!-- ═══════════════════════════════ 17 · Integrated photonics history ═══════════════════════════════ -->
 <section>
-  <p class="eyebrow"><span class="num">[ 15 ]</span><span class="sep">|</span>integrated photonics, historically</p>
+  <p class="eyebrow"><span class="num">[ 16 ]</span><span class="sep">|</span>integrated photonics, historically</p>
   <h2>The term is older than you think</h2>
   <div class="cols">
     <ol class="timeline">
       <li class="fragment" data-fragment-index="1"><span class="when">1960s</span><strong>The proposal.</strong> Emphasise the similarity between planar circuit technology and the well established integrated microelectronic circuit. Optical benches look like circuits; why not build them like one?</li>
       <li class="fragment" data-fragment-index="2"><span class="when">post-1980s</span><strong>Its own structure.</strong> The field stops mimicking microelectronics and develops a shape of its own, but the core concept was already established: many components on a single substrate.</li>
-      <li class="fragment" data-fragment-index="3"><span class="when">today</span><strong>Guided waves plus all associated disciplines.</strong> Electro-optics, acousto-optics, nonlinear optics, and opto-electronics, together on one substrate.</li>
+      <li class="fragment" data-fragment-index="3"><span class="when">today</span><strong>Guided waves plus all associated disciplines.</strong> Electro-optics, acousto-optics, thermo-optics, nonlinear optics, and opto-electronics, together on one substrate.</li>
     </ol>
     <svg class="fig" viewBox="0 0 400 260" role="img" aria-labelledby="h-title h-desc">
       <title id="h-title">Microelectronic chip beside a photonic chip</title>
@@ -940,9 +990,9 @@ section.present .fragment:not(.visible) .appear { animation: none; }
   </div>
 </section>
 
-<!-- ═══════════════════════════════ 17 · Table to chip (auto-animate pair) ═══════════════════════════════ -->
+<!-- ═══════════════════════════════ 18 · Table to chip (auto-animate pair) ═══════════════════════════════ -->
 <section data-auto-animate data-auto-animate-id="bench">
-  <p class="eyebrow"><span class="num">[ 16 ]</span><span class="sep">|</span>the one design move</p>
+  <p class="eyebrow"><span class="num">[ 17 ]</span><span class="sep">|</span>the one design move</p>
   <h2>On the table, light travels in free space</h2>
   <div class="cols wide-fig">
     <div class="stack">
@@ -965,7 +1015,7 @@ section.present .fragment:not(.visible) .appear { animation: none; }
 </section>
 
 <section data-auto-animate data-auto-animate-id="bench">
-  <p class="eyebrow"><span class="num">[ 16 ]</span><span class="sep">|</span>the one design move</p>
+  <p class="eyebrow"><span class="num">[ 17 ]</span><span class="sep">|</span>the one design move</p>
   <h2>On the chip, light has to be guided</h2>
   <div class="cols wide-fig">
     <div class="stack">
@@ -988,9 +1038,9 @@ section.present .fragment:not(.visible) .appear { animation: none; }
   </div>
 </section>
 
-<!-- ═══════════════════════════════ 18 · Definition assembled ═══════════════════════════════ -->
+<!-- ═══════════════════════════════ 19 · Definition assembled ═══════════════════════════════ -->
 <section>
-  <p class="eyebrow"><span class="num">[ 17 ]</span><span class="sep">|</span>putting it together</p>
+  <p class="eyebrow"><span class="num">[ 18 ]</span><span class="sep">|</span>putting it together</p>
   <h2>Integrated photonics, defined</h2>
   <div class="cols wide-fig">
     <div class="stack">
@@ -1013,14 +1063,14 @@ section.present .fragment:not(.visible) .appear { animation: none; }
   </div>
 </section>
 
-<!-- ═══════════════════════════════ 19 · Check your understanding ═══════════════════════════════ -->
+<!-- ═══════════════════════════════ 20 · Check your understanding ═══════════════════════════════ -->
 <section>
-  <p class="eyebrow"><span class="num">[ 18 ]</span><span class="sep">|</span>check your understanding</p>
+  <p class="eyebrow"><span class="num">[ 19 ]</span><span class="sep">|</span>check your understanding</p>
   <h2>Three questions before the next lecture</h2>
   <ol>
     <li class="fragment" data-fragment-index="1">A splitter, a grating, and a coupler sit on the same substrate but nothing connects them. Is that integrated photonics? What is missing from the definition?</li>
     <li class="fragment" data-fragment-index="2">Silicon has an indirect band gap. Which on-chip roles can it fill well, and which one is hard? Why did compound semiconductors matter so much?</li>
-    <li class="fragment" data-fragment-index="3">Electro-optics and acousto-optics both control light with an external signal. Name the control knob in each, and the physical thing in the material that the light actually responds to.</li>
+    <li class="fragment" data-fragment-index="3">Electro-optics, acousto-optics, and thermo-optics all control light with an external signal. Name the control knob in each, and the physical thing in the material that the light actually responds to.</li>
   </ol>
   <div class="card fragment" data-fragment-index="4" style="margin-top:14px">
     <span class="k">what to remember</span>
@@ -1028,7 +1078,7 @@ section.present .fragment:not(.visible) .appear { animation: none; }
   </div>
 </section>
 
-<!-- ═══════════════════════════════ 20 · End ═══════════════════════════════ -->
+<!-- ═══════════════════════════════ 21 · End ═══════════════════════════════ -->
 <section>
   <p class="eyebrow"><span class="num">photonics</span><span class="sep">|</span>photonic integrated circuits<span class="sep">|</span>deck 01 of the series</p>
   <h2>Next: how the components themselves evolved</h2>
