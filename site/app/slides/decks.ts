@@ -71,6 +71,18 @@ export const PHOTONIC_IC_DECKS: Deck[] = [
       href: 'https://www.youtube.com/watch?v=2JK2OGKzSEM',
     },
   },
+  {
+    number: '03',
+    slug: '03-components-1',
+    title: 'Photonic integrated circuits: components, part 1',
+    summary:
+      'The passive power-handling toolkit: waveguides and bends, Y-branch and multimode-interference splitters, mirrors and gratings, and the directional coupler, with sliders for the split ratio and the coupling length.',
+    length: '15 slides',
+    source: {
+      label: 'NPTEL, Lec 07 Photonic integrated circuit components 1',
+      href: 'https://www.youtube.com/watch?v=fCc8OQ7H9lg',
+    },
+  },
 ];
 
 export const SLIDES: SlideEntry[] = [
