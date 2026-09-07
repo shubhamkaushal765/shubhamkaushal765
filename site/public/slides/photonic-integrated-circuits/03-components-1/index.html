@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photonic integrated circuits: components, part 1 | Slides | Shubham Kaushal</title>
+<meta name="description" content="The passive power-handling components of a photonic integrated circuit: waveguides and bends, Y-branch and multimode-interference splitters, mirrors and gratings, and the directional coupler.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.1/dist/reveal.css">
+<style>
+/* ── Tokens: mirrors site/styles/globals.css and .agent/visual-system.md ── */
+:root {
+  --bg: #0a0a0f;
+  --card: #131320;
+  --rail: #1b1b28;
+  --elevated: #181826;
+  --hair: rgba(255, 255, 255, 0.07);
+  --strong: rgba(255, 255, 255, 0.12);
+  --text: #f0ede5;
+  --muted: #a3a098;
+  --footnote: #757269;
+  --accent: #fbbf24;      /* pillar: photonics */
+  --code: #22d3ee;        /* pillar: code intelligence, used for electrical signals */
+  --ml: #a78bfa;          /* pillar: machine learning, used for acoustic / second path */
+  --quantum: #34d399;     /* pillar: quantum, used for detectors and photons */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+html, body { background: var(--bg); }
+
+.reveal-viewport { background: var(--bg); }
+
+.reveal {
+  font-family: var(--font-sans);
+  font-size: 25px;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.42;
+}
+
+.reveal .slides { text-align: left; }
+.reveal .slides section { padding: 0 24px; box-sizing: border-box; }
+
+.reveal h1, .reveal h2, .reveal h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--text);
+  margin: 0 0 0.5em 0;
+  line-height: 1.12;
+  text-shadow: none;
+  font-variation-settings: 'opsz' 96;
+}
+.reveal h1 { font-size: 2.2em; }
+.reveal h2 { font-size: 1.45em; }
+.reveal h3 { font-size: 1.1em; }
+
+.reveal p { margin: 0 0 0.6em 0; max-width: 34em; }
+.reveal .muted { color: var(--muted); }
+.reveal .small { font-size: 0.72em; }
+.reveal strong { font-weight: 600; color: var(--text); }
+.reveal em { color: var(--accent); font-style: normal; }
+.reveal a { color: var(--accent); text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--accent) 50%, transparent); text-underline-offset: 3px; }
+.reveal a:hover { text-decoration-color: var(--accent); }
+.reveal code { font-family: var(--font-mono); font-size: 0.85em; color: var(--code); background: var(--card); padding: 2px 5px; border-radius: 3px; }
+
+.reveal ul, .reveal ol { display: block; margin: 0 0 0.6em 1.1em; max-width: 34em; }
+.reveal li { margin: 0.18em 0; }
+.reveal li::marker { color: var(--accent); }
+
+/* Eyebrow: mono, uppercase, tracked. Same recipe as .book-eyebrow on the site. */
+.eyebrow {
+  max-width: none;
+  font-family: var(--font-mono);
+  font-size: 0.5em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.2em;
+}
+.eyebrow .num { color: var(--accent); }
+.eyebrow .sep { color: var(--strong); margin: 0 0.5em; }
+
+/* Bracket motif [ NN ] on section headings */
+.bracket {
+  font-family: var(--font-mono);
+  font-size: 0.55em;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  vertical-align: 0.35em;
+  margin-right: 0.6em;
+  font-weight: 400;
+}
+
+/* Two-column layouts */
+.cols { display: grid; grid-template-columns: 1.05fr 1fr; gap: 40px; align-items: center; }
+.cols.wide-fig { grid-template-columns: 0.9fr 1.2fr; }
+.cols > * { min-width: 0; }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-size: 0.78em;
+}
+.card .k { font-family: var(--font-mono); font-size: 0.72em; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 4px; }
+.card.dim { opacity: 0.55; }
+
+/* Tables: the site's encoding-table recipe */
+.reveal table {
+  font-size: 0.66em;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0;
+  font-family: var(--font-sans);
+}
+.reveal table th, .reveal table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.55em 0.8em;
+  border-bottom: 1px solid var(--hair);
+}
+.reveal table th {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.78em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--rail);
+}
+.reveal table td:first-child { font-family: var(--font-mono); color: var(--accent); font-size: 0.9em; white-space: nowrap; }
+.reveal table tr:last-child td { border-bottom: 1px solid var(--strong); }
+.reveal table tr.fragment { transition: opacity 260ms ease-out; }
+
+/* Keyboard chip */
+.kbd {
+  font-family: var(--font-mono);
+  font-size: 0.72em;
+  padding: 1px 7px;
+  background: var(--elevated);
+  border: 1px solid var(--strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+}
+
+/* Reveal chrome */
+.reveal .progress { height: 2px; color: var(--accent); background: var(--hair); }
+.reveal .controls { color: var(--accent); }
+.reveal .slide-number {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--footnote);
+  background: transparent;
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 14px;
+}
+.reveal .backgrounds .slide-background { background: var(--bg); }
+
+/* Top-of-page hairline motif */
+.reveal-viewport::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: color-mix(in oklab, var(--accent) 25%, transparent);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Persistent deck label (bottom-left) */
+.deck-label {
+  position: fixed;
+  left: 22px;
+  bottom: 16px;
+  z-index: 6;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--footnote);
+  pointer-events: none;
+}
+.deck-label a { pointer-events: auto; color: var(--footnote); text-decoration: none; }
+.deck-label a:hover { color: var(--accent); }
+.deck-label .sep { color: var(--strong); margin: 0 0.6em; }
+
+/* ── Figures ── */
+.fig { width: 100%; height: auto; display: block; overflow: visible; }
+.fig text { font-family: var(--font-mono); font-size: 13px; fill: var(--muted); }
+.fig text.lbl { fill: var(--text); }
+.fig text.acc { fill: var(--accent); }
+.fig text.tiny { font-size: 11px; fill: var(--footnote); }
+.fig .box { fill: var(--rail); stroke: var(--strong); stroke-width: 1.5; }
+.fig .box.acc { stroke: var(--accent); }
+.fig .wire { fill: none; stroke: var(--strong); stroke-width: 1.5; }
+.fig .beam { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+.fig .beam.faint { opacity: 0.35; }
+.fig .beam.violet { stroke: var(--ml); }
+.fig .beam.green { stroke: var(--quantum); }
+.fig .elec { fill: none; stroke: var(--code); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.fig .dot { fill: var(--accent); }
+.fig .dot.green { fill: var(--quantum); }
+.fig .dot.cyan { fill: var(--code); }
+.fig .guide { fill: color-mix(in oklab, var(--accent) 12%, transparent); stroke: color-mix(in oklab, var(--accent) 55%, transparent); stroke-width: 1.5; }
+.fig .chip { fill: var(--card); stroke: var(--strong); stroke-width: 1.5; }
+
+/* ── Animations. All keyed to `.present` (current slide) or `.fragment.visible`, so they replay on entry. ── */
+@keyframes dash-travel { to { stroke-dashoffset: 0; } }
+@keyframes flow { to { stroke-dashoffset: -48; } }
+@keyframes pulse-along { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes blink { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+@keyframes wobble { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes spin-phase { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes breathe { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+
+/* Drawn-in strokes: set --len on the element. */
+.draw { stroke-dasharray: var(--len, 400); stroke-dashoffset: var(--len, 400); }
+section.present .draw, .fragment.visible .draw, .fragment.visible.draw {
+  animation: dash-travel var(--dur, 1200ms) ease-out forwards;
+  animation-delay: var(--delay, 200ms);
+}
+
+/* Flowing light: moving dash pattern */
+.flowing { stroke-dasharray: 10 14; }
+section.present .flowing, .fragment.visible .flowing { animation: flow 900ms linear infinite; }
+.flowing.slow { animation-duration: 1800ms; }
+
+/* A photon riding a path via offset-path */
+.rider { offset-rotate: 0deg; opacity: 0; }
+section.present .rider, .fragment.visible .rider {
+  opacity: 1;
+  animation: pulse-along var(--dur, 2400ms) linear infinite;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Blinking detector */
+section.present .blink, .fragment.visible .blink { animation: blink 1200ms ease-in-out infinite; }
+
+.appear { opacity: 0; }
+section.present .appear, .fragment.visible .appear {
+  animation: rise 480ms ease-out forwards;
+  animation-delay: var(--delay, 200ms);
+}
+
+/* Animations inside a not-yet-revealed fragment wait for the fragment. */
+section.present .fragment:not(.visible) .draw,
+section.present .fragment:not(.visible) .rider,
+section.present .fragment:not(.visible) .flowing,
+section.present .fragment:not(.visible) .blink,
+section.present .fragment:not(.visible) .appear { animation: none; }
+
+/* Fragment styles: fade, no movement (site rule: motion is opacity or stroke only) */
+.reveal .fragment.fade-in-dim { opacity: 0.25; }
+.reveal .fragment.fade-in-dim.visible { opacity: 1; }
+
+/* Component catalogue grid */
+.catalog { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.catalog .item { background: var(--card); border: 1px solid var(--hair); border-radius: 8px; padding: 10px 12px 8px; }
+.catalog .item svg { width: 100%; height: auto; display: block; margin-bottom: 4px; }
+.catalog .item .name { font-family: var(--font-mono); font-size: 0.55em; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.catalog .item .fn { font-size: 0.6em; color: var(--muted); line-height: 1.3; }
+
+/* MZI interactive control */
+.control { display: flex; align-items: center; gap: 16px; font-family: var(--font-mono); font-size: 0.6em; color: var(--muted); margin-top: 8px; }
+.control input[type=range] { flex: 1; accent-color: var(--accent); }
+.control output { color: var(--accent); min-width: 5.5ch; text-align: right; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 26px; margin: 0; list-style: none; }
+.timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 1px; background: var(--strong); }
+.timeline li { position: relative; margin: 0 0 12px 0; font-size: 0.74em; line-height: 1.38; }
+.timeline li::before { content: ''; position: absolute; left: -24px; top: 0.45em; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--bg); }
+.timeline .when { font-family: var(--font-mono); font-size: 0.7em; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: block; }
+
+/* Title slide */
+.title-slide h1 { font-size: 2.4em; max-width: 12em; }
+.title-slide .eyebrow { margin-bottom: 2em; white-space: nowrap; }
+.title-slide .cols { grid-template-columns: 1.15fr 1fr; }
+.title-slide .fig { max-width: 520px; }
+
+/* Reduced motion: everything resolves to its final state. */
+@media (prefers-reduced-motion: reduce) {
+  .draw { stroke-dashoffset: 0; }
+  .appear, .rider { opacity: 1; }
+  .rider { offset-distance: 50%; }
+  section.present .draw, section.present .flowing, section.present .rider, section.present .blink, section.present .appear,
+  .fragment.visible .draw, .fragment.visible .flowing, .fragment.visible .rider, .fragment.visible .blink, .fragment.visible .appear {
+    animation: none;
+  }
+  .reveal table tr.fragment, .reveal .fragment { transition: none; }
+}
+
+@media (max-width: 900px) {
+  .cols, .cols.wide-fig { grid-template-columns: 1fr; gap: 20px; }
+  .catalog { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- ═══════════════════════════════ 01 · Title ═══════════════════════════════ -->
+<section class="title-slide">
+  <p class="eyebrow"><span class="num">photonics</span><span class="sep">|</span>photonic integrated circuits<span class="sep">|</span>deck 03</p>
+  <div class="cols">
+    <div>
+      <h1>Photonic integrated circuit components, part 1: power handling</h1>
+      <p class="muted small">The passive toolkit: waveguides and bends, Y-branch and multimode-interference splitters, mirrors and gratings, and the directional coupler.</p>
+      <p class="muted small" style="margin-top:1.4em">Arrow keys to move. <span class="kbd">f</span> fullscreen. <span class="kbd">?</span> key map.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 260" role="img" aria-labelledby="t-title t-desc">
+      <title id="t-title">A chip carrying a waveguide through a bend, a splitter, and a coupler</title>
+      <desc id="t-desc">A substrate with one input waveguide that bends, splits into two arms in a Y, and one arm then runs close to a second waveguide so light couples across. Light dots travel each path.</desc>
+      <rect class="chip" x="20" y="30" width="480" height="200" rx="10"/>
+      <text x="34" y="54" class="tiny">power handling: move, split, combine, reflect, couple</text>
+      <path class="guide" d="M20 150 H90 C130 150 130 110 170 110 H220 C260 110 260 80 300 80 H500 V90 H300 C266 90 266 120 220 120 H170 C136 120 136 160 90 160 H20 Z"/>
+      <path class="guide" d="M220 115 C260 115 260 150 300 150 H500 V160 H300 C266 160 266 125 220 125 Z" style="opacity:0.8"/>
+      <path class="guide" d="M300 180 H500 V190 H300 Z" style="opacity:0.6"/>
+      <path class="beam draw" style="--len:600;--dur:1600ms" d="M20 155 H90 C130 155 130 115 170 115 H220 C260 115 260 85 300 85 H500"/>
+      <path class="beam faint draw" style="--len:400;--dur:1400ms;--delay:500ms" d="M220 120 C260 120 260 155 300 155 H380 C400 155 420 185 440 185 H500"/>
+      <circle class="dot rider" r="5" style="offset-path: path('M20 155 H90 C130 155 130 115 170 115 H220 C260 115 260 85 300 85 H500'); --dur: 2600ms"/>
+      <circle class="dot rider" r="4" style="offset-path: path('M220 120 C260 120 260 155 300 155 H380 C400 155 420 185 440 185 H500'); --dur: 2600ms; --delay: 900ms; opacity:0.7"/>
+      <text x="110" y="200" class="tiny">bend</text>
+      <text x="222" y="200" class="tiny">Y-branch</text>
+      <text x="380" y="212" class="tiny">coupler</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 02 · Three functionalities ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 01 ]</span><span class="sep">|</span>the map</p>
+  <h2>Everything a circuit does falls into three kinds of function</h2>
+  <div class="cols">
+    <div class="stack">
+      <div class="card fragment" data-fragment-index="1"><span class="k">power handling</span>Passive. Move light from A to B, split it, combine it, reflect it, couple it between guides. This deck.</div>
+      <div class="card fragment" data-fragment-index="2"><span class="k">polarisation handling</span>Also passive. Select, rotate, split, or combine polarisation states. Next deck.</div>
+      <div class="card fragment" data-fragment-index="3"><span class="k">active interaction</span>Electric, magnetic, or acoustic fields acting on the optical field: modulators, switches, phase shifters. Next deck.</div>
+    </div>
+    <svg class="fig" viewBox="0 0 440 240" role="img" aria-labelledby="m-title m-desc">
+      <title id="m-title">Three functional blocks on a chip</title>
+      <desc id="m-desc">A waveguide passes through three labelled blocks in sequence: a power block that splits the beam, a polarisation block, and an active block driven by an electrical signal.</desc>
+      <path class="guide" d="M10 120 H430 V130 H10 Z"/>
+      <path class="beam flowing slow" d="M10 125 H430"/>
+      <g class="fragment" data-fragment-index="1">
+        <rect class="box acc" x="40" y="90" width="100" height="70" rx="6"/>
+        <text x="58" y="130" class="tiny acc">power</text>
+        <path class="beam faint" d="M140 125 L200 100"/>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <rect class="box" x="180" y="90" width="100" height="70" rx="6"/>
+        <text x="190" y="130" class="tiny">polarisation</text>
+        <path class="wire" d="M230 100 L230 150 M215 125 L245 125" style="stroke:var(--ml)"/>
+      </g>
+      <g class="fragment" data-fragment-index="3">
+        <rect class="box" x="320" y="90" width="100" height="70" rx="6"/>
+        <text x="342" y="130" class="tiny">active</text>
+        <path class="elec draw" style="--len:120;--dur:800ms" d="M330 60 H345 V46 H360 V60 H375 V46 H390 V60 H405"/>
+        <line class="wire" x1="368" y1="62" x2="368" y2="90" style="stroke:var(--code)"/>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 03 · Interconnect ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 02 ]</span><span class="sep">|</span>interconnect</p>
+  <h2>The simplest component: get light from A to B, straight or bent</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p>A <strong>straight waveguide</strong> is the planar version of a free-space beam between two points.</p>
+      <p class="fragment small" data-fragment-index="1">Unlike free space, a guided wave lets you <strong>bend</strong>. S-bends and full curves steer light around other structures on the chip. Keep the bend radius above the platform's limit and the light arrives with no loss.</p>
+      <p class="fragment small muted" data-fragment-index="2">Too tight a bend and the mode leaks out of the outer wall; the limit depends on the index contrast.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="i-title i-desc">
+      <title id="i-title">Straight, S-bend, and curved waveguides</title>
+      <desc id="i-desc">Top: a straight waveguide from A to B. Middle: an S-bend that shifts the path sideways. Bottom: a tight curve where some light escapes at the outer wall.</desc>
+      <text x="10" y="30" class="tiny">A</text><text x="500" y="30" class="tiny">B</text>
+      <path class="guide" d="M20 40 H500 V50 H20 Z"/>
+      <path class="beam draw" style="--len:480;--dur:1200ms" d="M20 45 H500"/>
+      <circle class="dot rider" r="4" style="offset-path: path('M20 45 H500'); --dur: 2400ms"/>
+      <g class="fragment" data-fragment-index="1">
+        <text x="10" y="90" class="tiny">A</text><text x="500" y="150" class="tiny">B</text>
+        <path class="guide" d="M20 100 H160 C260 100 260 160 360 160 H500 V170 H360 C266 170 266 110 160 110 H20 Z"/>
+        <path class="beam draw" style="--len:520;--dur:1400ms" d="M20 105 H160 C260 105 260 165 360 165 H500"/>
+        <circle class="dot rider" r="4" style="offset-path: path('M20 105 H160 C260 105 260 165 360 165 H500'); --dur: 2600ms"/>
+        <text x="200" y="150" class="tiny acc">S-bend, radius above the limit</text>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <path class="guide" d="M20 200 H120 C160 200 160 240 200 240 H240 V230 H200 C166 230 166 190 120 190 H20 Z" style="opacity:0.6"/>
+        <path class="beam faint draw" style="--len:260;--dur:1000ms" d="M20 195 H120 C160 195 160 235 200 235 H240"/>
+        <path class="beam faint draw" style="--len:80;--dur:600ms;--delay:600ms" d="M150 205 L200 190"/>
+        <path class="beam faint draw" style="--len:80;--dur:600ms;--delay:700ms" d="M165 220 L215 212"/>
+        <text x="260" y="222" class="tiny">too tight: light radiates from the outer wall</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 04 · Splitting: bulk vs Y ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 03 ]</span><span class="sep">|</span>power splitting</p>
+  <h2>One input, two outputs: the beam splitter becomes a Y-branch</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p>In bulk optics a beam splitter sends intensity I out as <strong>I/2 and I/2</strong>. It works, but it is a large element.</p>
+      <p class="fragment small" data-fragment-index="1">In guided-wave optics, branch the waveguide like a <strong>Y</strong>. Think of a fork in a road: light arrives at the junction and a short taper lets it divide into two propagating modes, one per arm.</p>
+      <p class="fragment small muted" data-fragment-index="2">The Y-branch is the direct translation of the beam splitter onto a chip.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="y-title y-desc">
+      <title id="y-title">Bulk beam splitter versus a Y-branch waveguide</title>
+      <desc id="y-desc">Top: a beam hits a tilted plate; half continues and half reflects upward, each labelled I over 2. Bottom: a waveguide widens at a junction and forks into two arms with equal light in each.</desc>
+      <text x="10" y="22" class="tiny">bulk: beam splitter</text>
+      <path class="beam draw" style="--len:120;--dur:800ms" d="M10 70 H120"/>
+      <text x="14" y="60" class="tiny acc">I</text>
+      <line class="wire" x1="106" y1="96" x2="140" y2="44" style="stroke:var(--text);stroke-width:2.5"/>
+      <path class="beam faint draw" style="--len:120;--dur:800ms;--delay:600ms" d="M123 70 H240"/>
+      <path class="beam faint draw" style="--len:60;--dur:600ms;--delay:600ms" d="M123 70 V16"/>
+      <text x="200" y="60" class="tiny">I / 2</text>
+      <text x="150" y="16" class="tiny">I / 2</text>
+      <g class="fragment" data-fragment-index="1">
+        <text x="10" y="132" class="tiny">guided: Y-branch</text>
+        <path class="guide" d="M10 185 H150 L200 178 C260 178 280 150 330 150 H510 V160 H330 C290 160 270 190 220 190 C270 190 290 220 330 220 H510 V230 H330 C280 230 260 202 200 202 L150 195 H10 Z"/>
+        <path class="beam draw" style="--len:520;--dur:1400ms" d="M10 190 H150 L200 184 C260 182 280 155 330 155 H510"/>
+        <path class="beam draw" style="--len:520;--dur:1400ms" d="M10 190 H150 L200 196 C260 198 280 225 330 225 H510"/>
+        <circle class="dot rider" r="4" style="offset-path: path('M10 190 H150 L200 184 C260 182 280 155 330 155 H510'); --dur: 2400ms"/>
+        <circle class="dot rider" r="4" style="offset-path: path('M10 190 H150 L200 196 C260 198 280 225 330 225 H510'); --dur: 2400ms"/>
+        <text x="440" y="146" class="tiny acc">I / 2</text>
+        <text x="440" y="246" class="tiny acc">I / 2</text>
+        <text x="150" y="172" class="tiny">junction: taper, then fork</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 05 · MMI ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 04 ]</span><span class="sep">|</span>multimode interference</p>
+  <h2>Or let a slab do the splitting: multimode interference</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p>Same goal, different mechanism. Insert a short, wide <strong>slab section</strong> between the input and the two outputs.</p>
+      <p class="fragment small" data-fragment-index="1">The wide slab supports <strong>many modes</strong>. The input excites several of them at once, and as they travel they <strong>interfere</strong>.</p>
+      <p class="fragment small" data-fragment-index="2">At the right length the interference pattern forms an <strong>image</strong> of the input at two spots. Put the output waveguides there and you have a 50:50 splitter. The equations come later in the course; this is the picture.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="mmi-title mmi-desc">
+      <title id="mmi-title">Multimode interference splitter</title>
+      <desc id="mmi-desc">A narrow input waveguide enters a wide rectangular slab. Inside, several wavy mode paths spread and cross each other. At the far end they converge onto two bright spots feeding two output waveguides.</desc>
+      <path class="guide" d="M10 120 H120 V130 H10 Z"/>
+      <path class="beam flowing" d="M10 125 H120"/>
+      <rect class="guide" x="120" y="60" width="260" height="130" rx="2"/>
+      <text x="200" y="52" class="tiny">multimode slab section</text>
+      <path class="guide" d="M380 90 H510 V100 H380 Z"/>
+      <path class="guide" d="M380 150 H510 V160 H380 Z"/>
+      <g class="fragment" data-fragment-index="1">
+        <path class="beam faint draw" style="--len:300;--dur:1200ms" d="M120 125 C170 125 200 80 250 80 C300 80 330 170 380 170"/>
+        <path class="beam faint draw" style="--len:300;--dur:1200ms;--delay:100ms" d="M120 125 C170 125 200 170 250 170 C300 170 330 80 380 80"/>
+        <path class="beam faint draw" style="--len:300;--dur:1200ms;--delay:200ms" d="M120 125 C180 125 200 100 250 100 C300 100 330 150 380 150"/>
+        <path class="beam faint draw" style="--len:300;--dur:1200ms;--delay:300ms" d="M120 125 C180 125 200 150 250 150 C300 150 330 100 380 100"/>
+        <path class="beam faint draw" style="--len:300;--dur:1200ms;--delay:400ms" d="M120 125 H380"/>
+        <text x="160" y="210" class="tiny" style="fill:var(--ml)">several guided modes, different speeds, interfering</text>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <circle class="dot" cx="380" cy="95" r="6"/>
+        <circle class="dot" cx="380" cy="155" r="6"/>
+        <path class="beam draw" style="--len:140;--dur:800ms" d="M380 95 H510"/>
+        <path class="beam draw" style="--len:140;--dur:800ms" d="M380 155 H510"/>
+        <text x="400" y="84" class="tiny acc">image 1: 50 %</text>
+        <text x="400" y="178" class="tiny acc">image 2: 50 %</text>
+        <text x="160" y="232" class="tiny">length and width set where the images land</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 06 · Ratio and reciprocity (interactive) ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 05 ]</span><span class="sep">|</span>ratio and direction</p>
+  <h2>Any ratio you design for, and it works backwards as a combiner</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p class="small">50:50 is not a rule. The way the modes are made to interfere fixes the ratio, so <strong>80:20</strong> or <strong>90:10</strong> is a design choice.</p>
+      <p class="fragment small" data-fragment-index="1">Splitter and combiner are the <strong>same device</strong>. Reverse the direction of energy flow and the outputs become inputs. Y-splitter, Y-combiner, MMI splitter, MMI combiner: reciprocal devices.</p>
+      <div class="control">
+        <label for="split-ratio">arm 1</label>
+        <input id="split-ratio" type="range" min="0" max="100" value="50" step="5">
+        <output id="split-out">50 : 50</output>
+      </div>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="r-title r-desc">
+      <title id="r-title">Adjustable splitting ratio</title>
+      <desc id="r-desc">A waveguide splits into two arms. The brightness and width of the light in each arm follows the slider: the two fractions always add to the input. A reversed arrow shows the combiner direction.</desc>
+      <path class="guide" d="M10 120 H150 C220 120 240 70 300 70 H510 V80 H300 C250 80 240 130 190 130 C240 130 250 180 300 180 H510 V190 H300 C240 190 220 130 150 130 H10 Z"/>
+      <path class="beam flowing" d="M10 125 H150"/>
+      <path id="arm1" class="beam" d="M150 125 C220 125 240 75 300 75 H510"/>
+      <path id="arm2" class="beam" d="M150 125 C220 125 240 185 300 185 H510"/>
+      <text x="440" y="64" class="tiny acc">arm 1: <tspan id="p1">50</tspan> %</text>
+      <text x="440" y="212" class="tiny acc">arm 2: <tspan id="p2">50</tspan> %</text>
+      <text x="14" y="112" class="tiny">in: 100 %</text>
+      <g class="fragment" data-fragment-index="1">
+        <path class="wire draw" style="--len:80;--dur:800ms;stroke:var(--ml)" d="M480 230 H410 L420 222 M410 230 L420 238"/>
+        <text x="150" y="234" class="tiny" style="fill:var(--ml)">reverse the flow: combiner</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 07 · 1 x 4 ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 06 ]</span><span class="sep">|</span>more outputs</p>
+  <h2>1 x 4: the Y-branch stacks stages, the MMI does it in one device</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p class="small">A Y-junction is inherently 1 x 2. For four outputs you cascade: one 1 x 2 feeding two more, so <strong>three splitters in two stages</strong>, and 50:50 becomes 25:25:25:25.</p>
+      <p class="fragment small" data-fragment-index="1">An MMI is different. Change the slab's length and width and the interference forms <strong>four images</strong> instead of two. One device, 1 x 4 directly, and the same idea scales to <strong>1 x N</strong>.</p>
+      <p class="fragment small muted" data-fragment-index="2">Y-branches: rudimentary and stackable. MMIs: scalable by design.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="f-title f-desc">
+      <title id="f-title">Cascaded Y-branches versus a single 1 x 4 MMI</title>
+      <desc id="f-desc">Top: an input forks once, then each arm forks again, giving four outputs labelled 25 percent each. Bottom: an input enters one wide slab and four outputs leave its far side.</desc>
+      <text x="10" y="20" class="tiny">Y: two stages, three splitters</text>
+      <path class="beam draw" style="--len:80;--dur:600ms" d="M10 70 H80"/>
+      <path class="beam draw" style="--len:100;--dur:700ms;--delay:400ms" d="M80 70 C110 70 110 45 140 45 H200"/>
+      <path class="beam draw" style="--len:100;--dur:700ms;--delay:400ms" d="M80 70 C110 70 110 95 140 95 H200"/>
+      <path class="beam faint draw" style="--len:100;--dur:700ms;--delay:900ms" d="M200 45 C230 45 230 32 260 32 H320"/>
+      <path class="beam faint draw" style="--len:100;--dur:700ms;--delay:900ms" d="M200 45 C230 45 230 58 260 58 H320"/>
+      <path class="beam faint draw" style="--len:100;--dur:700ms;--delay:900ms" d="M200 95 C230 95 230 82 260 82 H320"/>
+      <path class="beam faint draw" style="--len:100;--dur:700ms;--delay:900ms" d="M200 95 C230 95 230 108 260 108 H320"/>
+      <text x="330" y="36" class="tiny acc">25 %</text><text x="330" y="62" class="tiny acc">25 %</text><text x="330" y="86" class="tiny acc">25 %</text><text x="330" y="112" class="tiny acc">25 %</text>
+      <text x="84" y="120" class="tiny">stage 1</text><text x="210" y="126" class="tiny">stage 2</text>
+      <g class="fragment" data-fragment-index="1">
+        <text x="10" y="156" class="tiny">MMI: one device</text>
+        <path class="beam flowing" d="M10 200 H100"/>
+        <rect class="guide" x="100" y="165" width="180" height="70" rx="2"/>
+        <text x="120" y="252" class="tiny">longer and wider slab, four images</text>
+        <path class="beam draw" style="--len:60;--dur:600ms" d="M280 175 H320"/>
+        <path class="beam draw" style="--len:60;--dur:600ms" d="M280 191 H320"/>
+        <path class="beam draw" style="--len:60;--dur:600ms" d="M280 208 H320"/>
+        <path class="beam draw" style="--len:60;--dur:600ms" d="M280 225 H320"/>
+        <text x="330" y="179" class="tiny acc">25 %</text><text x="330" y="195" class="tiny acc">25 %</text><text x="330" y="212" class="tiny acc">25 %</text><text x="330" y="229" class="tiny acc">25 %</text>
+        <text x="400" y="200" class="tiny acc">1 x N</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 08 · Reflector: mirror vs grating ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 07 ]</span><span class="sep">|</span>reflection</p>
+  <h2>Send light back: a metal mirror, or a stack of index steps</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p class="small">A <strong>mirror</strong> orthogonal to the beam works on chip as it does on the table: end the waveguide in metal, and the strong reflection returns the light down the same guide.</p>
+      <p class="fragment small" data-fragment-index="1">A <strong>grating</strong> does it without metal. Alternate two indices n1, n2, n1, n2 along the propagation direction z. Each interface transmits a little and reflects a little.</p>
+      <p class="fragment small" data-fragment-index="2">If the reflections from every interface arrive <strong>in phase</strong>, they add up to a strong effective reflection; the transmissions add up to what gets through. That condition depends on n1, n2, d1, d2, and on <strong>wavelength</strong>: a grating is a mirror for chosen wavelengths.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="g-title g-desc">
+      <title id="g-title">Mirror-terminated waveguide and a multilayer grating</title>
+      <desc id="g-desc">Top: a waveguide ends at a metal wall; the beam reverses. Bottom: a waveguide passes through alternating shaded layers; at each layer boundary a small reflected arrow returns and a smaller transmitted beam continues.</desc>
+      <text x="10" y="22" class="tiny">mirror</text>
+      <path class="guide" d="M10 50 H400 V60 H10 Z"/>
+      <rect x="400" y="36" width="10" height="38" style="fill:var(--text)"/>
+      <text x="418" y="60" class="tiny">metal</text>
+      <path class="beam draw" style="--len:400;--dur:1000ms" d="M10 52 H398"/>
+      <path class="beam draw" style="--len:400;--dur:1000ms;--delay:900ms" d="M398 58 H10"/>
+      <circle class="dot rider" r="4" style="offset-path: path('M10 52 H398 V58 H10'); --dur: 3000ms"/>
+      <g class="fragment" data-fragment-index="1">
+        <text x="10" y="112" class="tiny">grating: n1, n2, n1, n2 along z</text>
+        <path class="guide" d="M10 150 H510 V190 H10 Z"/>
+        <rect x="160" y="150" width="22" height="40" style="fill:var(--ml);opacity:0.35"/>
+        <rect x="204" y="150" width="22" height="40" style="fill:var(--ml);opacity:0.35"/>
+        <rect x="248" y="150" width="22" height="40" style="fill:var(--ml);opacity:0.35"/>
+        <rect x="292" y="150" width="22" height="40" style="fill:var(--ml);opacity:0.35"/>
+        <rect x="336" y="150" width="22" height="40" style="fill:var(--ml);opacity:0.35"/>
+        <text x="160" y="144" class="tiny" style="fill:var(--ml)">n2</text><text x="186" y="144" class="tiny">n1</text>
+        <text x="130" y="214" class="tiny">d1</text><text x="164" y="214" class="tiny" style="fill:var(--ml)">d2</text>
+        <path class="beam draw" style="--len:160;--dur:800ms" d="M10 165 H160"/>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <path class="beam faint draw" style="--len:80;--dur:500ms" d="M160 175 H100"/>
+        <path class="beam faint draw" style="--len:80;--dur:500ms;--delay:150ms" d="M204 175 H100"/>
+        <path class="beam faint draw" style="--len:80;--dur:500ms;--delay:300ms" d="M248 175 H100"/>
+        <path class="beam faint draw" style="--len:80;--dur:500ms;--delay:450ms" d="M292 175 H100"/>
+        <path class="beam faint draw" style="--len:80;--dur:500ms;--delay:600ms" d="M336 175 H100"/>
+        <path class="beam draw" style="--len:120;--dur:800ms;--delay:200ms" d="M100 178 H10"/>
+        <text x="14" y="204" class="tiny acc">reflections add in phase</text>
+        <path class="beam faint draw" style="--len:180;--dur:800ms;--delay:400ms;opacity:0.2" d="M160 165 H510"/>
+        <text x="350" y="207" class="tiny">weak transmission,</text>
+        <text x="350" y="221" class="tiny">wavelength-selective</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 09 · Grating in a waveguide ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 08 ]</span><span class="sep">|</span>reflection, on chip</p>
+  <h2>You do not need two materials: corrugate the thickness instead</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p>All a grating needs is a periodic <strong>index difference</strong> along z. A waveguide's <strong>effective index</strong> depends on its thickness, so etching the silicon thick, thin, thick, thin does the same job as stacking n1 and n2.</p>
+      <p class="fragment small" data-fragment-index="1">Light entering the corrugated section is reflected back down the guide. Mirror at the end, or grating in the guide: both are on-chip reflectors.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="w-title w-desc">
+      <title id="w-title">Corrugated silicon waveguide grating</title>
+      <desc id="w-desc">Side view of a silicon strip on oxide. Its top surface steps up and down periodically. Below, a trace shows the effective index stepping high and low in the same period. A beam enters from the left and returns.</desc>
+      <rect class="box" x="10" y="150" width="500" height="50" style="opacity:0.6"/>
+      <text x="20" y="188" class="tiny">oxide</text>
+      <path class="guide" d="M10 110 H150 V90 H180 V110 H210 V90 H240 V110 H270 V90 H300 V110 H330 V90 H360 V110 H390 V90 H420 V110 H510 V150 H10 Z"/>
+      <text x="20" y="140" class="tiny acc">silicon</text>
+      <text x="150" y="80" class="tiny">thick</text><text x="184" y="126" class="tiny">thin</text>
+      <text x="20" y="245" class="tiny">n_eff(z)</text>
+      <path class="wire draw" style="--len:520;--dur:1400ms;stroke:var(--ml)" d="M10 226 H150 V214 H180 V226 H210 V214 H240 V226 H270 V214 H300 V226 H330 V214 H360 V226 H390 V214 H420 V226 H510"/>
+      <text x="430" y="212" class="tiny" style="fill:var(--ml)">high</text><text x="430" y="238" class="tiny" style="fill:var(--ml)">low</text>
+      <g class="fragment" data-fragment-index="1">
+        <path class="beam draw" style="--len:140;--dur:800ms" d="M10 126 H150"/>
+        <path class="beam draw" style="--len:140;--dur:800ms;--delay:800ms" d="M150 134 H10"/>
+        <circle class="dot rider" r="4" style="offset-path: path('M10 126 H150 V134 H10'); --dur: 2400ms"/>
+        <text x="60" y="66" class="tiny acc">in, and back out</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 10 · Directional coupler ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 09 ]</span><span class="sep">|</span>directional coupler</p>
+  <h2>Two inputs, two outputs: bring two guides close and light crosses over</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p class="small">Ports A and B on the left, C and D on the right. Light from A can go to D, from B to C, all of it or a chosen fraction, in <strong>one device</strong>.</p>
+      <p class="fragment small" data-fragment-index="1">The mechanism is <strong>crosstalk</strong>. Two waveguides close together leak into each other, and the <strong>coupling region</strong> uses that leak on purpose. The gap needed depends on the index contrast.</p>
+      <p class="fragment small" data-fragment-index="2">"Directional" means light couples forward only, never back toward the input. The device is still <strong>reciprocal</strong>, so it is not an isolator.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="d-title d-desc">
+      <title id="d-title">Directional coupler</title>
+      <desc id="d-desc">Two waveguides approach each other, run parallel with a small gap in a coupling region, then separate. Light entering port A on the upper left transfers across the gap and exits port D on the lower right.</desc>
+      <text x="10" y="70" class="tiny acc">A</text><text x="10" y="196" class="tiny">B</text>
+      <text x="498" y="70" class="tiny">C</text><text x="498" y="196" class="tiny acc">D</text>
+      <path class="guide" d="M20 80 H120 C170 80 170 112 220 112 H300 C350 112 350 80 400 80 H500 V90 H400 C356 90 356 122 300 122 H220 C164 122 164 90 120 90 H20 Z"/>
+      <path class="guide" d="M20 180 H120 C170 180 170 138 220 138 H300 C350 138 350 180 400 180 H500 V190 H400 C356 190 356 148 300 148 H220 C164 148 164 190 120 190 H20 Z"/>
+      <path class="beam draw" style="--len:300;--dur:1000ms" d="M20 85 H120 C170 85 170 117 220 117 H300"/>
+      <g class="fragment" data-fragment-index="1">
+        <path class="wire" d="M220 130 H300" style="stroke:var(--ml);stroke-dasharray:3 3"/>
+        <text x="200" y="230" class="tiny" style="fill:var(--ml)">coupling region: gap set by n1 and n2</text>
+        <path class="beam draw" style="--len:300;--dur:1000ms" d="M240 117 C260 132 280 143 300 143 C350 143 350 185 400 185 H500"/>
+        <path class="beam faint draw" style="--len:300;--dur:1000ms;opacity:0.15" d="M300 117 C350 117 350 85 400 85 H500"/>
+        <circle class="dot rider" r="4" style="offset-path: path('M20 85 H120 C170 85 170 117 220 117 H240 C260 132 280 143 300 143 C350 143 350 185 400 185 H500'); --dur: 2800ms"/>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <text x="330" y="40" class="tiny">forward only; still reciprocal</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 11 · Coupling vs length (interactive) ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 10 ]</span><span class="sep">|</span>directional coupler</p>
+  <h2>How much crosses over is set by the length of the coupling region</h2>
+  <div class="cols">
+    <div class="stack">
+      <p class="small">Coupled power is a <strong>cosine-like</strong> function of length. At one length everything has crossed to the other guide; at twice that it has all come back; in between, a fraction.</p>
+      <p class="fragment small" data-fragment-index="1">Pick the length where the crossing is <strong>0.5</strong> and you have built a 1 x 2 power splitter out of two waveguides. Design it right and you can also reach exactly zero.</p>
+      <div class="control">
+        <label for="dc-len">L / L<sub>c</sub></label>
+        <input id="dc-len" type="range" min="0" max="200" value="50" step="1">
+        <output id="dc-out">0.50</output>
+      </div>
+    </div>
+    <svg class="fig" viewBox="0 0 440 250" role="img" aria-labelledby="k-title k-desc">
+      <title id="k-title">Coupled fraction versus coupling length</title>
+      <desc id="k-desc">A plot with coupling length on the horizontal axis and coupled fraction from 0 to 1 on the vertical axis, tracing a sine-squared curve. A marker follows the slider. Below, two waveguides show the crossed and through outputs in proportion.</desc>
+      <path class="wire" d="M40 150 V20 M40 150 H420"/>
+      <text x="14" y="26" class="tiny">1</text><text x="14" y="154" class="tiny">0</text>
+      <text x="200" y="172" class="tiny">L (coupling length)</text>
+      <text x="196" y="160" class="tiny acc">Lc</text><text x="372" y="160" class="tiny acc">2 Lc</text>
+      <path id="dc-curve" class="beam draw" style="--len:600;--dur:1600ms" d=""/>
+      <circle id="dc-marker" class="dot" r="6" cx="40" cy="150"/>
+      <g class="fragment" data-fragment-index="1">
+        <path class="wire" d="M40 85 H420" style="stroke:var(--ml);stroke-dasharray:4 4"/>
+        <text x="330" y="80" class="tiny" style="fill:var(--ml)">0.5: a splitter</text>
+      </g>
+      <path class="guide" d="M40 200 H420 V208 H40 Z"/>
+      <path class="guide" d="M40 226 H420 V234 H40 Z"/>
+      <path class="beam flowing" d="M40 204 H140"/>
+      <path id="dc-through" class="beam" d="M140 204 H420"/>
+      <path id="dc-cross" class="beam" d="M140 230 H420"/>
+      <text x="300" y="196" class="tiny">through <tspan id="dc-t">0.50</tspan></text>
+      <text x="300" y="248" class="tiny acc">crossed <tspan id="dc-x">0.50</tspan></text>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 12 · Uses: tap ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 11 ]</span><span class="sep">|</span>directional coupler</p>
+  <h2>Its best trick: tap one percent to watch a circuit without disturbing it</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p class="small">An electrical signal can be probed almost anywhere. Light cannot be tapped without changing what the device does.</p>
+      <p class="fragment small" data-fragment-index="1">A directional coupler designed for a tiny fraction, say <strong>1 %</strong>, pulls off just enough light to <strong>monitor</strong> what is happening inside, and the rest continues unaffected.</p>
+      <p class="fragment small" data-fragment-index="2">The same small coupling feeds light into a <strong>cavity</strong> and reads it back out, which is where ring resonators come from later in the course.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="p-title p-desc">
+      <title id="p-title">One percent tap and a ring cavity</title>
+      <desc id="p-desc">Top: a bus waveguide with a second waveguide approaching it briefly; a faint beam leaves toward a detector labelled monitor while the main beam continues. Bottom: a ring beside a bus waveguide, coupled through a small gap, with light circulating in the ring.</desc>
+      <text x="10" y="22" class="tiny">1 % tap</text>
+      <path class="guide" d="M10 60 H510 V70 H10 Z"/>
+      <path class="beam flowing" d="M10 65 H510"/>
+      <text x="440" y="52" class="tiny acc">99 % continues</text>
+      <g class="fragment" data-fragment-index="1">
+        <path class="guide" d="M150 78 H260 C300 78 320 110 360 110 H420 V118 H360 C316 118 296 86 260 86 H150 Z" style="opacity:0.7"/>
+        <path class="beam faint draw" style="--len:300;--dur:1000ms" d="M200 82 H260 C300 82 320 114 360 114 H420"/>
+        <rect class="box" x="420" y="100" width="24" height="28" rx="3"/>
+        <circle class="dot green blink" cx="432" cy="114" r="4"/>
+        <text x="452" y="118" class="tiny">monitor</text>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <text x="10" y="160" class="tiny">cavity</text>
+        <path class="guide" d="M10 220 H510 V230 H10 Z"/>
+        <path class="beam flowing slow" d="M10 225 H510"/>
+        <circle cx="260" cy="180" r="34" class="guide" style="fill:none;stroke-width:8"/>
+        <circle class="dot rider" r="4" style="offset-path: path('M260 146 A34 34 0 1 1 259.9 146'); --dur: 1600ms"/>
+        <text x="310" y="172" class="tiny acc">ring resonator: small</text>
+        <text x="310" y="186" class="tiny acc">coupling in and out</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 13 · Summary table ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 12 ]</span><span class="sep">|</span>the power-handling toolkit</p>
+  <h2>Six passive components cover every way of moving power around</h2>
+  <table>
+    <thead><tr><th>component</th><th>ports</th><th>mechanism</th><th>notes</th></tr></thead>
+    <tbody>
+      <tr class="fragment" data-fragment-index="1"><td>waveguide, bend</td><td>1 in, 1 out</td><td>total internal guiding; S-bends and curves</td><td>bend radius limited by index contrast</td></tr>
+      <tr class="fragment" data-fragment-index="2"><td>Y-branch</td><td>1 in, 2 out</td><td>taper and fork</td><td>1 x 2 only; cascade for 1 x 4</td></tr>
+      <tr class="fragment" data-fragment-index="3"><td>MMI</td><td>1 in, N out</td><td>modes interfere in a slab and self-image</td><td>arbitrary ratio, 1 x N in one device</td></tr>
+      <tr class="fragment" data-fragment-index="4"><td>mirror</td><td>1 in, back out</td><td>metal at the end of the guide</td><td>broadband, absorbing</td></tr>
+      <tr class="fragment" data-fragment-index="5"><td>grating</td><td>1 in, back out</td><td>periodic index steps; reflections add in phase</td><td>wavelength-selective; corrugation works</td></tr>
+      <tr class="fragment" data-fragment-index="6"><td>directional coupler</td><td>2 in, 2 out</td><td>evanescent crosstalk across a gap</td><td>ratio set by length; 1 % taps; reciprocal</td></tr>
+    </tbody>
+  </table>
+  <p class="fragment small muted" data-fragment-index="7" style="margin-top:18px">Splitters and combiners are the same devices run in opposite directions. Call them components or devices; the functionality is what matters.</p>
+</section>
+
+<!-- ═══════════════════════════════ 14 · Check your understanding ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 13 ]</span><span class="sep">|</span>check your understanding</p>
+  <h2>Three questions before the next lecture</h2>
+  <ol>
+    <li class="fragment" data-fragment-index="1">You need a 1 x 8 equal splitter. How many Y-branches does it take, and how many MMIs? What changes in the MMI design between 1 x 2 and 1 x 8?</li>
+    <li class="fragment" data-fragment-index="2">A metal mirror reflects every wavelength; a grating reflects only some. Explain the difference in terms of what the reflected waves from successive interfaces have to do.</li>
+    <li class="fragment" data-fragment-index="3">A directional coupler transfers all the light at length Lc. What does it do at 2 Lc, and at Lc / 2? Why does that make it the natural device for a 1 % monitor tap?</li>
+  </ol>
+  <div class="card fragment" data-fragment-index="4" style="margin-top:14px">
+    <span class="k">what to remember</span>
+    Power handling is passive and reciprocal. Guide and bend, split with a <strong>Y-branch</strong> or self-image in an <strong>MMI</strong>, reflect with a <strong>mirror</strong> or a wavelength-selective <strong>grating</strong>, and cross light between guides with a <strong>directional coupler</strong> whose length sets the fraction.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 15 · End ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">photonics</span><span class="sep">|</span>photonic integrated circuits<span class="sep">|</span>deck 03 of the series</p>
+  <h2>Next: polarisation, and fields acting on light</h2>
+  <p>The following lecture covers how a circuit handles the polarisation of light, then how electric and acoustic fields interact with the guided wave.</p>
+  <p class="small muted" style="margin-top:1.6em">Adapted from NPTEL, <a href="https://www.youtube.com/watch?v=fCc8OQ7H9lg">Lec 07: Photonic integrated circuit components 1</a>. Diagrams and the two sliders are original; the ordering and framing follow the lecture.</p>
+  <p class="small muted"><a href="../../../slides/photonic-integrated-circuits/">Back to the series</a> <span style="color:var(--strong)">|</span> <a href="../../../slides/">All slides</a></p>
+</section>
+
+</div>
+</div>
+
+<div class="deck-label"><a href="../../../">~/sk</a><span class="sep">|</span><a href="../../../slides/">slides</a><span class="sep">|</span>photonic integrated circuits 03</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.1/dist/reveal.js"></script>
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    controlsTutorial: false,
+    progress: true,
+    slideNumber: 'c/t',
+    center: false,
+    width: 1180,
+    height: 700,
+    margin: 0.06,
+    transition: reduce ? 'none' : 'fade',
+    transitionSpeed: 'fast',
+    backgroundTransition: 'none',
+    autoAnimateDuration: reduce ? 0 : 0.8,
+    autoAnimateEasing: 'ease-in-out',
+    fragmentInURL: true,
+    navigationMode: 'linear',
+    keyboardCondition: function (event) {
+      // Let the range sliders own their own arrow keys.
+      return !(event.target && event.target.tagName === 'INPUT');
+    }
+  });
+
+  // Splitting ratio demo: arm 1 gets r, arm 2 gets 1 - r.
+  var ratio = document.getElementById('split-ratio');
+  if (ratio) {
+    var out = document.getElementById('split-out');
+    var arm1 = document.getElementById('arm1');
+    var arm2 = document.getElementById('arm2');
+    var p1 = document.getElementById('p1');
+    var p2 = document.getElementById('p2');
+    function updateRatio() {
+      var r = Number(ratio.value) / 100;
+      out.textContent = Math.round(r * 100) + ' : ' + Math.round((1 - r) * 100);
+      p1.textContent = String(Math.round(r * 100));
+      p2.textContent = String(Math.round((1 - r) * 100));
+      arm1.style.opacity = String(0.1 + 0.9 * r);
+      arm1.style.strokeWidth = String(1 + 3 * r);
+      arm2.style.opacity = String(0.1 + 0.9 * (1 - r));
+      arm2.style.strokeWidth = String(1 + 3 * (1 - r));
+    }
+    ratio.addEventListener('input', updateRatio);
+    updateRatio();
+  }
+
+  // Directional coupler demo: crossed fraction = sin^2(pi/2 * L/Lc).
+  var len = document.getElementById('dc-len');
+  if (len) {
+    var dcOut = document.getElementById('dc-out');
+    var curve = document.getElementById('dc-curve');
+    var marker = document.getElementById('dc-marker');
+    var through = document.getElementById('dc-through');
+    var cross = document.getElementById('dc-cross');
+    var tT = document.getElementById('dc-t');
+    var tX = document.getElementById('dc-x');
+    // plot: x from 40 (L=0) to 400 (L=2Lc), y from 150 (0) to 20 (1)
+    var d = '';
+    for (var i = 0; i <= 90; i++) {
+      var u = i / 90 * 2;
+      var x = 40 + u * 180;
+      var y = 150 - 130 * Math.pow(Math.sin(Math.PI / 2 * u), 2);
+      d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1) + ' ';
+    }
+    curve.setAttribute('d', d);
+    function updateLen() {
+      var u = Number(len.value) / 100;
+      var f = Math.pow(Math.sin(Math.PI / 2 * u), 2);
+      dcOut.textContent = f.toFixed(2);
+      tX.textContent = f.toFixed(2);
+      tT.textContent = (1 - f).toFixed(2);
+      marker.setAttribute('cx', String(40 + u * 180));
+      marker.setAttribute('cy', String(150 - 130 * f));
+      cross.style.opacity = String(0.1 + 0.9 * f);
+      cross.style.strokeWidth = String(1 + 3 * f);
+      through.style.opacity = String(0.1 + 0.9 * (1 - f));
+      through.style.strokeWidth = String(1 + 3 * (1 - f));
+    }
+    len.addEventListener('input', updateLen);
+    updateLen();
+  }
+})();
+</script>
+</body>
+</html>
