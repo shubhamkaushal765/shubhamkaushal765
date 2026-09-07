@@ -53,10 +53,22 @@ export const PHOTONIC_IC_DECKS: Deck[] = [
     title: 'Photonic integrated circuits: an introduction',
     summary:
       'What integrated photonics is, the three inventions that turned optics into photonics, the sub-fields photonics absorbed, and why a guided-wave circuit on a planar substrate is the whole idea.',
-    length: '21 slides',
+    length: '22 slides',
     source: {
       label: 'NPTEL, Lec 05 Photonic integrated circuits: an introduction',
       href: 'https://www.youtube.com/watch?v=MOKPFINLPXE',
+    },
+  },
+  {
+    number: '02',
+    slug: '02-evolution',
+    title: 'Photonic integrated circuits: the technology evolution',
+    summary:
+      'Sixty years of key events, from the first planar waveguide through lithium niobate and the III-V versus silicon race to commercial silicon photonics, and the two demands (communication and compute) that pulled the technology along.',
+    length: '18 slides',
+    source: {
+      label: 'NPTEL, Lec 06 Photonic integrated circuits evolution',
+      href: 'https://www.youtube.com/watch?v=2JK2OGKzSEM',
     },
   },
 ];

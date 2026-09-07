@@ -24,7 +24,10 @@ export default function PhotonicIcSlidesPage() {
         integrated photonics means, the three inventions that turned optics
         into photonics, the sub-fields photonics absorbed on the way, and the
         one design move (guided waves on a planar substrate) that makes it a
-        circuit. Later decks pick up the component physics.
+        circuit. The second follows the technology evolution: the key events
+        from the first planar waveguide to commercial silicon photonics, and
+        the communication and compute demands behind them. Later decks pick
+        up the component physics.
       </p>
       <ol className="chapter-toc">
         {PHOTONIC_IC_DECKS.map((d) => (

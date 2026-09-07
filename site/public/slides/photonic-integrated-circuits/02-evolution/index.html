@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photonic integrated circuits: the technology evolution | Slides | Shubham Kaushal</title>
+<meta name="description" content="Sixty years of photonic integrated circuits: planar to channel waveguides, lithium niobate, the III-V and silicon race, the platforms that grew alongside, and the communication and compute demands that pulled the technology along.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.1/dist/reveal.css">
+<style>
+/* ── Tokens: mirrors site/styles/globals.css and .agent/visual-system.md ── */
+:root {
+  --bg: #0a0a0f;
+  --card: #131320;
+  --rail: #1b1b28;
+  --elevated: #181826;
+  --hair: rgba(255, 255, 255, 0.07);
+  --strong: rgba(255, 255, 255, 0.12);
+  --text: #f0ede5;
+  --muted: #a3a098;
+  --footnote: #757269;
+  --accent: #fbbf24;      /* pillar: photonics */
+  --code: #22d3ee;        /* pillar: code intelligence, used for electrical signals */
+  --ml: #a78bfa;          /* pillar: machine learning, used for acoustic / second path */
+  --quantum: #34d399;     /* pillar: quantum, used for detectors and photons */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+html, body { background: var(--bg); }
+
+.reveal-viewport { background: var(--bg); }
+
+.reveal {
+  font-family: var(--font-sans);
+  font-size: 25px;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.42;
+}
+
+.reveal .slides { text-align: left; }
+.reveal .slides section { padding: 0 24px; box-sizing: border-box; }
+
+.reveal h1, .reveal h2, .reveal h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--text);
+  margin: 0 0 0.5em 0;
+  line-height: 1.12;
+  text-shadow: none;
+  font-variation-settings: 'opsz' 96;
+}
+.reveal h1 { font-size: 2.2em; }
+.reveal h2 { font-size: 1.45em; }
+.reveal h3 { font-size: 1.1em; }
+
+.reveal p { margin: 0 0 0.6em 0; max-width: 34em; }
+.reveal .muted { color: var(--muted); }
+.reveal .small { font-size: 0.72em; }
+.reveal strong { font-weight: 600; color: var(--text); }
+.reveal em { color: var(--accent); font-style: normal; }
+.reveal a { color: var(--accent); text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--accent) 50%, transparent); text-underline-offset: 3px; }
+.reveal a:hover { text-decoration-color: var(--accent); }
+.reveal code { font-family: var(--font-mono); font-size: 0.85em; color: var(--code); background: var(--card); padding: 2px 5px; border-radius: 3px; }
+
+.reveal ul, .reveal ol { display: block; margin: 0 0 0.6em 1.1em; max-width: 34em; }
+.reveal li { margin: 0.18em 0; }
+.reveal li::marker { color: var(--accent); }
+
+/* Eyebrow: mono, uppercase, tracked. Same recipe as .book-eyebrow on the site. */
+.eyebrow {
+  max-width: none;
+  font-family: var(--font-mono);
+  font-size: 0.5em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.2em;
+}
+.eyebrow .num { color: var(--accent); }
+.eyebrow .sep { color: var(--strong); margin: 0 0.5em; }
+
+/* Bracket motif [ NN ] on section headings */
+.bracket {
+  font-family: var(--font-mono);
+  font-size: 0.55em;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  vertical-align: 0.35em;
+  margin-right: 0.6em;
+  font-weight: 400;
+}
+
+/* Two-column layouts */
+.cols { display: grid; grid-template-columns: 1.05fr 1fr; gap: 40px; align-items: center; }
+.cols.wide-fig { grid-template-columns: 0.9fr 1.2fr; }
+.cols > * { min-width: 0; }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-size: 0.78em;
+}
+.card .k { font-family: var(--font-mono); font-size: 0.72em; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 4px; }
+.card.dim { opacity: 0.55; }
+
+/* Tables: the site's encoding-table recipe */
+.reveal table {
+  font-size: 0.66em;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0;
+  font-family: var(--font-sans);
+}
+.reveal table th, .reveal table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.55em 0.8em;
+  border-bottom: 1px solid var(--hair);
+}
+.reveal table th {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.78em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--rail);
+}
+.reveal table td:first-child { font-family: var(--font-mono); color: var(--accent); font-size: 0.9em; white-space: nowrap; }
+.reveal table tr:last-child td { border-bottom: 1px solid var(--strong); }
+.reveal table tr.fragment { transition: opacity 260ms ease-out; }
+
+/* Keyboard chip */
+.kbd {
+  font-family: var(--font-mono);
+  font-size: 0.72em;
+  padding: 1px 7px;
+  background: var(--elevated);
+  border: 1px solid var(--strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+}
+
+/* Reveal chrome */
+.reveal .progress { height: 2px; color: var(--accent); background: var(--hair); }
+.reveal .controls { color: var(--accent); }
+.reveal .slide-number {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--footnote);
+  background: transparent;
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 14px;
+}
+.reveal .backgrounds .slide-background { background: var(--bg); }
+
+/* Top-of-page hairline motif */
+.reveal-viewport::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: color-mix(in oklab, var(--accent) 25%, transparent);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Persistent deck label (bottom-left) */
+.deck-label {
+  position: fixed;
+  left: 22px;
+  bottom: 16px;
+  z-index: 6;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--footnote);
+  pointer-events: none;
+}
+.deck-label a { pointer-events: auto; color: var(--footnote); text-decoration: none; }
+.deck-label a:hover { color: var(--accent); }
+.deck-label .sep { color: var(--strong); margin: 0 0.6em; }
+
+/* ── Figures ── */
+.fig { width: 100%; height: auto; display: block; overflow: visible; }
+.fig text { font-family: var(--font-mono); font-size: 13px; fill: var(--muted); }
+.fig text.lbl { fill: var(--text); }
+.fig text.acc { fill: var(--accent); }
+.fig text.tiny { font-size: 11px; fill: var(--footnote); }
+.fig .box { fill: var(--rail); stroke: var(--strong); stroke-width: 1.5; }
+.fig .box.acc { stroke: var(--accent); }
+.fig .wire { fill: none; stroke: var(--strong); stroke-width: 1.5; }
+.fig .beam { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+.fig .beam.faint { opacity: 0.35; }
+.fig .beam.violet { stroke: var(--ml); }
+.fig .beam.green { stroke: var(--quantum); }
+.fig .elec { fill: none; stroke: var(--code); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.fig .dot { fill: var(--accent); }
+.fig .dot.green { fill: var(--quantum); }
+.fig .dot.cyan { fill: var(--code); }
+.fig .guide { fill: color-mix(in oklab, var(--accent) 12%, transparent); stroke: color-mix(in oklab, var(--accent) 55%, transparent); stroke-width: 1.5; }
+.fig .chip { fill: var(--card); stroke: var(--strong); stroke-width: 1.5; }
+
+/* ── Animations. All keyed to `.present` (current slide) or `.fragment.visible`, so they replay on entry. ── */
+@keyframes dash-travel { to { stroke-dashoffset: 0; } }
+@keyframes flow { to { stroke-dashoffset: -48; } }
+@keyframes pulse-along { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes blink { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+@keyframes wobble { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes spin-phase { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes breathe { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+
+/* Drawn-in strokes: set --len on the element. */
+.draw { stroke-dasharray: var(--len, 400); stroke-dashoffset: var(--len, 400); }
+section.present .draw, .fragment.visible .draw, .fragment.visible.draw {
+  animation: dash-travel var(--dur, 1200ms) ease-out forwards;
+  animation-delay: var(--delay, 200ms);
+}
+
+/* Flowing light: moving dash pattern */
+.flowing { stroke-dasharray: 10 14; }
+section.present .flowing, .fragment.visible .flowing { animation: flow 900ms linear infinite; }
+.flowing.slow { animation-duration: 1800ms; }
+
+/* A photon riding a path via offset-path */
+.rider { offset-rotate: 0deg; opacity: 0; }
+section.present .rider, .fragment.visible .rider {
+  opacity: 1;
+  animation: pulse-along var(--dur, 2400ms) linear infinite;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Blinking detector */
+section.present .blink, .fragment.visible .blink { animation: blink 1200ms ease-in-out infinite; }
+
+.appear { opacity: 0; }
+section.present .appear, .fragment.visible .appear {
+  animation: rise 480ms ease-out forwards;
+  animation-delay: var(--delay, 200ms);
+}
+
+/* Animations inside a not-yet-revealed fragment wait for the fragment. */
+section.present .fragment:not(.visible) .draw,
+section.present .fragment:not(.visible) .rider,
+section.present .fragment:not(.visible) .flowing,
+section.present .fragment:not(.visible) .blink,
+section.present .fragment:not(.visible) .appear { animation: none; }
+
+/* Fragment styles: fade, no movement (site rule: motion is opacity or stroke only) */
+.reveal .fragment.fade-in-dim { opacity: 0.25; }
+.reveal .fragment.fade-in-dim.visible { opacity: 1; }
+
+/* Component catalogue grid */
+.catalog { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.catalog .item { background: var(--card); border: 1px solid var(--hair); border-radius: 8px; padding: 10px 12px 8px; }
+.catalog .item svg { width: 100%; height: auto; display: block; margin-bottom: 4px; }
+.catalog .item .name { font-family: var(--font-mono); font-size: 0.55em; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.catalog .item .fn { font-size: 0.6em; color: var(--muted); line-height: 1.3; }
+
+/* MZI interactive control */
+.control { display: flex; align-items: center; gap: 16px; font-family: var(--font-mono); font-size: 0.6em; color: var(--muted); margin-top: 8px; }
+.control input[type=range] { flex: 1; accent-color: var(--accent); }
+.control output { color: var(--accent); min-width: 5.5ch; text-align: right; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 26px; margin: 0; list-style: none; }
+.timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 1px; background: var(--strong); }
+.timeline li { position: relative; margin: 0 0 12px 0; font-size: 0.74em; line-height: 1.38; }
+.timeline li::before { content: ''; position: absolute; left: -24px; top: 0.45em; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--bg); }
+.timeline .when { font-family: var(--font-mono); font-size: 0.7em; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: block; }
+
+/* Title slide */
+.title-slide h1 { font-size: 2.4em; max-width: 12em; }
+.title-slide .eyebrow { margin-bottom: 2em; white-space: nowrap; }
+.title-slide .cols { grid-template-columns: 1.15fr 1fr; }
+.title-slide .fig { max-width: 520px; }
+
+/* Reduced motion: everything resolves to its final state. */
+@media (prefers-reduced-motion: reduce) {
+  .draw { stroke-dashoffset: 0; }
+  .appear, .rider { opacity: 1; }
+  .rider { offset-distance: 50%; }
+  section.present .draw, section.present .flowing, section.present .rider, section.present .blink, section.present .appear,
+  .fragment.visible .draw, .fragment.visible .flowing, .fragment.visible .rider, .fragment.visible .blink, .fragment.visible .appear {
+    animation: none;
+  }
+  .reveal table tr.fragment, .reveal .fragment { transition: none; }
+}
+
+@media (max-width: 900px) {
+  .cols, .cols.wide-fig { grid-template-columns: 1fr; gap: 20px; }
+  .catalog { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- ═══════════════════════════════ 01 · Title ═══════════════════════════════ -->
+<section class="title-slide">
+  <p class="eyebrow"><span class="num">photonics</span><span class="sep">|</span>photonic integrated circuits<span class="sep">|</span>deck 02</p>
+  <div class="cols">
+    <div>
+      <h1>Photonic integrated circuits: the technology evolution</h1>
+      <p class="muted small">Sixty years from the first planar waveguide to silicon photonics you can buy, and the two demands (communication and compute) that pulled it along.</p>
+      <p class="muted small" style="margin-top:1.4em">Arrow keys to move. <span class="kbd">f</span> fullscreen. <span class="kbd">?</span> key map.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 260" role="img" aria-labelledby="t-title t-desc">
+      <title id="t-title">Three generations of optics shrinking from a table to a chip</title>
+      <desc id="t-desc">Left: a large optical table with a free-space beam bouncing between lenses and a mirror. Middle: a smaller board with a laser diode, a thin lens and a fiber. Right: a millimetre chip with a waveguide, all connected by a timeline arrow.</desc>
+      <path class="wire draw" style="--len:500;--dur:1400ms" d="M20 236 H500"/>
+      <text x="20" y="254" class="tiny">1960s</text>
+      <text x="470" y="254" class="tiny">today</text>
+      <!-- gen 1: table -->
+      <rect class="box" x="20" y="40" width="180" height="150" rx="4"/>
+      <text x="26" y="32" class="tiny">optical table, metres</text>
+      <rect class="box acc" x="30" y="108" width="22" height="18" rx="2"/>
+      <path class="beam draw" style="--len:300;--dur:1200ms" d="M52 117 H150 L176 90 V52"/>
+      <line class="wire" x1="95" y1="100" x2="95" y2="134" style="stroke:var(--text)"/>
+      <line class="wire" x1="164" y1="80" x2="188" y2="104" style="stroke:var(--text)"/>
+      <text x="82" y="152" class="tiny">lens</text>
+      <text x="150" y="122" class="tiny">mirror</text>
+      <!-- gen 2: micro-optics -->
+      <rect class="box" x="238" y="100" width="110" height="80" rx="4"/>
+      <text x="238" y="92" class="tiny">micro-optics, cm</text>
+      <rect class="box acc" x="246" y="132" width="14" height="14" rx="2"/>
+      <path class="beam draw" style="--len:60;--dur:600ms;--delay:600ms" d="M260 139 H290"/>
+      <line class="wire" x1="282" y1="130" x2="282" y2="148" style="stroke:var(--text)"/>
+      <path class="guide" d="M292 136 H340 V142 H292 Z"/>
+      <path class="beam draw" style="--len:60;--dur:600ms;--delay:900ms" d="M292 139 H340"/>
+      <!-- gen 3: chip -->
+      <rect class="chip" x="392" y="140" width="100" height="44" rx="5"/>
+      <text x="392" y="132" class="tiny">chip, mm</text>
+      <path class="guide" d="M392 160 H430 C440 160 440 152 450 152 H492 V156 H450 C442 156 442 164 430 164 H392 Z"/>
+      <path class="beam draw" style="--len:120;--dur:800ms;--delay:1200ms" d="M392 162 H430 C440 162 440 154 450 154 H492"/>
+      <circle class="dot rider" r="4" style="offset-path: path('M392 162 H430 C440 162 440 154 450 154 H492'); --dur: 2000ms; --delay: 1400ms"/>
+      <circle class="dot green blink" cx="484" cy="154" r="3"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 02 · Need drives technology ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 01 ]</span><span class="sep">|</span>why a technology evolves</p>
+  <h2>Science runs on curiosity. Technology runs on a need.</h2>
+  <div class="cols">
+    <div class="stack">
+      <p>Nobody builds a technology and then waits for an application. There is always a push, and the technology takes the shape of that push.</p>
+      <p class="fragment small" data-fragment-index="1">For photonic integrated circuits the push came from two directions: moving data between places (<strong>communication</strong>) and moving data inside a processor (<strong>compute</strong>). This deck follows the key events first, then the two demands.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 440 220" role="img" aria-labelledby="n-title n-desc">
+      <title id="n-title">Two chains: curiosity to science, need to technology</title>
+      <desc id="n-desc">Top row: a curiosity box feeds a science box. Bottom row: a need box feeds a technology box, which feeds a product box. Two arrows from communication and compute point into the need box.</desc>
+      <rect class="box" x="10" y="20" width="110" height="44" rx="6"/><text x="26" y="47" class="lbl">curiosity</text>
+      <path class="wire draw" style="--len:80;--dur:600ms" d="M120 42 H180"/>
+      <rect class="box" x="180" y="20" width="110" height="44" rx="6"/><text x="208" y="47" class="lbl">science</text>
+      <g class="fragment" data-fragment-index="1">
+        <rect class="box acc" x="10" y="130" width="110" height="44" rx="6"/><text x="46" y="157" class="lbl">need</text>
+        <path class="beam draw" style="--len:80;--dur:600ms" d="M120 152 H180"/>
+        <rect class="box acc" x="180" y="130" width="110" height="44" rx="6"/><text x="192" y="157" class="lbl">technology</text>
+        <path class="beam draw" style="--len:80;--dur:600ms;--delay:600ms" d="M290 152 H340"/>
+        <rect class="box acc" x="340" y="130" width="90" height="44" rx="6"/><text x="356" y="157" class="lbl">product</text>
+        <path class="elec draw" style="--len:80;--dur:600ms" d="M30 210 V174"/>
+        <text x="40" y="214" class="tiny" style="fill:var(--code)">communication</text>
+        <path class="elec draw" style="--len:80;--dur:600ms;--delay:200ms" d="M100 210 V174"/>
+        <text x="106" y="196" class="tiny" style="fill:var(--code)">compute</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 03 · Timeline ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 02 ]</span><span class="sep">|</span>the key events</p>
+  <h2>Six decades, in the order the pieces arrived</h2>
+  <svg class="fig" viewBox="0 0 1100 300" role="img" aria-labelledby="tl-title tl-desc" style="max-width:1100px">
+    <title id="tl-title">Timeline of photonic integrated circuit milestones</title>
+    <desc id="tl-desc">A horizontal axis from 1960 to today with milestones: planar waveguide in the 1960s, three-dimensional waveguide in the 1970s, lithium niobate waveguides in the 1980s, III-V and silicon proposals in the late 1980s, III-V products and CMOS silicon photonics in the 1990s, germanium and III-V integration on silicon in the 2000s, and commercial silicon photonics today.</desc>
+    <path class="wire draw" style="--len:1060;--dur:1600ms" d="M20 150 H1080"/>
+    <g class="fragment" data-fragment-index="1">
+      <circle class="dot" cx="60" cy="150" r="6"/>
+      <text x="40" y="180" class="acc">1960s</text>
+      <text x="20" y="100" class="lbl">planar waveguide</text>
+      <text x="20" y="120" class="tiny">light shown to propagate in a slab</text>
+    </g>
+    <g class="fragment" data-fragment-index="2">
+      <circle class="dot" cx="200" cy="150" r="6"/>
+      <text x="180" y="180" class="acc">1970 to 75</text>
+      <text x="160" y="210" class="lbl">3-D waveguide</text>
+      <text x="160" y="230" class="tiny">confined in x and y,</text>
+      <text x="160" y="248" class="tiny">propagating in z</text>
+    </g>
+    <g class="fragment" data-fragment-index="3">
+      <circle class="dot" cx="340" cy="150" r="6"/>
+      <text x="320" y="180" class="acc">1980s</text>
+      <text x="290" y="100" class="lbl">LiNbO3 waveguides</text>
+      <text x="290" y="120" class="tiny">Ti-diffused channels; phase and</text>
+      <text x="290" y="136" class="tiny">polarisation handled on chip</text>
+    </g>
+    <g class="fragment" data-fragment-index="4">
+      <circle class="dot" cx="480" cy="150" r="6"/>
+      <text x="440" y="180" class="acc">late 80s, early 90s</text>
+      <text x="440" y="210" class="lbl">III-V and silicon proposed</text>
+      <text x="440" y="230" class="tiny">GaAs, InP, InGaAs; and silicon,</text>
+      <text x="440" y="248" class="tiny">borrowed from microelectronics</text>
+    </g>
+    <g class="fragment" data-fragment-index="5">
+      <circle class="dot" cx="640" cy="150" r="6"/>
+      <text x="600" y="180" class="acc">1990 to 2000</text>
+      <text x="590" y="100" class="lbl">III-V in the market</text>
+      <text x="590" y="120" class="tiny">CMOS silicon photonics</text>
+      <text x="590" y="136" class="tiny">gets its process sorted</text>
+    </g>
+    <g class="fragment" data-fragment-index="6">
+      <circle class="dot" cx="820" cy="150" r="6"/>
+      <text x="790" y="180" class="acc">2000 to 2010</text>
+      <text x="760" y="210" class="lbl">integration on silicon</text>
+      <text x="760" y="230" class="tiny">Ge detectors, GeSn emitters,</text>
+      <text x="760" y="248" class="tiny">III-V bonded on top</text>
+    </g>
+    <g class="fragment" data-fragment-index="7">
+      <circle class="dot green blink" cx="1000" cy="150" r="6"/>
+      <text x="984" y="180" class="acc">now</text>
+      <text x="930" y="100" class="lbl">commercial silicon photonics</text>
+      <text x="930" y="120" class="tiny">products you can buy</text>
+    </g>
+  </svg>
+</section>
+
+<!-- ═══════════════════════════════ 04 · Planar vs 3-D ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 03 ]</span><span class="sep">|</span>confinement</p>
+  <h2>Planar means confined in one direction. A real circuit needs two.</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p>A <strong>planar</strong> (slab) waveguide is a guiding layer between two lower-index layers, symmetric or asymmetric. Light cannot escape vertically, but it spreads freely sideways.</p>
+      <p class="fragment small" data-fragment-index="1">A <strong>3-D</strong> waveguide confines in x and y and propagates along z. The optical fiber does this with a round core; the channel waveguide does it with a rectangular one. Same idea as the fiber, on a flat substrate.</p>
+      <p class="fragment small muted" data-fragment-index="2">This is the whole concept of a photonic integrated circuit: confine light into a small space where you can act on it.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="c-title c-desc">
+      <title id="c-title">One-dimensional and two-dimensional confinement</title>
+      <desc id="c-desc">Left: a slab cross-section with a bright guiding layer between two cladding layers; light is confined vertically only. Middle: a circular fiber core inside cladding. Right: a rectangular channel core inside cladding. Both confine in two directions.</desc>
+      <text x="10" y="20" class="tiny">1-D: slab</text>
+      <rect class="box" x="10" y="40" width="150" height="40" style="opacity:0.5"/>
+      <rect class="guide" x="10" y="80" width="150" height="30"/>
+      <rect class="box" x="10" y="110" width="150" height="40" style="opacity:0.5"/>
+      <text x="16" y="66" class="tiny">n2</text><text x="16" y="100" class="tiny acc">n1 highest</text><text x="16" y="136" class="tiny">n3</text>
+      <path class="beam flowing slow" d="M96 95 H150"/>
+      <path class="beam faint" d="M124 95 L124 82 M124 95 L124 108" style="stroke-width:1.5"/>
+      <text x="10" y="176" class="tiny">confined in y only</text>
+      <g class="fragment" data-fragment-index="1">
+        <text x="200" y="20" class="tiny">2-D: fiber</text>
+        <circle class="box" cx="260" cy="95" r="52"/>
+        <circle class="guide" cx="260" cy="95" r="18"/>
+        <circle class="dot" cx="260" cy="95" r="4"/>
+        <text x="200" y="176" class="tiny">round core</text>
+        <text x="360" y="20" class="tiny">2-D: channel</text>
+        <rect class="box" x="360" y="40" width="150" height="110"/>
+        <rect class="guide" x="405" y="76" width="60" height="38"/>
+        <circle class="dot" cx="435" cy="95" r="4"/>
+        <text x="360" y="176" class="tiny">rectangular core</text>
+        <text x="360" y="196" class="tiny">confined in x and y</text>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <path class="wire" d="M300 230 H500" style="stroke:var(--accent);opacity:0.4"/>
+        <text x="300" y="222" class="tiny acc">fiber network, scaled onto a chip</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 05 · Why guide: lithium niobate ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 04 ]</span><span class="sep">|</span>the 1980s: lithium niobate</p>
+  <h2>Confinement is for interaction, and lithium niobate proved it first</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p>Why guide light at all? To increase <strong>light-matter interaction</strong>, and to enable <strong>electro-optic</strong> and <strong>nonlinear</strong> effects.</p>
+      <p class="fragment small" data-fragment-index="1">Lithium niobate was the known platform, and by the 1980s its waveguides existed: a titanium strip diffused into the crystal makes a <strong>buried channel</strong> of slightly higher index.</p>
+      <p class="fragment small" data-fragment-index="2">The disruption: light was no longer handled only with lenses, prisms, and mirrors. On chip you could guide it, <strong>shift its phase</strong>, and <strong>set its polarisation</strong>.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="l-title l-desc">
+      <title id="l-title">Titanium-diffused lithium niobate waveguide</title>
+      <desc id="l-desc">A lithium niobate substrate in cross-section. A titanium strip on the surface diffuses downward into a rounded buried channel of raised refractive index. Electrodes either side of the channel apply a field across it.</desc>
+      <rect class="box" x="30" y="90" width="460" height="130" rx="4"/>
+      <text x="40" y="208" class="tiny">LiNbO3 substrate</text>
+      <rect x="230" y="76" width="60" height="14" style="fill:var(--ml);opacity:0.8"/>
+      <text x="222" y="66" class="tiny" style="fill:var(--ml)">titanium strip</text>
+      <g class="fragment" data-fragment-index="1">
+        <path class="guide draw" style="--len:200;--dur:1000ms" d="M226 90 C226 130 294 130 294 90"/>
+        <path class="wire" d="M260 96 V118" style="stroke:var(--ml);stroke-dasharray:3 3"/>
+        <text x="300" y="130" class="tiny acc">diffused channel, n slightly raised</text>
+        <circle class="dot" cx="260" cy="106" r="4"/>
+        <text x="220" y="150" class="tiny">light stays here</text>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <rect x="120" y="76" width="80" height="14" style="fill:var(--code);opacity:0.8"/>
+        <rect x="320" y="76" width="80" height="14" style="fill:var(--code);opacity:0.8"/>
+        <path class="elec draw" style="--len:120;--dur:800ms" d="M160 76 V40 H360 V76"/>
+        <text x="216" y="34" class="tiny" style="fill:var(--code)">V across the channel</text>
+        <text x="40" y="238" class="tiny">electro-optic effect: field changes n, so it changes the phase of the guided light</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 06 · Two proposals ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 05 ]</span><span class="sep">|</span>late 1980s: two proposals</p>
+  <h2>Two materials entered the race with opposite strengths</h2>
+  <table>
+    <thead><tr><th></th><th>III-V compound semiconductors</th><th>silicon</th></tr></thead>
+    <tbody>
+      <tr class="fragment" data-fragment-index="1"><td>examples</td><td>GaAs, InP, InGaAs (group III + group V)</td><td>Si, the microelectronics material</td></tr>
+      <tr class="fragment" data-fragment-index="2"><td>band gap</td><td>direct: generates and detects light efficiently</td><td>indirect: no useful light emission</td></tr>
+      <tr class="fragment" data-fragment-index="3"><td>starting point</td><td>LEDs and diodes already made; now guide light in the same material</td><td>transport light first; mature fabs and a known technology</td></tr>
+      <tr class="fragment" data-fragment-index="4"><td>electro-optics</td><td>yes: semiconductor, apply field or current</td><td>yes: also a semiconductor, same lever</td></tr>
+      <tr class="fragment" data-fragment-index="5"><td>the bet</td><td>every component on one direct-gap chip</td><td>ride the CMOS industry and its need for faster data transport</td></tr>
+    </tbody>
+  </table>
+  <p class="fragment small muted" data-fragment-index="6" style="margin-top:18px">Both concepts and first demonstrations arrived in the late 80s and early 90s. Then the race to build components and circuits for a real market began.</p>
+</section>
+
+<!-- ═══════════════════════════════ 07 · III-V got there in ten years ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 06 ]</span><span class="sep">|</span>the 1990s: III-V</p>
+  <h2>III-V reached the market ten years after its first demonstration</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p>A direct band gap made <strong>generation</strong> and <strong>detection</strong> easy. Guiding light from one point of the chip to another was already understood. So the pieces just had to be put together.</p>
+      <p class="fragment small" data-fragment-index="1">Propagation loss was high in both platforms. In III-V it did not matter much, because the same direct gap gives you an <strong>amplifier</strong> on chip.</p>
+      <p class="fragment small" data-fragment-index="2">Source, detector, amplifier, modulator: every discrete function a complete circuit needs was available in one material.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="v-title v-desc">
+      <title id="v-title">A complete III-V photonic circuit</title>
+      <desc id="v-desc">On one substrate a laser feeds a waveguide through a modulator driven by an electrical pulse, then an amplifier, then a detector. The beam fades after the modulator and is restored by the amplifier.</desc>
+      <rect class="chip" x="10" y="60" width="500" height="150" rx="8"/>
+      <text x="20" y="84" class="tiny">InP or GaAs substrate</text>
+      <path class="guide" d="M60 130 H480 V140 H60 Z"/>
+      <rect class="box acc" x="30" y="118" width="32" height="34" rx="3"/>
+      <text x="22" y="176" class="tiny acc">laser</text>
+      <path class="beam draw" style="--len:120;--dur:800ms" d="M62 135 H150"/>
+      <g class="fragment" data-fragment-index="2">
+        <rect class="box acc" x="150" y="112" width="70" height="46" rx="4"/>
+        <text x="156" y="140" class="tiny">modulator</text>
+        <path class="elec draw" style="--len:100;--dur:700ms" d="M160 100 H170 V90 H180 V100 H190 V90 H200 V100 H210"/>
+      </g>
+      <g class="fragment" data-fragment-index="1">
+        <path class="beam faint draw" style="--len:100;--dur:800ms" d="M220 135 H300"/>
+        <text x="228" y="176" class="tiny">loss</text>
+        <rect class="box acc" x="300" y="112" width="70" height="46" rx="4"/>
+        <text x="308" y="140" class="tiny">amplifier</text>
+        <path class="beam draw" style="--len:100;--dur:800ms;--delay:600ms" d="M370 135 H460"/>
+        <text x="380" y="176" class="tiny acc">restored</text>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <rect class="box" x="460" y="118" width="30" height="34" rx="3"/>
+        <circle class="dot green blink" cx="475" cy="135" r="4"/>
+        <text x="448" y="176" class="tiny">detector</text>
+        <text x="20" y="236" class="tiny">generate, guide, modulate, amplify, detect: all in one direct-gap material</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 08 · Silicon's bottlenecks ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 07 ]</span><span class="sep">|</span>the 1990s: silicon</p>
+  <h2>Silicon had the fab but not the physics, and the timeline stretched</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p class="small">The idea was "the CMOS technology is there, let us use it". Photonics did not cooperate.</p>
+      <ul class="small">
+        <li class="fragment" data-fragment-index="1"><strong>Scattering loss.</strong> Silicon is transparent at 1300 and 1550 nm, yet losses were high. The reason is the structure, not the material: high confinement pushes the field onto four interfaces, and the silicon-to-oxide index contrast is large. Scattering grows as <strong>Δn to the fourth power</strong>.</li>
+        <li class="fragment" data-fragment-index="2"><strong>Contamination.</strong> Metal or carbon in the oxide or on the surface absorbs light. Microelectronics tolerates it; a waveguide does not.</li>
+        <li class="fragment" data-fragment-index="3"><strong>No source, no detector.</strong> Guiding existed, but indirect-gap silicon could not emit, and detection was not there either.</li>
+      </ul>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="s-title s-desc">
+      <title id="s-title">Silicon channel waveguide with rough sidewalls</title>
+      <desc id="s-desc">Cross-section of a silicon core on oxide. The core has four labelled interfaces with jagged sidewalls; scattered rays leave the core at the sidewalls. Contaminant dots sit in the surrounding oxide.</desc>
+      <rect class="box" x="30" y="40" width="460" height="180" style="opacity:0.5"/>
+      <text x="40" y="210" class="tiny">SiO2, n = 1.45</text>
+      <path class="guide" d="M200 90 L204 100 L199 112 L205 124 L200 136 L204 150 H320 L316 138 L321 126 L315 112 L320 100 L316 90 Z" style="stroke-width:2"/>
+      <text x="228" y="126" class="acc">Si, n = 3.5</text>
+      <text x="212" y="80" class="tiny">top</text><text x="212" y="170" class="tiny">bottom</text>
+      <text x="150" y="126" class="tiny">side</text><text x="330" y="126" class="tiny">side</text>
+      <g class="fragment" data-fragment-index="1">
+        <path class="beam faint draw" style="--len:80;--dur:600ms" d="M204 100 L150 70"/>
+        <path class="beam faint draw" style="--len:80;--dur:600ms;--delay:150ms" d="M200 136 L140 160"/>
+        <path class="beam faint draw" style="--len:80;--dur:600ms;--delay:300ms" d="M316 112 L380 70"/>
+        <path class="beam faint draw" style="--len:80;--dur:600ms;--delay:450ms" d="M320 138 L385 170"/>
+        <text x="380" y="60" class="tiny acc">scattered</text>
+        <text x="60" y="60" class="tiny acc">loss ∝ Δn^4</text>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <circle cx="120" cy="100" r="3" style="fill:var(--ml)"/><circle cx="90" cy="150" r="3" style="fill:var(--ml)"/><circle cx="400" cy="120" r="3" style="fill:var(--ml)"/><circle cx="430" cy="180" r="3" style="fill:var(--ml)"/><circle cx="250" cy="60" r="3" style="fill:var(--ml)"/>
+        <text x="380" y="210" class="tiny" style="fill:var(--ml)">metal, carbon: absorb</text>
+      </g>
+      <g class="fragment" data-fragment-index="3">
+        <text x="40" y="240" class="tiny">CMOS silicon photonics: a dedicated process, sorted between 1990 and 2000</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 09 · Silicon catches up ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 08 ]</span><span class="sep">|</span>2000 to 2010: integration on silicon</p>
+  <h2>Silicon borrowed the functions it could not make</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <ul class="small">
+        <li class="fragment" data-fragment-index="1"><strong>Detector: germanium, monolithic.</strong> SiGe and Ge were already in CMOS for strain engineering, so Ge detectors came almost for free.</li>
+        <li class="fragment" data-fragment-index="2"><strong>Source, attempt one: band-engineered Ge.</strong> Dope germanium and pull one indirect valley up; GeSn showed light generation from a photonic IC.</li>
+        <li class="fragment" data-fragment-index="3"><strong>Source, attempt two: III-V on top.</strong> Bond a direct-gap III-V layer onto silicon. This <strong>heterogeneous integration</strong> gave the fully integrated silicon photonic IC.</li>
+      </ul>
+      <p class="fragment small muted" data-fragment-index="4">From here the route went commercial. Silicon photonic products are on the market now.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="g-title g-desc">
+      <title id="g-title">Silicon photonic chip with germanium and III-V added</title>
+      <desc id="g-desc">A silicon-on-insulator substrate with a waveguide. A germanium block sits at the right end as a detector. A III-V layer bonded on top at the left end acts as the laser feeding the waveguide.</desc>
+      <rect class="box" x="10" y="180" width="500" height="40" style="opacity:0.5"/><text x="20" y="206" class="tiny">Si handle</text>
+      <rect class="box" x="10" y="160" width="500" height="20" style="opacity:0.8"/><text x="420" y="175" class="tiny">buried oxide</text>
+      <path class="guide" d="M10 140 H510 V160 H10 Z"/>
+      <text x="310" y="134" class="tiny acc">Si waveguide</text>
+      <path class="beam flowing slow" d="M100 150 H420"/>
+      <g class="fragment" data-fragment-index="1">
+        <rect x="420" y="112" width="70" height="28" rx="3" style="fill:var(--quantum);opacity:0.35;stroke:var(--quantum);stroke-width:1.5"/>
+        <text x="428" y="130" class="tiny" style="fill:var(--quantum)">Ge</text>
+        <circle class="dot green blink" cx="470" cy="126" r="4"/>
+        <text x="410" y="100" class="tiny">detector, grown in place</text>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <rect x="230" y="112" width="60" height="28" rx="3" style="fill:var(--quantum);opacity:0.2;stroke:var(--quantum);stroke-width:1.5;stroke-dasharray:4 3"/>
+        <text x="236" y="130" class="tiny" style="fill:var(--quantum)">GeSn</text>
+        <text x="216" y="100" class="tiny">emitter, band-engineered</text>
+      </g>
+      <g class="fragment" data-fragment-index="3">
+        <rect x="40" y="96" width="120" height="44" rx="3" style="fill:var(--ml);opacity:0.35;stroke:var(--ml);stroke-width:1.5"/>
+        <text x="50" y="122" class="tiny" style="fill:var(--ml)">III-V (InP) bonded</text>
+        <text x="30" y="84" class="tiny">laser, heterogeneous</text>
+        <path class="beam draw" style="--len:100;--dur:700ms" d="M100 140 V150"/>
+      </g>
+      <g class="fragment" data-fragment-index="4">
+        <text x="20" y="240" class="tiny">indirect-gap platform, direct-gap functions: everything on one chip</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 10 · Other platforms ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 09 ]</span><span class="sep">|</span>the other players</p>
+  <h2>III-V and silicon were the two main players, not the only ones</h2>
+  <table>
+    <thead><tr><th>platform</th><th>index contrast</th><th>when</th><th>what it is good for</th></tr></thead>
+    <tbody>
+      <tr class="fragment" data-fragment-index="1"><td>silica PLC</td><td>low</td><td>1980s; commercial by the 90s</td><td>planar lightwave circuits for telecom: splitters, wavelength filters. Still sold.</td></tr>
+      <tr class="fragment" data-fragment-index="2"><td>titania, alumina</td><td>moderate</td><td>in parallel</td><td>doped with erbium for on-chip amplifiers and emitters</td></tr>
+      <tr class="fragment" data-fragment-index="3"><td>polymer</td><td>low</td><td>in parallel</td><td>printed circuits; cheap, large-area processing</td></tr>
+      <tr class="fragment" data-fragment-index="4"><td>SiN, SiON, SiC</td><td>moderate to high</td><td>recent</td><td>silicon alloys that extend the wavelength range and lower the loss of the silicon platform</td></tr>
+    </tbody>
+  </table>
+  <p class="fragment small muted" data-fragment-index="5" style="margin-top:18px">The recipe is general: any transparent material that can be deposited on a flat surface and patterned is a candidate platform. The field is exploring well beyond what is available today.</p>
+</section>
+
+<!-- ═══════════════════════════════ 11 · Demand: communication ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 10 ]</span><span class="sep">|</span>demand one: communication</p>
+  <h2>The internet outgrew copper, and fiber took over the transport</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p class="small">Around the turn of the century, processing went from isolated stations to distributed, and the connections were <strong>coaxial copper</strong>. It held for a while, then had to give way to <strong>optical fiber</strong>.</p>
+      <p class="fragment small" data-fragment-index="1">Fiber enabled resource distribution (the video you watch streams from servers you never locate) and performance (live streams with no noticeable delay). Access reached tens of Gbps to the home.</p>
+      <p class="fragment small" data-fragment-index="2">Wireless did not change this. 4G and 5G promise multi-gigabit <strong>per user</strong>, and every such network is backed by fiber. Fiber transports; where signals are split and combined at the aggregate level, that is a photonic IC.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="k-title k-desc">
+      <title id="k-title">From coaxial copper to fiber-backed wireless</title>
+      <desc id="k-desc">Top: two stations linked by a copper coaxial line carrying a slow electrical signal. Middle: the same stations linked by a fiber carrying light, with a photonic IC node splitting the signal to several homes. Bottom: a wireless tower fed by that fiber.</desc>
+      <text x="10" y="22" class="tiny">1: coaxial copper</text>
+      <rect class="box" x="10" y="34" width="40" height="30" rx="3"/><rect class="box" x="470" y="34" width="40" height="30" rx="3"/>
+      <path class="elec draw" style="--len:440;--dur:1400ms;stroke-dasharray:6 10" d="M50 49 H470"/>
+      <text x="220" y="80" class="tiny" style="fill:var(--code)">Mbps, loss climbs with frequency</text>
+      <g class="fragment" data-fragment-index="1">
+        <text x="10" y="112" class="tiny">2: optical fiber</text>
+        <rect class="box acc" x="10" y="124" width="40" height="30" rx="3"/>
+        <path class="beam flowing" d="M50 139 H300"/>
+        <rect class="chip" x="300" y="122" width="60" height="34" rx="4"/>
+        <text x="306" y="143" class="tiny acc">PIC</text>
+        <path class="beam draw" style="--len:120;--dur:600ms;--delay:600ms" d="M360 130 H470"/>
+        <path class="beam draw" style="--len:120;--dur:600ms;--delay:700ms" d="M360 139 H470"/>
+        <path class="beam draw" style="--len:120;--dur:600ms;--delay:800ms" d="M360 148 H470"/>
+        <rect class="box" x="470" y="122" width="40" height="34" rx="3"/>
+        <text x="380" y="172" class="tiny">split and combine at the aggregate</text>
+        <text x="60" y="172" class="tiny acc">tens of Gbps to the home</text>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <text x="10" y="204" class="tiny">3: wireless, backed by fiber</text>
+        <path class="beam flowing slow" d="M50 228 H300"/>
+        <path class="wire" d="M300 228 L310 200 L320 228 Z" style="stroke:var(--text)"/>
+        <path class="wire" d="M330 214 q10 -8 20 0 M340 208 q14 -10 28 0" style="stroke:var(--code)"/>
+        <text x="380" y="232" class="tiny" style="fill:var(--code)">multi-Gbps per user</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 12 · Loss and bandwidth ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 11 ]</span><span class="sep">|</span>why optical wins</p>
+  <h2>Two numbers justify the move: loss and carrier frequency</h2>
+  <div class="cols">
+    <div class="stack">
+      <p class="small"><strong>Loss.</strong> High-frequency electrical signals attenuate in cables and in air. Past 1 GHz you are looking at tens of dB; even at tens of MHz it is a few dB per kilometre, and communication spans cities and continents. Light in a <strong>dielectric</strong> does not rely on a conductor, so loss can be far lower.</p>
+      <p class="fragment small" data-fragment-index="1"><strong>Bandwidth.</strong> The engineer's thumb rule: usable bandwidth is about <strong>10 % of the carrier</strong>. A 100 MHz carrier gives 10 MHz. A 100 THz carrier gives 10 THz, which was unheard of in the copper days and more than the traffic could fill.</p>
+    </div>
+    <table class="fragment" data-fragment-index="1">
+      <thead><tr><th></th><th>electrical</th><th>optical</th></tr></thead>
+      <tbody>
+        <tr><td>medium</td><td>conductor (copper)</td><td>dielectric (glass)</td></tr>
+        <tr><td>carrier</td><td>MHz to low GHz</td><td>150 to 800 THz</td></tr>
+        <tr><td>gap</td><td></td><td>about six orders of magnitude</td></tr>
+        <tr><td>bandwidth at 10 %</td><td>10 MHz on 100 MHz</td><td>10 THz on 100 THz</td></tr>
+        <tr><td>loss trend</td><td>rises steeply with frequency</td><td>low, and independent of the data rate</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 13 · Demand: compute ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 12 ]</span><span class="sep">|</span>demand two: compute</p>
+  <h2>Transistor scaling ran into the same copper wall, one centimetre wide</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <p class="small">Shrinking the node (90 nm to 45 nm) shrinks the footprint per function, so the free space fills with more cores: a single core at 130 nm became 16 cores at 32 nm. A thousand cores is easy.</p>
+      <p class="fragment small" data-fragment-index="1">The problem is not making cores. They must talk to each other, and to memory on and off the chip, over <strong>copper interconnects</strong>. Past a few tens of GHz the loss is prohibitive. This is the <strong>bandwidth bottleneck</strong>.</p>
+      <p class="fragment small" data-fragment-index="2">The solution is already known from telecom. Take the thousands-of-kilometres fiber network and <strong>scale it down to a centimetre</strong>. That is not just shrinking; the physics changes, which is exactly why photonic ICs are interesting.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="m-title m-desc">
+      <title id="m-title">Many cores, copper links, then optical interconnects</title>
+      <desc id="m-desc">A processor die with a four-by-four grid of cores. Thin cyan copper links join the cores and lead to a memory block off the die. In the last step, amber waveguides replace the copper links.</desc>
+      <rect class="chip" x="30" y="30" width="260" height="190" rx="8"/>
+      <text x="40" y="52" class="tiny">32 nm die, 16 cores</text>
+      <g class="wire" style="stroke:var(--strong)">
+        <rect x="50" y="64" width="40" height="30" class="box"/><rect x="110" y="64" width="40" height="30" class="box"/><rect x="170" y="64" width="40" height="30" class="box"/><rect x="230" y="64" width="40" height="30" class="box"/>
+        <rect x="50" y="104" width="40" height="30" class="box"/><rect x="110" y="104" width="40" height="30" class="box"/><rect x="170" y="104" width="40" height="30" class="box"/><rect x="230" y="104" width="40" height="30" class="box"/>
+        <rect x="50" y="144" width="40" height="30" class="box"/><rect x="110" y="144" width="40" height="30" class="box"/><rect x="170" y="144" width="40" height="30" class="box"/><rect x="230" y="144" width="40" height="30" class="box"/>
+        <rect x="50" y="184" width="40" height="26" class="box"/><rect x="110" y="184" width="40" height="26" class="box"/><rect x="170" y="184" width="40" height="26" class="box"/><rect x="230" y="184" width="40" height="26" class="box"/>
+      </g>
+      <rect class="box" x="360" y="90" width="120" height="70" rx="4"/>
+      <text x="382" y="130" class="lbl">memory</text>
+      <g class="fragment" data-fragment-index="1">
+        <path class="elec draw" style="--len:400;--dur:1200ms" d="M90 79 H110 M150 79 H170 M210 79 H230 M90 119 H110 M150 119 H170 M210 119 H230 M290 119 H360"/>
+        <text x="296" y="110" class="tiny" style="fill:var(--code)">copper</text>
+        <text x="300" y="190" class="tiny" style="fill:var(--code)">tens of GHz, then loss wins</text>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <path class="beam draw" style="--len:400;--dur:1200ms" d="M90 159 H110 M150 159 H170 M210 159 H230 M290 140 H360"/>
+        <circle class="dot rider" r="4" style="offset-path: path('M290 140 H360'); --dur: 1400ms"/>
+        <text x="296" y="172" class="tiny acc">optical interconnect</text>
+        <text x="40" y="240" class="tiny acc">a fiber network, scaled from kilometres to a centimetre</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 14 · Three generations ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 13 ]</span><span class="sep">|</span>three generations of optical systems</p>
+  <h2>Metres of table, centimetres of micro-optics, millimetres of chip</h2>
+  <table>
+    <thead><tr><th>generation</th><th>source</th><th>optics</th><th>light travels in</th><th>alignment</th><th>scale</th></tr></thead>
+    <tbody>
+      <tr class="fragment" data-fragment-index="1"><td>1 conventional</td><td>gas laser</td><td>mirrors, prisms, lenses on a table</td><td>free space (air or vacuum)</td><td>every component, by hand</td><td>metres; a right-angle turn needs a lens, mirror, lens</td></tr>
+      <tr class="fragment" data-fragment-index="2"><td>2 micro-optics</td><td>laser diode, LED</td><td>thin lenses</td><td>optical fiber, with free-space gaps</td><td>still needed: diode to lens to fiber</td><td>centimetres</td></tr>
+      <tr class="fragment" data-fragment-index="3"><td>3 integrated</td><td>on chip</td><td>single-mode channel waveguides, detectors, electro- and acousto-optic functions</td><td>waveguide only; light never leaves</td><td>none: fixed by fabrication</td><td>millimetres, up to a few cm</td></tr>
+    </tbody>
+  </table>
+  <p class="fragment small muted" data-fragment-index="4" style="margin-top:18px">The high refractive index of the guiding material is what buys the last step: light squeezed into a square millimetre where micro-optics needed a centimetre footprint.</p>
+</section>
+
+<!-- ═══════════════════════════════ 15 · Features (physics) ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 14 ]</span><span class="sep">|</span>what confinement buys you</p>
+  <h2>Small volume means low voltage, high speed, and strong interaction</h2>
+  <div class="cols wide-fig">
+    <div class="stack">
+      <ul class="small">
+        <li class="fragment" data-fragment-index="1"><strong>Electromagnetic optics, not rays.</strong> The structures are smaller than the wavelength, so ray optics fails. Maxwell's solutions of the waveguide are the <strong>guided modes</strong>, and they carry the energy.</li>
+        <li class="fragment" data-fragment-index="2"><strong>Volts, not kilovolts.</strong> Light confined in a small volume needs a small field to steer it. Small voltage swings fast, the material and the light both react quickly, so the device runs at high speed.</li>
+        <li class="fragment" data-fragment-index="3"><strong>High power density.</strong> Sub-wavelength confinement raises the optical intensity, which opens linear and nonlinear optics: new wavelengths, optical signal processing.</li>
+      </ul>
+    </div>
+    <svg class="fig" viewBox="0 0 520 250" role="img" aria-labelledby="f-title f-desc">
+      <title id="f-title">Bulk crystal versus waveguide electro-optic control</title>
+      <desc id="f-desc">Top: a wide bulk crystal with electrodes far apart, needing kilovolts, and a broad beam through it. Bottom: a narrow waveguide with electrodes close together, needing volts, and a tightly confined mode profile.</desc>
+      <text x="10" y="22" class="tiny">bulk crystal</text>
+      <rect class="box" x="60" y="34" width="300" height="70" rx="3"/>
+      <path class="beam faint" d="M10 69 H460" style="stroke-width:14;opacity:0.25"/>
+      <path class="beam" d="M10 69 H460"/>
+      <rect x="60" y="26" width="300" height="8" style="fill:var(--code);opacity:0.8"/>
+      <rect x="60" y="104" width="300" height="8" style="fill:var(--code);opacity:0.8"/>
+      <text x="380" y="50" class="tiny" style="fill:var(--code)">kV across mm</text>
+      <text x="380" y="100" class="tiny">wide beam, weak field</text>
+      <g class="fragment" data-fragment-index="2">
+        <text x="10" y="150" class="tiny">waveguide</text>
+        <rect x="60" y="176" width="300" height="6" style="fill:var(--code);opacity:0.8"/>
+        <path class="guide" d="M60 184 H360 V198 H60 Z"/>
+        <rect x="60" y="200" width="300" height="6" style="fill:var(--code);opacity:0.8"/>
+        <path class="beam flowing" d="M10 191 H460"/>
+        <text x="380" y="184" class="tiny" style="fill:var(--code)">V across µm</text>
+        <text x="380" y="204" class="tiny acc">fast swing</text>
+      </g>
+      <g class="fragment" data-fragment-index="3">
+        <path class="wire draw" style="--len:120;--dur:800ms" d="M470 236 C480 236 485 170 490 170 C495 170 500 236 510 236"/>
+        <text x="436" y="248" class="tiny acc">intensity</text>
+      </g>
+      <g class="fragment" data-fragment-index="1">
+        <text x="10" y="240" class="tiny">structure smaller than λ: solve Maxwell, not ray traces</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 16 · Features (engineering) ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 15 ]</span><span class="sep">|</span>what integration buys you</p>
+  <h2>Stable, compact, manufacturable, modular</h2>
+  <table>
+    <thead><tr><th>feature</th><th>why it follows from integration</th><th>example</th></tr></thead>
+    <tbody>
+      <tr class="fragment" data-fragment-index="1"><td>stable alignment</td><td>everything is aligned during fabrication; alignment remains only where light enters or leaves the chip</td><td>fiber-to-chip coupling is the one alignment left</td></tr>
+      <tr class="fragment" data-fragment-index="2"><td>mode control</td><td>the guided mode is the Maxwell solution of the structure you drew, so you control the propagation by drawing the structure</td><td>next deck: the components</td></tr>
+      <tr class="fragment" data-fragment-index="3"><td>compact, complex circuits</td><td>high index confines light into tight bends and short devices</td><td>square-millimetre circuits</td></tr>
+      <tr class="fragment" data-fragment-index="4"><td>high-volume manufacture</td><td>pick a platform with a wafer-scale process already paid for</td><td>III-V wafers, CMOS for silicon, printing for polymer</td></tr>
+      <tr class="fragment" data-fragment-index="5"><td>modular</td><td>functionally different chips can be integrated together</td><td>sensor chip plus photonic chip plus electronic chip</td></tr>
+    </tbody>
+  </table>
+  <p class="fragment small muted" data-fragment-index="6" style="margin-top:18px">Conventional optics keeps some ground, in high-power and imaging applications. Everything else is moving toward a single chip.</p>
+</section>
+
+<!-- ═══════════════════════════════ 17 · Check your understanding ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">[ 16 ]</span><span class="sep">|</span>check your understanding</p>
+  <h2>Three questions before the next lecture</h2>
+  <ol>
+    <li class="fragment" data-fragment-index="1">III-V and silicon were proposed at nearly the same time. III-V shipped products in ten years and silicon took two decades. Name the physical reason and the process reason for the gap.</li>
+    <li class="fragment" data-fragment-index="2">Silicon is transparent at 1550 nm, yet early silicon waveguides were lossy. Where did the loss come from, and why does a high index contrast make it worse?</li>
+    <li class="fragment" data-fragment-index="3">A processor with a thousand cores is easy to make. Why does it not simply run a thousand times faster, and what does the telecom industry's history suggest as the fix?</li>
+  </ol>
+  <div class="card fragment" data-fragment-index="4" style="margin-top:14px">
+    <span class="k">what to remember</span>
+    Technology follows demand. Communication pushed optics into fiber because a dielectric carrier at hundreds of THz beats copper on both loss and bandwidth; compute is now pushing the same fiber network down to a centimetre. Integration wins because <strong>confinement</strong> buys low voltage, high speed, strong interaction, and alignment that is fixed at fabrication.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 18 · End ═══════════════════════════════ -->
+<section>
+  <p class="eyebrow"><span class="num">photonics</span><span class="sep">|</span>photonic integrated circuits<span class="sep">|</span>deck 02 of the series</p>
+  <h2>Next: the components, and how a guided mode is controlled</h2>
+  <p>The following lecture opens the component section: what a guided mode is, and the ways its propagation is steered on chip.</p>
+  <p class="small muted" style="margin-top:1.6em">Adapted from NPTEL, <a href="https://www.youtube.com/watch?v=2JK2OGKzSEM">Lec 06: Photonic integrated circuits evolution</a>. Diagrams are original; the ordering and framing follow the lecture.</p>
+  <p class="small muted"><a href="../../../slides/photonic-integrated-circuits/">Back to the series</a> <span style="color:var(--strong)">|</span> <a href="../../../slides/">All slides</a></p>
+</section>
+
+</div>
+</div>
+
+<div class="deck-label"><a href="../../../">~/sk</a><span class="sep">|</span><a href="../../../slides/">slides</a><span class="sep">|</span>photonic integrated circuits 02</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.1/dist/reveal.js"></script>
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    controlsTutorial: false,
+    progress: true,
+    slideNumber: 'c/t',
+    center: false,
+    width: 1180,
+    height: 700,
+    margin: 0.06,
+    transition: reduce ? 'none' : 'fade',
+    transitionSpeed: 'fast',
+    backgroundTransition: 'none',
+    autoAnimateDuration: reduce ? 0 : 0.8,
+    autoAnimateEasing: 'ease-in-out',
+    fragmentInURL: true,
+    navigationMode: 'linear'
+  });
+
+})();
+</script>
+</body>
+</html>
