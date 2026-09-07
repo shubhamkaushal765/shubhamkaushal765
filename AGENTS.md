@@ -14,6 +14,7 @@ conventions.
 - Repo conventions (naming, README skeleton, commit hygiene, releases): `.agent/repo-conventions.md`
 - Writing strategy (topics, pipeline, voice, citation policy): `.agent/writing-strategy.md`
 - Visual system (design tokens, typography, color, spacing, hero diagram): `.agent/visual-system.md`
+- Slides system (deck structure, reveal.js rules, SVG and animation grammar): `.agent/slides-system.md`
 - Site source: `site/` (Next.js, own `package.json`; run all npm commands from there)
 - Site deploy: GitHub Actions workflow at `.github/workflows/site.yml` builds `site/` and uploads to Pages via `actions/deploy-pages`. Build output (`site/out/` or local `docs/`) is gitignored. Do not commit it.
 - Design specs: `superpowers/specs/`
@@ -51,8 +52,8 @@ binding visual primitives. The binding visual rules live in
 - `PillarDiagram.tsx`. The canonical ASCII hero. Its string constant is
   locked verbatim; never edit it.
 - `Hero.tsx`. Wraps `<PillarDiagram>`, the tagline reveal (split into pillar-colored spans: `parsers` (sky/code-int) + muted arrow + `qubits.` (emerald/quantum); text content stays exactly `parsers -> qubits.` per the lock), `<StatsLine>`, and `<Nav>`.
-- `Nav.tsx`. Primary nav with active-state in `var(--color-accent)`; embeds
-  `<ThemeToggle>`.
+- `Nav.tsx`. Primary nav (`home`, `blog`, `slides`) with active-state in
+  `var(--color-accent)`; embeds `<ThemeToggle>`.
 - `ThemeToggle.tsx`. Client component; flips `[data-theme]` and persists to
   `localStorage`. ASCII label `[ light ]` / `[ dark ]`, no icons.
 - `StatusDot.tsx`. Small accent pip + monospace label; pulse animation is
@@ -74,6 +75,7 @@ binding visual primitives. The binding visual rules live in
   Source intent is documented in `site/diagrams/*.mmd` (mermaid flowcharts).
 - `StatsLine.tsx`. Server component. Renders the monospace pillars/repos/stack/last-build line under the hero tagline on Home. Reads `BUILD_META` from `site/lib/build-meta.ts`. Never imported from a client component.
 - `lib/build-meta.ts`. Build-time constants for `StatsLine`. `lastBuild` resolves at static-export time.
+- `lib/site-config.ts`. `SITE_BASE_PATH` (mirrors `basePath` in `next.config.mjs`) and `deckUrl()`, the only sanctioned way to link to a static deck under `public/`.
 - `scripts/verify-contrast.mjs`. WCAG contrast gate; runs as a pre-step of `npm run build` via `npm run verify-contrast`. Source of pair list: `.agent/visual-system.md` § Surface contrast verification.
 - `FootnoteList.tsx`, `FooterSignature.tsx`, `SkipLink.tsx`. Supporting components.
 
@@ -189,6 +191,67 @@ To add one, create the following files and registrations:
   - End each chapter with two retention blocks in this order, placed BEFORE the final `## Notes` section: `## Check your understanding` (3 reasoning questions) and `## What to remember` (bold one-sentence summary, 3-bullet list, bold `Key insight:` line). `## Notes` must remain the last section.
   - Include exactly one `<p className="aside">` memory hook per chapter.
   - Use plain Markdown plus the existing `.aside` primitive only. No new CSS, no new components, no new SVG.
+
+## Adding a slide deck to the slides section
+
+The `Slides` tab (`/slides/`) sits beside `Blog` in the nav and mirrors its
+shape: an index page, "folders" (a series of decks on one topic), and
+standalone decks. Decks are reveal.js pages built for explanation: animated
+inline SVG, stepwise fragments, tables, and the occasional interactive demo.
+The binding rules live in `.agent/slides-system.md`; read it before touching
+anything under `site/app/slides/` or `site/public/slides/`.
+
+**File layout:**
+
+- `site/app/slides/decks.ts` -- registry. `SLIDES: SlideEntry[]` holds one
+  `DeckFolder` (slug, title, summary, pillar, date, status, `decks`) or
+  `StandaloneDeck` per entry. Each folder's `Deck[]` (number, slug, title,
+  summary, `length` as `'NN slides'`, optional `source`) is its own export.
+- `site/app/slides/page.tsx` -- index page; renders `SLIDES` with the
+  `.blog-list` classes, decks listed inline under their folder.
+- `site/app/slides/<folder-slug>/page.tsx` -- folder page; `.chapter-toc`
+  list of decks, `data-pillar` on `<main>`.
+- `site/public/slides/<folder-slug>/<NN-slug>/index.html` -- the deck. One
+  self-contained reveal.js file (reveal pinned from jsDelivr, tokens copied
+  from `globals.css`, no build step). Reference:
+  `photonic-integrated-circuits/01-introduction/index.html`.
+
+**Registration:**
+
+- New deck in an existing folder: append a `Deck` to that folder's array.
+- New folder: add a `DeckFolder` to `SLIDES`, create the folder page from the
+  photonic-integrated-circuits one, and confirm a
+  `main[data-pillar="<pillar>"]` rule exists in `globals.css`.
+- Standalone deck: add a `StandaloneDeck` whose `folder` names the
+  `public/slides/<folder>/` directory that holds it.
+
+**Linking gotcha:**
+
+- Decks are static files under `public/`, so they are outside the Next.js
+  router. Link to them with a plain `<a href={deckUrl(folder, deck)}>` from
+  `site/lib/site-config.ts`, never `<Link>`. `deckUrl` prefixes the Pages
+  `basePath`. Links inside a deck back to the site are relative
+  (`../../../slides/`).
+
+**Deck rules (summary; full text in `.agent/slides-system.md`):**
+
+- Order: title slide, content slides, `Check your understanding` (three
+  questions plus a `what to remember` card), end slide with next-deck
+  pointer, attribution link, and links back to the folder and index.
+- One claim per slide; the H2 is the claim. Every content slide has a figure
+  or a table. Fragments step the drawing and the text together.
+- Tokens, fonts, and chrome match the site: dark surfaces, the folder's
+  pillar colour as `--accent`, Fraunces / Inter / JetBrains Mono, top
+  hairline, mono slide number, fixed deck label.
+- SVG: inline only, primitives only, `role="img"` + `<title>` + `<desc>`,
+  strokes at 1.5px or wider, shared figure grammar (`.beam`, `.elec`,
+  `.dot`, `.guide`, `.box`, `.chip`).
+- Motion is opacity, stroke, or travel along a path, keyed to reveal's
+  `.present` / `.fragment.visible` classes. `prefers-reduced-motion`
+  resolves everything to its final state. No autoplay.
+- No emoji, no plugins, no markdown, no `<img>`.
+
+**Existing folders:** `photonic-integrated-circuits` (1 deck).
 
 ## Adding a new repo to the profile
 
