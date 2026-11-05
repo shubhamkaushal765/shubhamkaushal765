@@ -19,6 +19,7 @@ export default function Hero({ variant = 'full' }: { variant?: Variant }) {
       <Nav />
       <div className="hero hero--full">
         <div className="hero__left">
+          <h1 className="hero__name">Shubham Kaushal</h1>
           <p className="hero-tagline">
             <PromptGlyph />
             <span className="hero-tagline__pillar--code">parsers</span>

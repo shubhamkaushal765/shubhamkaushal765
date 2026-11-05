@@ -7,7 +7,7 @@ import { CHAPTERS as CODE_INTELLIGENCE_CHAPTERS } from './code-intelligence/chap
 import { CHAPTERS as BAYESIAN_OPTIMIZATION_CHAPTERS } from './bayesian-optimization/chapters';
 
 export const metadata: Metadata = {
-  title: 'Blog | Shubham Kaushal',
+  title: 'Writing | Shubham Kaushal',
   description: 'Essays and working notebooks across code intelligence, machine learning, quantum computing, and photonics.',
 };
 
@@ -117,10 +117,10 @@ export default function WritingPage() {
   return (
     <main id="main">
       <Hero variant="compact" />
-      <h1>Blog</h1>
+      <h1>Writing</h1>
       <p>Essays and working notebooks across code intelligence, machine learning, quantum computing, and photonics. Primary sources cited directly (arXiv permalinks, not commentary); every code sample runs as written; pseudocode is labeled as pseudocode. Multi-chapter books appear with their chapter list inline.</p>
       <ol className="blog-list">
-        {POSTS.map((post, i) => (
+        {POSTS.filter((p) => p.status !== 'upcoming').map((post, i) => (
           <li key={i} className="blog-entry" data-pillar={post.pillar}>
             <div className="blog-entry__meta">
               <time className="blog-entry__date">{post.date}</time>

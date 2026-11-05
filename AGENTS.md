@@ -2,7 +2,7 @@
 
 This is the GitHub profile repository for `shubhamkaushal765`. The root
 `README.md` is the profile README rendered on the GitHub user page. The
-Next.js site that backs `https://shubhamkaushal765.github.io` lives under
+Next.js site that backs `https://shubhamkaushal765.github.io/shubhamkaushal765/` lives under
 `site/` (source). Build output is **not committed**: GitHub Actions builds
 the site on every push and deploys it directly to Pages via the Pages
 artifact API. The `.agent/` directory holds the operating manual and
@@ -51,33 +51,20 @@ binding visual primitives. The binding visual rules live in
 
 - `PillarDiagram.tsx`. The canonical ASCII hero. Its string constant is
   locked verbatim; never edit it.
-- `Hero.tsx`. Wraps `<PillarDiagram>`, the tagline reveal (split into pillar-colored spans: `parsers` (sky/code-int) + muted arrow + `qubits.` (emerald/quantum); text content stays exactly `parsers -> qubits.` per the lock), `<StatsLine>`, and `<Nav>`.
-- `Nav.tsx`. Primary nav (`home`, `blog`, `slides`) with active-state in
+- `Hero.tsx`. Wraps `<PillarDiagram>`, the tagline reveal (split into pillar-colored spans: `parsers` (cyan/sky, code-int) + muted arrow + `qubits.` (emerald/quantum); text content stays exactly `parsers -> qubits.` per the lock), `<StatsLine>`, and `<Nav>`. The full variant renders a visible name `<h1 className="hero__name">Shubham Kaushal</h1>` above the tagline.
+- `Nav.tsx`. Primary nav (`home`, `writing`, `slides`) with active-state in
   `var(--color-accent)`; embeds `<ThemeToggle>`.
 - `ThemeToggle.tsx`. Client component; flips `[data-theme]` and persists to
   `localStorage`. ASCII label `[ light ]` / `[ dark ]`, no icons.
-- `StatusDot.tsx`. Small accent pip + monospace label; pulse animation is
-  guarded by `prefers-reduced-motion`. Used inline with `<h1>` on `/now`.
 - `SectionRule.tsx`. `<h2>` with optional rail-bracket `[ NN ]` prefix when the `number` prop is set; 1px `var(--color-border-hair)` rule rendered BELOW the heading. The bracket prefix uses the existing `.section-num` class.
-- `Highlights.tsx`. Server component. Exports `<Highlights>` (default,
-  `<section>` wrapper) and named `<TopicCard>`. Used in `content/home.mdx`
-  to render the four-topic highlights block between Selected work and Bridges.
-  TopicCard renders its number prefix locally as `<span class="section-num">`.
-  It does NOT route the `<h3>` through `mdx-components.tsx`, so the locked
-  three-key map in that file is unaffected. The optional `pillar` prop
-  (`'code-int' | 'ml' | 'quantum'`) writes `data-pillar` on the `<article>`;
-  CSS keys off it to set the bracket number, chip, table key column, left
-  stripe, and SVG accent edge color from the pillar family.
-- `diagrams/QecFlow.tsx`, `diagrams/CvBaselineFlow.tsx`, `diagrams/ZuitFlow.tsx`,
-  `diagrams/TellMeWhyFlow.tsx`. Inline-SVG server components, one per topic
-  card. Hand-authored; theme via `currentColor`; one accent edge per diagram
-  carries `className="flow-edge--animated"` for the stroke-dashoffset reveal.
-  Source intent is documented in `site/diagrams/*.mmd` (mermaid flowcharts).
-- `StatsLine.tsx`. Server component. Renders the monospace pillars/repos/stack/last-build line under the hero tagline on Home. Reads `BUILD_META` from `site/lib/build-meta.ts`. Never imported from a client component.
+- `StatsLine.tsx`. Server component. Renders the monospace pillars/repos/stack/last-build line plus a proof chip (`zuit · rust SAST`, linked to the zuit repo) under the hero tagline on Home. Reads `BUILD_META` from `site/lib/build-meta.ts`. Never imported from a client component.
 - `lib/build-meta.ts`. Build-time constants for `StatsLine`. `lastBuild` resolves at static-export time.
 - `lib/site-config.ts`. `SITE_BASE_PATH` (mirrors `basePath` in `next.config.mjs`) and `deckUrl()`, the only sanctioned way to link to a static deck under `public/`.
 - `scripts/verify-contrast.mjs`. WCAG contrast gate; runs as a pre-step of `npm run build` via `npm run verify-contrast`. Source of pair list: `.agent/visual-system.md` § Surface contrast verification.
-- `FootnoteList.tsx`, `FooterSignature.tsx`, `SkipLink.tsx`. Supporting components.
+- `ChapterSidebar.tsx`. Server component. Book contents sidebar for chapter pages: book link plus an ordered chapter list with the current chapter marked.
+- `PromptGlyph.tsx`. Client component. Renders a decorative, `aria-hidden` shell-prompt glyph picked at random after mount.
+- `app/icon.svg`. Favicon: four pillar-colored bars on a dark rounded square.
+- `FooterSignature.tsx`, `SkipLink.tsx`. Supporting components.
 
 A11y baselines that must be preserved: skip-link at `<body>` top, `id="main"`
 on every page's `<main>`, `:focus-visible` outline in accent color,
@@ -86,10 +73,10 @@ on every page's `<main>`, `:focus-visible` outline in accent color,
 Bracket motif (`[ NN ]` prefix), `.chip` status pills, and the `.fn-ref`
 inline footnote marker are documented in `.agent/visual-system.md`
 § Bracket motif, § Status chips, and § Footnote markers respectively.
-The pillar dimension family (sky/violet/emerald) is documented in
+The pillar dimension family (cyan/violet/emerald/amber) is documented in
 `.agent/profile-system.md` § Personality motifs § Pillar dimension family
 and `.agent/visual-system.md` § Accent. Pillar hues attach via the
-`data-pillar` attribute on `<TopicCard>` and the three locked `<h3>`s in
+`data-pillar` attribute on writing-page `<main>` elements and the three locked `<h3>`s in
 `mdx-components.tsx`; CSS does the rest. These motifs are bound by the
 visual system, not by component code.
 
@@ -106,31 +93,6 @@ preview directory).
 `npm run build` writes to `site/out/`. That directory is gitignored. To
 deploy, push to `main` and let `.github/workflows/site.yml` build and deploy
 to Pages via the artifact API.
-
-### Diagrams workflow
-
-The four topic-card diagrams in `site/components/diagrams/*Flow.tsx` are
-hand-authored inline SVG. Source intent for each diagram is committed
-alongside as a mermaid `.mmd` file under `site/diagrams/`. These are
-documentation only; nothing builds them.
-
-To revise a diagram:
-
-1. Edit the TSX source directly in `site/components/diagrams/<Topic>Flow.tsx`.
-2. Update the matching `.mmd` file under `site/diagrams/` so symbolic intent
-   stays in sync with the rendered SVG.
-3. Re-run `npm run build` to confirm.
-
-Rules for any new diagram:
-
-- Inline `<svg>` only. Never `<img src>`. `currentColor` only resolves when
-  the SVG is in the DOM cascade.
-- `viewBox="0 0 320 180"` for consistency across all topic cards.
-- `stroke-width` ≥ 1.5 so light-mode accent does not visually thin out.
-- Geometric primitives only; no glyph icons.
-- One accent edge maximum per diagram (the data-flow edge).
-- Tag the accent edge with `className="flow-edge--animated"` for the
-  stroke-dashoffset reveal. CSS handles `prefers-reduced-motion`.
 
 Pages settings (set once in repo Settings → Pages, not in code):
 
@@ -194,7 +156,7 @@ To add one, create the following files and registrations:
 
 ## Adding a slide deck to the slides section
 
-The `Slides` tab (`/slides/`) sits beside `Blog` in the nav and mirrors its
+The `Slides` tab (`/slides/`) sits beside `Writing` in the nav and mirrors its
 shape: an index page, "folders" (a series of decks on one topic), and
 standalone decks. Decks are reveal.js pages built for explanation: animated
 inline SVG, stepwise fragments, tables, and the occasional interactive demo.
@@ -251,7 +213,7 @@ anything under `site/app/slides/` or `site/public/slides/`.
   resolves everything to its final state. No autoplay.
 - No emoji, no plugins, no markdown, no `<img>`.
 
-**Existing folders:** `photonic-integrated-circuits` (1 deck).
+**Existing folders:** `photonic-integrated-circuits` (3 decks).
 
 ## Adding a new repo to the profile
 

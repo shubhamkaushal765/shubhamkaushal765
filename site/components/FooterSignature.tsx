@@ -36,10 +36,6 @@ export default function FooterSignature() {
         <span aria-hidden="true">·</span>
         <span className="footer-signature__segment" title="local timezone">asia/kolkata (utc+5:30)</span>
         <span aria-hidden="true">·</span>
-        <span className="footer-signature__segment" title="not a real key, obviously">
-          pgp 0xDEADBEEF
-        </span>
-        <span aria-hidden="true">·</span>
         <span className="footer-signature__segment" title="press ? to acknowledge the cursor blinking at you">
           <span className="kbd">?</span> for help
         </span>

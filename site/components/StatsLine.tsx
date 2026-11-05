@@ -1,12 +1,11 @@
 import { BUILD_META } from '@/lib/build-meta';
 
+const ZUIT_URL = 'https://github.com/shubhamkaushal765/zuit';
+
 export default function StatsLine() {
   const { pillars, repos, stack, lastBuild } = BUILD_META;
   return (
-    <p
-      className="stats-line"
-      aria-label={`${pillars} pillars, ${repos} repos, stack ${stack.join(' plus ')}, last build ${lastBuild}`}
-    >
+    <p className="stats-line">
       <span className="stats-line__item">
         <span style={{ color: 'var(--color-pillar-code)' }}>{pillars}</span> pillars
       </span>
@@ -17,13 +16,9 @@ export default function StatsLine() {
       <span className="stats-line__item">
         last build <time dateTime={lastBuild}>{lastBuild}</time>
       </span>
-      <span
-        className="stats-line__item stats-line__item--mood"
-        title="self-reported, no warranty"
-        aria-label="Operator mood: caffeinated, mildly curious"
-      >
-        mood: caffeinated, mildly curious
-      </span>
+      <a className="stats-line__item stats-line__item--proof" href={ZUIT_URL}>
+        zuit · rust SAST
+      </a>
     </p>
   );
 }
