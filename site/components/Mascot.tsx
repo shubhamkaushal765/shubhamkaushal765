@@ -3,7 +3,7 @@
 type Variant = 'lg' | 'sm';
 
 const HAIR =
-  'M63 84 C 58 60, 64 42, 76 34 L 82 16 L 94 28 L 106 10 L 114 26 L 132 14 L 130 32 L 152 30 L 138 46 C 141 58, 140 72, 137 84 C 133 70, 126 62, 116 60 L 108 66 L 100 58 L 90 64 C 78 62, 68 70, 63 84 Z';
+  'M63 84 C 58 62, 62 46, 70 38 L 84 18 L 90 30 L 108 12 L 112 28 L 134 16 L 130 32 L 158 28 L 138 44 L 154 52 L 139 56 C 140 66, 139 76, 137 84 C 133 70, 126 62, 116 60 L 108 66 L 100 58 L 90 64 C 78 62, 68 70, 63 84 Z';
 
 const FACE =
   'M63 80 C 63 50, 80 36, 100 36 C 120 36, 137 50, 137 80 C 137 102, 133 118, 121 127 C 112 133, 88 133, 79 127 C 67 118, 63 102, 63 80 Z';
@@ -61,9 +61,9 @@ export default function Mascot({ variant = 'lg', idSuffix }: { variant?: Variant
       <g transform="translate(0 8)">
         {/* speed lines trailing behind the head */}
         <g className="mascot__speed" strokeWidth="2.5">
-          <path d="M154 40 L 176 36" />
-          <path d="M152 54 L 184 50" />
-          <path d="M152 68 L 172 66" />
+          <path d="M160 40 L 180 37" />
+          <path d="M158 58 L 186 55" />
+          <path d="M154 72 L 174 70" />
         </g>
         <g className="mascot__head">
           {/* neck */}
