@@ -109,7 +109,7 @@ One *primary* accent + a four-hue *pillar dimension family*. The primary accent 
 
 | Token | Hex (dark) | Hex (light) | Use |
 |-------|------------|-------------|-----|
-| `--color-accent` | `#f472b6` | `#be185d` | Links, inline `code`, focus rings, footnote markers (`fn-ref`), the nav `~/` mark, the stats-line counts, and the shell prompt glyph (`.prompt-glyph`). Never equal to a pillar hue. Pillar hues additionally apply to home Four pillars story step `h3`s and the stage-synced figure stroke. |
+| `--color-accent` | `#f472b6` | `#be185d` | Links, inline `code`, focus rings, footnote markers (`fn-ref`), the nav `~/` mark, the stats-line counts, the shell prompt glyph (`.prompt-glyph`), and the mascot's mug stroke (`.mascot__mug`, its single accent detail). Never equal to a pillar hue. Pillar hues additionally apply to home Four pillars story step `h3`s and the stage-synced figure stroke. |
 | `--color-pillar-code` | `#22d3ee` | `#0369a1` | Pillar-coded elements where the pillar is *code intelligence*. Hue: cyan (dark) / sky (light). |
 | `--color-pillar-ml` | `#a78bfa` | `#6d28d9` | Pillar-coded elements where the pillar is *machine learning*. Hue: violet. |
 | `--color-pillar-quantum` | `#34d399` | `#047857` | Pillar-coded elements where the pillar is *quantum computing*. Hue: emerald. |
@@ -335,8 +335,13 @@ Any further animation requires a documentation step here.
 | MZI beams | `.mzi-beam--a/b`, `.mzi-phase-dot` (photonics MDX) | 4s | ease-in-out | Infinite sweep and phase pulse |
 | Parse-story stage transitions | `.parse-story__node` on `/` | transform 600ms, opacity 400ms | ease-out | Driven by `data-stage` on `.parse-story`, set by an IntersectionObserver in `StageObserver.tsx` |
 | Stage-4 pulse | waveguide dash in the `.parse-story__figure` | 2.6s (`ps-travel` keyframes) | linear | `stroke-dashoffset` only, active only when `data-stage="4"` |
+| Mascot slide-in | `.mascot--lg` on `/` (>= 900px) | 350ms, once | ease-out, small overshoot at 70% | Slides in from the right; reduced motion: no animation, shown in place |
+| Mascot blink | `.mascot__eyes` (both variants) | 4s loop, closed ~120ms | linear | `scaleY` to 0.1 and back; reduced motion: no animation, eyes open |
+| Mascot lens glint | `.mascot__glint` (large only) | 6s loop | ease-in-out | Diagonal glint sweeps across one lens, clipped to it; reduced motion: no animation, glint static at rest |
+| Mascot steam | `.mascot__steam-line` x2 (large only) | 1.6s loop, staggered 0.6s | ease-out | Short drift up and fade; reduced motion: no animation, static at 0.85 opacity |
+| Mascot brow snap + head tilt | `.mascot__brow`, `.mascot__head` on `.hero__aside` hover / focus-within (>= 900px) | 150ms transition | ease-out | Raised brow lifts 4px, head rotates -5deg; reduced motion: no transition, no change |
 
-The tagline fade, blink cursor, and MZI beams are CSS-only. `ParseStory.tsx`
+The tagline fade, blink cursor, MZI beams, and mascot motion are CSS-only. `ParseStory.tsx`
 is a server component; `StageObserver.tsx` is the only client island in the
 story and only sets `data-stage` via `setAttribute`. `HelpDialog.tsx` is a
 client component and has no animation. Every animation above has a rule in a

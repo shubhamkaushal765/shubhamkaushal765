@@ -136,7 +136,7 @@ The current `README.md` is the canonical exemplar of this voice. Match it.
 
 ## Personality motifs
 
-Six recurring elements give the README and site a coherent visual flavor without violating the hard rules. These are binding; do not remove them, do not replace them with decoration.
+Seven recurring elements give the README and site a coherent visual flavor without violating the hard rules. These are binding; do not remove them, do not replace them with decoration.
 
 ### Hero codefence with ASCII pillar diagram
 
@@ -215,6 +215,15 @@ Motif 6. Rules:
 - `?` opens the help panel (`dialog#help`, `~/lab $` prompt, `help` / `whoami` / `ls`), which holds the mood line.
 - Jokes are self-deprecating or about the work, never about other people or named tools.
 - No new numbers or invented facts.
+
+### Line-art mascot
+
+Motif 7. A small line-art character on the home hero with a bold, fast, confident personality: long narrow face with a firm jaw, short messy hair swept back into spikes with speed lines behind, heavy rectangular glasses with a lens glint, clean shaven, one raised eyebrow and a one-sided smirk, hoodie, and a coffee mug raised in a quick cheers (a nod to the `mood: caffeinated` line in the `?` panel). Motion is snappy: a one-time slide-in, quick blink, glint sweep. Rules:
+
+- Loose likeness from owner-described features (no photo). Mascot-style line art, not a portrait.
+- Home hero only for now: large beside the teaser speech bubble on desktop, small beside the name below 900px.
+- Strokes in `currentColor`; exactly one rose accent detail (the mug). Never pillar hues.
+- Never used to carry invented claims, numbers, or quotes. It says only the existing teaser.
 
 ---
 

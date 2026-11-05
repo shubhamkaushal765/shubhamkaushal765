@@ -1,6 +1,7 @@
 import Nav from './Nav';
 import StatsLine from './StatsLine';
 import PromptGlyph from './PromptGlyph';
+import Mascot from './Mascot';
 
 type Variant = 'full' | 'compact';
 
@@ -18,7 +19,10 @@ export default function Hero({ variant = 'full' }: { variant?: Variant }) {
       <Nav />
       <div className="hero hero--full">
         <div className="hero__left">
-          <h1 className="hero__name">Shubham Kaushal</h1>
+          <div className="hero__id">
+            <h1 className="hero__name">Shubham Kaushal</h1>
+            <Mascot variant="sm" idSuffix="sm" />
+          </div>
           <p className="hero-tagline">
             <PromptGlyph />
             <span className="hero-tagline__pillar--code">parsers</span>
@@ -42,13 +46,16 @@ export default function Hero({ variant = 'full' }: { variant?: Variant }) {
           </p>
           <StatsLine />
         </div>
-        <div className="hero__teaser">
-          <p className="hero__teaser-code" aria-hidden="true">
-            let y = x + 1;<span className="blink-cursor" />
-          </p>
-          <p className="hero__teaser-hint">
-            <a href="#four-pillars">{'// scroll: watch it compile into qubits'}</a>
-          </p>
+        <div className="hero__aside">
+          <div className="hero__teaser">
+            <p className="hero__teaser-code" aria-hidden="true">
+              let y = x + 1;<span className="blink-cursor" />
+            </p>
+            <p className="hero__teaser-hint">
+              <a href="#four-pillars">{'// scroll: watch it compile into qubits'}</a>
+            </p>
+          </div>
+          <Mascot variant="lg" idSuffix="lg" />
         </div>
       </div>
     </header>
