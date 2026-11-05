@@ -6,9 +6,15 @@ type Theme = 'light' | 'dark';
 
 function getInitialTheme(): Theme {
   if (typeof window === 'undefined') return 'dark';
-  const stored = localStorage.getItem('theme');
-  if (stored === 'light' || stored === 'dark') return stored;
-  return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'light' || stored === 'dark') return stored;
+  } catch {}
+  try {
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  } catch {
+    return 'dark';
+  }
 }
 
 export default function ThemeToggle() {
@@ -23,7 +29,9 @@ export default function ThemeToggle() {
   function toggle() {
     const next: Theme = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
-    localStorage.setItem('theme', next);
+    try {
+      localStorage.setItem('theme', next);
+    } catch {}
     document.documentElement.setAttribute('data-theme', next);
   }
 
@@ -43,10 +51,11 @@ export default function ThemeToggle() {
         color: 'var(--color-text-muted)',
         padding: '4px 10px',
         borderRadius: '999px',
+        whiteSpace: 'nowrap',
       }}
     >
       <span aria-hidden="true">
-        {theme === 'dark' ? 'light' : 'dark'}
+        [ {theme === 'dark' ? 'light' : 'dark'} ]
       </span>
     </button>
   );

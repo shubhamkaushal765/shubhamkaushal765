@@ -3,6 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function () {
+  var t = null;
+  try { t = localStorage.getItem('theme'); } catch (e) {}
+  if (t !== 'light' && t !== 'dark') {
+    t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
 <title>Photonic integrated circuits: components, part 1 | Slides | Shubham Kaushal</title>
 <meta name="description" content="The passive power-handling components of a photonic integrated circuit: waveguides and bends, Y-branch and multimode-interference splitters, mirrors and gratings, and the directional coupler.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,6 +38,23 @@
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-display: 'Fraunces', Georgia, serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* Light theme: mirrors [data-theme="light"] in site/styles/globals.css */
+[data-theme="light"] {
+  --bg: #faf7f2;
+  --card: #f1ede5;
+  --rail: #ebe6db;
+  --elevated: #f5f2eb;
+  --hair: rgba(0, 0, 0, 0.07);
+  --strong: rgba(0, 0, 0, 0.14);
+  --text: #1a1a1a;
+  --muted: #525252;
+  --footnote: #6b6b6b;
+  --accent: #b45309;
+  --code: #0369a1;
+  --ml: #6d28d9;
+  --quantum: #047857;
 }
 
 html, body { background: var(--bg); }

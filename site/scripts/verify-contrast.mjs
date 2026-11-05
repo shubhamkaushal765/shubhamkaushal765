@@ -13,7 +13,7 @@ const TOKENS = {
     'text-body': '#f0ede5',
     'text-muted': '#a3a098',
     'text-footnote': '#757269',
-    'accent': '#22d3ee',
+    'accent': '#f472b6',
     'pillar-code': '#22d3ee',       // cyan-400
     'pillar-ml': '#a78bfa',         // violet-400
     'pillar-quantum': '#34d399',    // emerald-400
@@ -26,7 +26,7 @@ const TOKENS = {
     'text-body': '#1a1a1a',
     'text-muted': '#525252',
     'text-footnote': '#6b6b6b',
-    'accent': '#0369a1',
+    'accent': '#be185d',
     'pillar-code': '#0369a1',       // sky-700
     'pillar-ml': '#6d28d9',         // violet-700
     'pillar-quantum': '#047857',    // emerald-700
@@ -39,8 +39,9 @@ const PAIRS = [
   { fg: 'text-body',     bg: 'surface-rail', threshold: 4.5, use: 'prose in rail asides' },
   { fg: 'text-muted',    bg: 'surface-rail', threshold: 4.5, use: 'chip labels (neutral)' },
   { fg: 'text-footnote', bg: 'surface-rail', threshold: 3.0, use: 'section-num on rail' },
-  { fg: 'accent',        bg: 'surface-rail', threshold: 3.0, use: 'accent edge on rail' },
-  { fg: 'accent',        bg: 'surface-card', threshold: 3.0, use: 'links inside cards' },
+  { fg: 'accent',        bg: 'surface-base', threshold: 4.5, use: 'accent text on page bg (links, nav mark, proof chip, prompt)' },
+  { fg: 'accent',        bg: 'surface-rail', threshold: 4.5, use: 'accent text on rail' },
+  { fg: 'accent',        bg: 'surface-card', threshold: 4.5, use: 'links inside cards' },
   { fg: 'text-body',     bg: 'surface-card', threshold: 4.5, use: 'card body prose' },
   { fg: 'text-footnote', bg: 'surface-card', threshold: 3.0, use: 'section-num inside topic cards' },
   // Pillar dimension family (refresh II) -- each pillar on each surface it actually renders on.

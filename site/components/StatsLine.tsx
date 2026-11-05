@@ -7,10 +7,10 @@ export default function StatsLine() {
   return (
     <p className="stats-line">
       <span className="stats-line__item">
-        <span style={{ color: 'var(--color-pillar-code)' }}>{pillars}</span> pillars
+        <span style={{ color: 'var(--color-accent)' }}>{pillars}</span> pillars
       </span>
       <span className="stats-line__item">
-        <span style={{ color: 'var(--color-pillar-ml)' }}>{repos}</span> repos
+        <span style={{ color: 'var(--color-accent)' }}>{repos}</span> repos
       </span>
       <span className="stats-line__item">{stack.join(' + ')}</span>
       <span className="stats-line__item">
