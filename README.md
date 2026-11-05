@@ -8,24 +8,28 @@
 |              \                          /                |
 |               \                        /                 |
 |                +------ bridge ------> quantum computing  |
+|                                               |          |
+|                                           photonics      |
 |                                                          |
 |  rust at the bottom. python at the top.                  |
 +----------------------------------------------------------+
 ```
 
-Independent engineer working across code intelligence, machine learning, and quantum computing. I build tools I'd put my name on, and I ship them so they hold up when someone else runs them.
+Independent engineer working across code intelligence, machine learning, quantum computing, and photonics. I build tools I'd put my name on, and I ship them so they hold up when someone else runs them.
 
 ---
 
-## `[ 01 ]`  Three pillars
+## `[ 01 ]`  Four pillars
 
-Three pillars, one operator, one conviction holding them together: work the structure, not the surface. ASTs, syndrome graphs, embeddings. That's where the signal lives, and that's the part I like digging into.
+Four pillars, one conviction holding them together: work the structure, not the surface. ASTs, syndrome graphs, embeddings. That's where the signal lives, and that's the part I like digging into.
 
 **Code intelligence.** [`zuit`](https://github.com/shubhamkaushal765/zuit). Multi-language static analysis in Rust, fast and honest. SARIF 2.1.0 with CWE and OWASP anchors, so findings drop straight into tooling you already use. Correctness is pinned by a vulnerable-vs-safe fixture corpus, so every finding it reports is one it can back up.
 
 **Machine learning.** [`tell-me-why`](https://github.com/shubhamkaushal765/tell-me-why). Local-first RAG over source code, built for people who care where their code ends up. Six language parsers, Ollama for inference, Chroma for the vector store, sentence-transformers for encoding. Nothing leaves the machine.
 
 **Quantum computing.** [`TransformerQEC`](https://github.com/shubhamkaushal765/TransformerQEC). Transformer-based decoder for surface-code QEC, and the project I'm most invested in right now. Syndrome graphs as sequences, Stim-simulated circuits, PyTorch Lightning training, a custom encoder built for the job.
+
+**Photonics.** Continuous-variable quantum computing. Qumodes, Gaussian operations, measurement-induced nonlinearity; where the architecture diverges from gate-model superconducting qubits.
 
 ---
 
@@ -34,8 +38,8 @@ Three pillars, one operator, one conviction holding them together: work the stru
 - **[TransformerQEC](https://github.com/shubhamkaushal765/TransformerQEC)**. Transformer-based decoder for surface-code QEC. Stim simulation, PyTorch Lightning training, syndrome-graph encoding. `quantum` · `ml`
 - **[zuit](https://github.com/shubhamkaushal765/zuit)**. Multi-language static-analysis CLI in Rust. Structured findings across five quality dimensions. SARIF 2.1.0 + CWE/OWASP taxonomy. `rust` · `static analysis`
 - **[tell-me-why](https://github.com/shubhamkaushal765/tell-me-why)**. Local-first RAG over a codebase. Multi-language. Ollama + Chroma + sentence-transformers; code and embeddings stay local. `rag` · `local-first`
-- **[qosf_excercises](https://github.com/shubhamkaushal765/qosf_excercises)**. QOSF Cohort 9, Task 4: QAOA and adiabatic quantum computing. Variational ansatz, adiabatic-to-QAOA mapping. `qaoa` · `quantum`
-- **[codestick](https://github.com/shubhamkaushal765/codestick)**. Programmatic stick-figure animation library for TypeScript. Angular-skeleton system, 22 poses, 10 clips, SVG export. `typescript` · `animation`
+
+Also: [qosf_excercises](https://github.com/shubhamkaushal765/qosf_excercises), QOSF Cohort 9 task 4; [codestick](https://github.com/shubhamkaushal765/codestick), TypeScript stick-figure animation library.
 
 ---
 
@@ -55,7 +59,7 @@ Three pillars, one operator, one conviction holding them together: work the stru
 
 ---
 
-## `[ 05 ]`  Now · 2026-Q2
+## `[ 05 ]`  Now · 2026-Q4
 
 - Qubit calibration scheduling as an orchestration problem: RB, T1, T2, single-qubit gate tomography. Research direction; no public repo yet.
 - `zuit` 0.x to 1.0: stabilize the SARIF schema, ship the first three Python rules with solid rationale, cut a crates.io release.
@@ -72,6 +76,6 @@ Three pillars, one operator, one conviction holding them together: work the stru
 
 ---
 
-<sub>~/lab · asia/kolkata (utc+5:30) · pgp 0xDEADBEEF</sub>
+<sub>~/lab · asia/kolkata (utc+5:30)</sub>
 
 <sub>reads / contributes to qBraid, openqaoa, QAOAKit, qiskit-textbook</sub>

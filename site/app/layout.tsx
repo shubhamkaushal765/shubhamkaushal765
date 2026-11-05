@@ -29,6 +29,13 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'Shubham Kaushal',
   description: 'Parsers to qubits.',
+  openGraph: {
+    siteName: 'Shubham Kaushal',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+  },
 };
 
 export const viewport: Viewport = {

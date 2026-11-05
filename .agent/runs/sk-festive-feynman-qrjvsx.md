@@ -64,3 +64,14 @@ None. No fabricated social proof or urgency. Closest: placeholder PGP key (toolt
 - Preview test: paste site URL into LinkedIn and Slack before and after finding 6.
 - Name search: "Shubham Kaushal quantum" / "Shubham Kaushal zuit"; note rank of site and GitHub.
 - Review mining: ask 2 to 3 recipients of past outreach what they remembered.
+
+## Fix run (all findings)
+
+Decisions: photonics = 4th pillar; PGP field removed; Now re-dated 2026-Q4; qosf_excercises + codestick demoted to "Also:" line; name h1 in hero, mood chip replaced by `zuit · rust SAST` proof chip; "writing" everywhere; upcoming posts hidden; favicon `site/app/icon.svg`; og/twitter tags; mobile nav fix.
+Owner review before merge:
+- `README.md` Now bullets kept as-is under 2026-Q4; confirm they are still current.
+- GitHub pins themselves are set in the GitHub UI; README demotion does not change them.
+Gotchas found:
+- Next metadata merges per top-level key: never set openGraph/twitter title or description in `site/app/layout.tsx`; Next inherits them from each page's title/description (`node_modules/next/dist/lib/metadata/resolve-metadata.js` inheritFromMetadata).
+- AGENTS.md had documented components that exist on no branch (Highlights, TopicCard, *Flow diagrams, StatusDot, FootnoteList); removed.
+Not done (out of scope): token naming in `.agent/visual-system.md` (`--surface-*`, `--space-N`) vs `site/styles/globals.css` (`--color-surface-*`, `--spacing-N`).

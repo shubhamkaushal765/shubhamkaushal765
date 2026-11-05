@@ -6,7 +6,7 @@
  * is the server component StatsLine.tsx.
  */
 export const BUILD_META = {
-  pillars: 3,
+  pillars: 4,
   repos: 5,
   stack: ['rust', 'python', 'typescript'] as const,
   lastBuild: new Date().toISOString().slice(0, 10), // YYYY-MM-DD; resolves at static-export time

@@ -15,19 +15,19 @@ Reference implementation:
 
 A deck exists to make an explanation easier than prose would. It leans on
 animated SVG diagrams, stepwise reveals, and tables. If a slide could be a
-paragraph, it should be a paragraph in the blog instead. The blog is for
+paragraph, it should be a paragraph in the writing section instead. Writing is for
 reading; the slides are for showing.
 
 ---
 
 ## Structure
 
-The Slides tab mirrors the Blog tab: an index page, "folders" (a series of
+The Slides tab mirrors the Writing tab: an index page, "folders" (a series of
 decks on one topic), and standalone decks.
 
 | Piece | Location | Notes |
 |-------|----------|-------|
-| Nav item | `site/components/Nav.tsx` | `{ href: '/slides/', label: 'slides' }`, beside `blog` |
+| Nav item | `site/components/Nav.tsx` | `{ href: '/slides/', label: 'slides' }`, beside `writing` |
 | Registry | `site/app/slides/decks.ts` | `SLIDES: SlideEntry[]`, one `DeckFolder` or `StandaloneDeck` per entry; each folder exports its own `Deck[]` constant |
 | Index page | `site/app/slides/page.tsx` | Reuses the `.blog-list` / `.blog-entry` classes; folders list their decks inline the way books list chapters |
 | Folder page | `site/app/slides/<folder-slug>/page.tsx` | Reuses `.book-eyebrow` + `.chapter-toc`; sets `data-pillar` on `<main>` |
@@ -83,7 +83,7 @@ Every deck has, in order:
    `[ NN ]` and the section name, one H2 that states the claim of the slide
    (a sentence, not a topic label), and one figure or table.
 3. **Check your understanding.** Three reasoning questions as fragments,
-   then a `what to remember` card. Same retention scaffolding as a blog
+   then a `what to remember` card. Same retention scaffolding as a writing
    chapter.
 4. **End slide.** What the next deck covers, the source attribution with a
    link, and links back to the folder page and the slides index.
@@ -146,12 +146,12 @@ sync when the site palette changes.
 
 ## SVG rules
 
-Same rules as the site's diagrams (`AGENTS.md` § Diagrams workflow), with
-the additions a deck needs:
-
-- Inline `<svg>` only. Never `<img src>`.
+- Inline `<svg>` only. Never `<img src>`; `currentColor` only resolves
+  when the SVG is in the DOM cascade.
 - Geometric primitives only (rect, path, line, circle, text). No glyph
   icons.
+- At most one accent edge per figure (the data-flow edge).
+- Honor `prefers-reduced-motion` for every animation.
 - Every figure carries `role="img"`, a `<title>`, and a `<desc>` that
   describes the mechanism technically. Catalogue thumbnails are
   `aria-hidden="true"`.

@@ -6,7 +6,7 @@ import ThemeToggle from './ThemeToggle';
 
 const ITEMS = [
   { href: '/', label: 'home' },
-  { href: '/writing/', label: 'blog' },
+  { href: '/writing/', label: 'writing' },
   { href: '/slides/', label: 'slides' },
 ];
 

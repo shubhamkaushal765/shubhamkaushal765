@@ -49,10 +49,11 @@ The spacing system is Fibonacci-based on a `0.25rem` unit.
 
 | Role | Primary | Fallback |
 |------|---------|---------|
-| Headings | Inter Display | Inter, system-ui, sans-serif |
-| Prose | Inter | system-ui, sans-serif |
-| Code | Berkeley Mono | JetBrains Mono, Geist Mono, ui-monospace, monospace |
-| Math | STIX Two Math | KaTeX default serif |
+| Display (headings) | Fraunces | Iowan Old Style, Apple Garamond, Baskerville, Georgia, serif |
+| Body | Inter | system-ui, sans-serif |
+| Code | JetBrains Mono | Berkeley Mono, Geist Mono, ui-monospace, monospace |
+
+Fonts load through `next/font/google` in `site/app/layout.tsx`. Berkeley Mono is a CSS fallback only; it is not loaded.
 
 ### Heading styles
 
@@ -80,34 +81,37 @@ The spacing system is Fibonacci-based on a `0.25rem` unit.
 
 | Token | Hex | Use |
 |-------|-----|-----|
-| `--surface-base` | `#0a0a0a` | Page background |
-| `--surface-card` | `#131318` | Card and aside backgrounds |
-| `--surface-hover` | `#1f1f27` | Hover state for cards and interactive surfaces |
-| `--surface-rail` | `#1b1b22` | Rail asides, card head rows, diagram node fills (the 30% layer) |
+| `--surface-base` | `#0a0a0f` | Page background |
+| `--surface-card` | `#131320` | Card and aside backgrounds |
+| `--surface-hover` | `#1f1f2e` | Hover state for cards and interactive surfaces |
+| `--surface-rail` | `#1b1b28` | Rail asides, card head rows, diagram node fills (the 30% layer) |
 
 ### Text
 
 | Token | Hex | Use |
 |-------|-----|-----|
-| `--text-body` | `#ededed` | Primary body text |
-| `--text-muted` | `#a3a3a3` | Secondary labels, captions, metadata |
-| `--text-footnote` | `#737373` | Footnotes, timestamps, minor annotations |
+| `--text-body` | `#f0ede5` | Primary body text |
+| `--text-muted` | `#a3a098` | Secondary labels, captions, metadata |
+| `--text-footnote` | `#757269` | Footnotes, timestamps, minor annotations |
 
 ### Accent
 
-One *primary* accent + a three-hue *pillar dimension family*. The primary accent governs all non-pillar UI; the pillar hues are used only on pillar-coded elements. See `.agent/profile-system.md` § Personality motifs § Pillar dimension family for the binding rule.
+One *primary* accent + a four-hue *pillar dimension family*. The primary accent governs all non-pillar UI; the pillar hues are used only on pillar-coded elements. See `.agent/profile-system.md` § Personality motifs § Pillar dimension family for the binding rule.
 
 | Token | Hex (dark) | Hex (light) | Use |
 |-------|------------|-------------|-----|
-| `--color-accent` | `#7dd3fc` | `#0284c7` | Links, inline `code`, focus rings, top-of-page hairline, footnote markers (`fn-ref`), status-dot pip, hero-tagline fade animation. Same value as `--color-pillar-code`. |
-| `--color-pillar-code` | `#7dd3fc` | `#0284c7` | Pillar-coded elements where the pillar is *code intelligence*. Aliased to `--color-accent`. |
-| `--color-pillar-ml` | `#c4b5fd` | `#7c3aed` | Pillar-coded elements where the pillar is *machine learning*. |
-| `--color-pillar-quantum` | `#6ee7b7` | `#047857` | Pillar-coded elements where the pillar is *quantum computing*. |
+| `--color-accent` | `#22d3ee` | `#0369a1` | Links, inline `code`, focus rings, top-of-page hairline, footnote markers (`fn-ref`), hero-tagline fade animation. Same value as `--color-pillar-code`. |
+| `--color-pillar-code` | `#22d3ee` | `#0369a1` | Pillar-coded elements where the pillar is *code intelligence*. Hue: cyan (dark) / sky (light). |
+| `--color-pillar-ml` | `#a78bfa` | `#6d28d9` | Pillar-coded elements where the pillar is *machine learning*. Hue: violet. |
+| `--color-pillar-quantum` | `#34d399` | `#047857` | Pillar-coded elements where the pillar is *quantum computing*. Hue: emerald. |
+| `--color-pillar-photonics` | `#fbbf24` | `#b45309` | Pillar-coded elements where the pillar is *photonics*. Hue: amber. |
+
+Values mirror `site/styles/globals.css`, which is the source of truth.
 
 Pillar hues appear in these locations only:
 
 - `mdx-components.tsx` sets `data-pillar` on the three pillar `<h3>`s (`Code intelligence`, `Machine learning`, `Quantum computing`); CSS scopes `.section-num` color via `h3[data-pillar="..."] .section-num`.
-- `<TopicCard pillar="...">` writes `data-pillar` on the `<article>`. CSS scopes the `[ NN ]` bracket, the `.chip` foreground + tinted background, the table key column, the SVG accent edge (via the `--pillar-color` custom property), and a 3px inset left stripe.
+- Writing pages set `data-pillar` on `<main>`; CSS maps it to `--pillar-color`.
 - `Hero.tsx` splits the tagline into `<span class="hero-tagline__pillar--code">parsers</span>` + `<span class="hero-tagline__arrow">-></span>` + `<span class="hero-tagline__pillar--quantum">qubits.</span>`. Text content is exactly `parsers -> qubits.` per § Tagline lock.
 
 `color-mix(in oklab, var(--pillar-color) 18%, var(--color-surface-card))` is the standard recipe for "pillar-tinted chrome" (chip background, etc.). Pillar background mixes use `var(--color-surface-card)` as the base, not `var(--color-accent)`.
@@ -116,22 +120,22 @@ Pillar hues appear in these locations only:
 
 Light mode is implemented as a toggle wired through a `[data-theme="light"]`
 attribute on `<html>`. The tokens below are the tested set; the accent has
-been hue-preserved (sky family) and contrast-verified at 5.7:1 on the light
-base.
+been hue-preserved (sky family) and contrast-verified at 5.5:1 on `#faf7f2` (gate: `npm run verify-contrast`).
 
 | Token | Light value | Use |
 |-------|-------------|-----|
-| `--color-surface-base` | `#fafafa` | Page background |
-| `--color-surface-card` | `#efeff3` | Card and aside backgrounds |
-| `--color-surface-hover` | `#dedee4` | Hover state |
-| `--color-surface-rail` | `#e6e6ec` | Rail asides, card head rows, diagram node fills |
-| `--color-text-body` | `#171717` | Primary body text |
+| `--color-surface-base` | `#faf7f2` | Page background |
+| `--color-surface-card` | `#f1ede5` | Card and aside backgrounds |
+| `--color-surface-hover` | `#e3ddd1` | Hover state |
+| `--color-surface-rail` | `#ebe6db` | Rail asides, card head rows, diagram node fills |
+| `--color-text-body` | `#1a1a1a` | Primary body text |
 | `--color-text-muted` | `#525252` | Secondary labels |
-| `--color-text-footnote` | `#737373` | Footnotes |
-| `--color-accent` | `#0284c7` | Links, inline `code`, hero reveal (light variant of `#7dd3fc`) |
-| `--color-pillar-code` | `#0284c7` | Pillar: code intelligence (alias of primary accent) |
-| `--color-pillar-ml` | `#7c3aed` | Pillar: machine learning |
+| `--color-text-footnote` | `#6b6b6b` | Footnotes |
+| `--color-accent` | `#0369a1` | Links, inline `code`, hero reveal (light variant of `#22d3ee`) |
+| `--color-pillar-code` | `#0369a1` | Pillar: code intelligence (alias of primary accent) |
+| `--color-pillar-ml` | `#6d28d9` | Pillar: machine learning |
 | `--color-pillar-quantum` | `#047857` | Pillar: quantum computing |
+| `--color-pillar-photonics` | `#b45309` | Pillar: photonics |
 
 Defaults: `prefers-color-scheme` on first visit; user choice persists in
 `localStorage` key `theme` (values `light` | `dark`). An anti-flash inline
@@ -144,7 +148,7 @@ the line works at every surface step.
 
 | Token | Dark | Light | Use |
 |-------|------|-------|-----|
-| `--color-border-hair` | `rgba(255,255,255,0.06)` | `rgba(0,0,0,0.04)` | Hairline under `<SectionRule>` H2, the rule below the `.topic-card__head` row |
+| `--color-border-hair` | `rgba(255,255,255,0.07)` | `rgba(0,0,0,0.07)` | Hairline under `<SectionRule>` H2 |
 
 ---
 
@@ -155,10 +159,10 @@ The canonical ASCII pillar diagram is the single shared visual motif across the 
 ### Implementation rules
 
 - Renders inside `<pre>` (site) or a `text`-language codefence (README).
-- Font: `var(--font-mono)` (Berkeley Mono → JetBrains Mono → Geist Mono fallback chain).
+- Font: `var(--font-mono)` (JetBrains Mono, then Berkeley Mono, Geist Mono, ui-monospace fallbacks).
 - Line height: `1.2`.
 - No surrounding background, border, or box-shadow.
-- The `parsers -> qubits.` line is the single accent reveal: opacity 0 → 1 fade over 200ms on initial render, then static at `var(--color-accent)` (`#7dd3fc`). No hover state, no other animation.
+- The `parsers -> qubits.` line is the single accent reveal: opacity 0 → 1 fade over 200ms on initial render, then static at `var(--color-accent)` (`#22d3ee` dark, `#0369a1` light). No hover state, no other animation.
 - ASCII only: `+`, `-`, `|`, `\`, `/`, `>`. No Unicode arrows. No box-drawing characters. No emoji.
 - Width is fixed at 60 characters between the `+` borders.
 
@@ -213,8 +217,7 @@ Numbering convention:
 ## Status chips
 
 `.chip` is a mono pill used to surface status/tag values without prose
-weight. Replaces inline trailing tag suffixes on Selected work and
-replaces `.topic-card__tag` on Highlights.
+weight. Replaces inline trailing tag suffixes on Selected work.
 
 - Background: `var(--color-surface-rail)`. Color: `var(--color-text-muted)`.
 - Padding `2px 6px`, radius `3px`, mono `0.8em`, letter-spacing `0.03em`.
@@ -227,7 +230,7 @@ replaces `.topic-card__tag` on Highlights.
 ## Footnote markers
 
 `.fn-ref` styles inline `[N]` superscript links to the bottom-of-page
-`<FootnoteList>`. Mono `0.8em`, color `var(--color-accent)`,
+footnote list. Mono `0.8em`, color `var(--color-accent)`,
 vertical-align `0.3em`, no underline at rest. Underline appears on hover.
 
 ---
@@ -236,7 +239,10 @@ vertical-align `0.3em`, no underline at rest. Underline appears on hover.
 
 A single monospace line under the home hero tagline reveal:
 
-`3 pillars  ·  5 repos  ·  rust + python + typescript  ·  last build YYYY-MM-DD`
+`4 pillars  ·  5 repos  ·  rust + python + typescript  ·  last build YYYY-MM-DD  ·  zuit · rust SAST`
+
+The last chip is the proof chip: a link (`zuit · rust SAST`) to the zuit
+repository, styled in the accent color. There is no mood chip.
 
 Server component `site/components/StatsLine.tsx` reads `BUILD_META` from
 `site/lib/build-meta.ts`. `BUILD_META.lastBuild` resolves at static-export
@@ -261,41 +267,22 @@ is never imported from a client component. Rendered only on `/`.
 
 - Syntax highlighting: Shiki.
 - Theme: `vesper` (preferred) or `vitesse-dark`.
-- Background: `--surface-base` (`#0a0a0a`). No tint, no border, no box shadow.
+- Background: `--surface-base` (`#0a0a0f`). No tint, no border, no box shadow.
 - Line numbers: single left-aligned column. Font: code typeface, `--text-muted`
   color.
 - Horizontal scroll at `82ch`. No line wrapping inside code blocks.
-- Inline `code`: `--accent` (`#7dd3fc`) color, `--surface-card` background,
+- Inline `code`: `--accent` (`#22d3ee` dark, `#0369a1` light) color, `--surface-card` background,
   `2px 4px` padding, `3px` border-radius.
 
 ---
 
 ## OG image rules
 
-Default: no OG image. The site renders without one until the first quantum
-essay ships.
-
-When OG images are needed:
-
-- Generator: `@vercel/og` at build time (not at request time).
-- Background: `#0a0a0a` (solid, no gradient).
-- Text: white Inter Display. Page name on one line, tagline on the next.
-  Weight 600 for the page name, 400 for the tagline.
-- Single hairline: `1px` white line at `60%` from the top of the image.
-  Opacity `15%`.
-- No emoji in OG images.
-- No avatar or profile photo.
-- No gradient backgrounds.
-- No illustrations.
+No OG image. Text `og:title` / `og:description` and `twitter:card=summary` are set in `site/app/layout.tsx`. Favicon: `site/app/icon.svg` (four pillar bars).
 
 ---
 
-## Highlight cards
-
-The home page renders a four-topic "Highlights" section between Selected work
-and Bridges. The pattern is implemented in `site/components/Highlights.tsx`
-plus the four inline-SVG diagram components in
-`site/components/diagrams/`.
+## Surface distribution and animation
 
 ### Pixel-coverage 60-30-10
 
@@ -310,46 +297,16 @@ introduction of new colors.
 | 30% | `--color-surface-card` + `--color-surface-rail` + `--color-text-body` | Card chrome, rail asides, card head rows, diagram node fills, prose ink |
 | 10% | `--color-accent` | Section numbers, [N] markers, status chips when active, link underline, SVG accent edge, inline code foreground, table key column |
 
-### Card layout
-
-- One column at all breakpoints (4 cards stack vertically inside the 68ch
-  reading column).
-- Internal sub-grid (`.topic-card__body`) is 2-column at ≥640px (`table |
-  diagram`), single column below.
-- Card padding `var(--spacing-5)`. Inter-card gap `var(--spacing-8)`.
-- Card background `var(--color-surface-card)`. **No hover state.** Cards
-  read as static reference units. (Distinct from `.selected-work li` which
-  does carry a hover background; the difference is deliberate.)
-- No box-shadow, no border. The card stands by background contrast only.
-
-### Diagrams
-
-- Hand-authored inline `<svg>` per topic. Sources of intent committed as
-  mermaid `.mmd` files under `site/diagrams/`. Never `<img src>`: `currentColor`
-  cascading requires DOM-embedded SVG.
-- `viewBox="0 0 320 180"` consistent across all four diagrams.
-- Stroke width ≥ 1.5px so light-mode `--color-accent` (`#0284c7` at 5.7:1
-  on `#fafafa`) does not visually thin out.
-- Only geometric primitives (rect, line, path, text). No glyph icons, no
-  gears, no lightning bolts.
-- Each diagram has one accent edge, the data-flow edge, painted with
-  `stroke="var(--color-accent)"` directly. All other strokes use
-  `currentColor` and resolve against the body text color.
-- Each diagram carries `role="img"` + `<title>` + `<desc>` describing what
-  the diagram shows technically, per the photography policy below.
-
 ### Allowed animations (updated)
 
-The previous single allowed site animation (the 200ms accent fade on the
-home hero tagline) is extended by exactly one rule. Any further addition
-requires the same documentation step here.
+The single allowed site animation is the 200ms accent fade on the home hero
+tagline. Any further addition requires a documentation step here.
 
 | Animation | Where | Duration | Easing | Behavior |
 |-----------|-------|----------|--------|----------|
 | Accent reveal | `.hero-tagline` on `/` | 200ms | ease-out | One play on initial paint |
-| Flow-dash | `.flow-edge--animated` inside topic-card diagrams | 1200ms | ease-out | Stroke-dashoffset travels from var(--dash-len, 60) to 0; the delay reads var(--flow-delay, 200ms) set inline per diagram (200/350/500/650ms in card order). Both endpoints respect prefers-reduced-motion: reduce and resolve to a static line |
 
-Both animations are CSS-only. No `'use client'` anywhere in the chain.
+The animation is CSS-only. No `'use client'` anywhere in the chain.
 Reduced-motion overrides live in the single `@media (prefers-reduced-motion:
 reduce)` block at the end of `globals.css`.
 
