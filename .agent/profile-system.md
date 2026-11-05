@@ -173,16 +173,16 @@ Used on `/about`, `/now`, and all essays. Format: `[N] Author et al. "Title." Ve
 
 The visual system carries one *primary accent* and a *pillar dimension family* of four hues (one per research pillar). The primary accent governs all non-pillar UI; the pillar hues are used only on pillar-coded elements.
 
-Primary accent (cyan in dark mode, sky in light mode; doubles as the code-intelligence pillar hue):
+Primary accent (rose; never equal to a pillar hue):
 
-- `#22d3ee` (dark) / `#0369a1` (light)
-- Used for inline `<code>` foreground, link underline (50% opacity at rest), focus rings, the top-of-page hairline, footnote markers, and the one-time fade-in animation on the hero tagline.
+- `#f472b6` (dark) / `#be185d` (light)
+- Used for inline `<code>` foreground, link underline (50% opacity at rest), focus rings, footnote markers, the nav `~/` mark, the stats-line counts, and the shell prompt glyph (`.prompt-glyph`).
 
 Pillar dimension family (sub-palette of the 10% accent layer, codelens precedent):
 
 | Pillar            | Dark      | Light     | Hue                         |
 |-------------------|-----------|-----------|-----------------------------|
-| Code intelligence | `#22d3ee` | `#0369a1` | cyan / sky (aliased to primary) |
+| Code intelligence | `#22d3ee` | `#0369a1` | cyan / sky |
 | Machine learning  | `#a78bfa` | `#6d28d9` | violet                      |
 | Quantum computing | `#34d399` | `#047857` | emerald                     |
 | Photonics         | `#fbbf24` | `#b45309` | amber                       |
@@ -192,6 +192,8 @@ Pillar hues are used ONLY on pillar-coded elements:
 - The three pillar `<h3>`s on `/about` and Home § What I work on (`01 / 02 / 03` number prefix per pillar).
 - Writing pages (`data-pillar` on `<main>` drives `--pillar-color`).
 - Home Four pillars story: step `h3`s and the stage-synced figure stroke.
+- The top-of-page hairline (`main::before`): a gradient of all four pillar hues in order (code, ml, quantum, photonics).
+- The pillar diagram's border gradient (`.hero__diagram::before`, part of `PillarDiagram`).
 - The hero tagline split: `parsers` (cyan/sky) + `->` (muted) + `qubits.` (emerald). Text content stays verbatim per § Tagline.
 
 The pillar family is NOT used for general links, body prose, inline `code`, or any element without semantic pillar meaning. Decorative pillar coloring is forbidden.

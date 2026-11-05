@@ -26,7 +26,7 @@ export default function Nav() {
           className="site-nav__link"
           style={{ fontWeight: 600, color: 'var(--color-text-body)' }}
         >
-          <span aria-hidden="true" style={{ color: 'var(--color-pillar-code)' }}>~/</span>
+          <span aria-hidden="true" style={{ color: 'var(--color-accent)' }}>~/</span>
           sk
         </Link>
         <span aria-hidden="true" style={{ color: 'var(--color-border-strong)' }}>|</span>

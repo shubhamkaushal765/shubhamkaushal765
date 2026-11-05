@@ -126,7 +126,7 @@ sync when the site palette changes.
 
 - **Surfaces and text.** `--bg`, `--card`, `--rail`, `--elevated`,
   `--hair`, `--strong`, `--text`, `--muted`, `--footnote` map one to one
-  onto the site tokens. Dark only; decks do not carry the light toggle.
+  onto the site tokens. Decks follow the site theme (same boot logic: saved choice, else system setting), carry a `[data-theme="light"]` token block copied from `globals.css` light values, and have no toggle button.
 - **Accent.** The deck's `--accent` is the pillar colour of its folder
   (photonics is amber `#fbbf24`). The other pillar hues are available for
   semantic contrast only: cyan for electrical signals, violet for a second

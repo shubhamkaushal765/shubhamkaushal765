@@ -28,16 +28,17 @@ The spacing system is Fibonacci-based on a `0.25rem` unit.
 
 | Token | Multiplier | Value |
 |-------|-----------|-------|
-| `--space-1` | 1 | 0.25rem |
-| `--space-2` | 2 | 0.5rem |
-| `--space-3` | 3 | 0.75rem |
-| `--space-5` | 5 | 1.25rem |
-| `--space-8` | 8 | 2rem |
-| `--space-13` | 13 | 3.25rem |
+| `--spacing-1` | 1 | 0.25rem |
+| `--spacing-2` | 2 | 0.5rem |
+| `--spacing-3` | 3 | 0.75rem |
+| `--spacing-5` | 5 | 1.25rem |
+| `--spacing-8` | 8 | 2rem |
+| `--spacing-13` | 13 | 3.25rem |
+| `--spacing-21` | 21 | 5.25rem |
 
-- Section gap (between major H2 sections): `--space-13`
-- Subsection gap (between H3 blocks): `--space-8`
-- Paragraph gap: `--space-5`
+- Section gap (between major H2 sections): `--spacing-13`
+- Subsection gap (between H3 blocks): `--spacing-8`
+- Paragraph gap: `--spacing-5`
 - Max prose width: `68ch`
 - Code may extend to `82ch` with horizontal scroll; no truncation.
 
@@ -81,18 +82,26 @@ Fonts load through `next/font/google` in `site/app/layout.tsx`. Berkeley Mono is
 
 | Token | Hex | Use |
 |-------|-----|-----|
-| `--surface-base` | `#0a0a0f` | Page background |
-| `--surface-card` | `#131320` | Card and aside backgrounds |
-| `--surface-hover` | `#1f1f2e` | Hover state for cards and interactive surfaces |
-| `--surface-rail` | `#1b1b28` | Rail asides, card head rows, diagram node fills (the 30% layer) |
+| `--color-surface-base` | `#0a0a0f` | Page background |
+| `--color-surface-card` | `#131320` | Card and aside backgrounds |
+| `--color-surface-hover` | `#1f1f2e` | Hover state for cards and interactive surfaces |
+| `--color-surface-rail` | `#1b1b28` | Rail asides, card head rows, diagram node fills (the 30% layer) |
+| `--color-surface-elevated` | `#181826` | Elevated panels |
+
+### Borders
+
+| Token | Value (dark) | Value (light) | Use |
+|-------|--------------|---------------|-----|
+| `--color-border-hair` | `rgba(255, 255, 255, 0.07)` | `rgba(0, 0, 0, 0.07)` | Hairline rules |
+| `--color-border-strong` | `rgba(255, 255, 255, 0.12)` | `rgba(0, 0, 0, 0.14)` | Emphasised borders |
 
 ### Text
 
 | Token | Hex | Use |
 |-------|-----|-----|
-| `--text-body` | `#f0ede5` | Primary body text |
-| `--text-muted` | `#a3a098` | Secondary labels, captions, metadata |
-| `--text-footnote` | `#757269` | Footnotes, timestamps, minor annotations |
+| `--color-text-body` | `#f0ede5` | Primary body text |
+| `--color-text-muted` | `#a3a098` | Secondary labels, captions, metadata |
+| `--color-text-footnote` | `#757269` | Footnotes, timestamps, minor annotations |
 
 ### Accent
 
@@ -100,7 +109,7 @@ One *primary* accent + a four-hue *pillar dimension family*. The primary accent 
 
 | Token | Hex (dark) | Hex (light) | Use |
 |-------|------------|-------------|-----|
-| `--color-accent` | `#22d3ee` | `#0369a1` | Links, inline `code`, focus rings, top-of-page hairline, footnote markers (`fn-ref`), hero-tagline fade animation. Same value as `--color-pillar-code`. Pillar hues additionally apply to home Four pillars story step `h3`s and the stage-synced figure stroke. |
+| `--color-accent` | `#f472b6` | `#be185d` | Links, inline `code`, focus rings, footnote markers (`fn-ref`), the nav `~/` mark, the stats-line counts, and the shell prompt glyph (`.prompt-glyph`). Never equal to a pillar hue. Pillar hues additionally apply to home Four pillars story step `h3`s and the stage-synced figure stroke. |
 | `--color-pillar-code` | `#22d3ee` | `#0369a1` | Pillar-coded elements where the pillar is *code intelligence*. Hue: cyan (dark) / sky (light). |
 | `--color-pillar-ml` | `#a78bfa` | `#6d28d9` | Pillar-coded elements where the pillar is *machine learning*. Hue: violet. |
 | `--color-pillar-quantum` | `#34d399` | `#047857` | Pillar-coded elements where the pillar is *quantum computing*. Hue: emerald. |
@@ -112,15 +121,34 @@ Pillar hues appear in these locations only:
 
 - `mdx-components.tsx` sets `data-pillar` on the three pillar `<h3>`s (`Code intelligence`, `Machine learning`, `Quantum computing`); CSS scopes `.section-num` color via `h3[data-pillar="..."] .section-num`.
 - Writing pages set `data-pillar` on `<main>`; CSS maps it to `--pillar-color`.
+- The top-of-page hairline (`main::before`): a four-pillar gradient, see § Top-of-page hairline.
+- The pillar diagram's border gradient (`.hero__diagram::before`, part of `PillarDiagram`).
 - `Hero.tsx` splits the tagline into `<span class="hero-tagline__pillar--code">parsers</span>` + `<span class="hero-tagline__arrow">-></span>` + `<span class="hero-tagline__pillar--quantum">qubits.</span>`. Text content is exactly `parsers -> qubits.` per § Tagline lock.
 
 `color-mix(in oklab, var(--pillar-color) 18%, var(--color-surface-card))` is the standard recipe for "pillar-tinted chrome" (chip background, etc.). Pillar background mixes use `var(--color-surface-card)` as the base, not `var(--color-accent)`.
+
+#### Accent rationale and rule
+
+The accent is rose: `#f472b6` dark, `#be185d` light.
+
+- Pillar hues sit at about 43 (amber), 158 (emerald), 188 (cyan), 255 (violet) degrees. The widest gap (148 degrees) is centred near 329, where the rose sits.
+- Rose is near-complementary to emerald.
+- It avoids pure red or crimson, which UI convention reads as error.
+- Colour meaning is a working model and culture-dependent; prefer a 5-second test with a viewer to assertion.
+
+Rule: the accent never equals a pillar hue. Decorative pillar colouring is forbidden, so the nav `~/` mark and the stats-line counts use the accent, not a pillar hue.
+
+Contrast: the accent must reach >= 4.5:1 on base, card, and rail in both themes, gated by `npm run verify-contrast`.
+
+### Theme boot
+
+An inline script in `site/app/layout.tsx` sets `data-theme` on `<html>` before first paint: the saved choice (read inside try/catch), else `prefers-color-scheme`. The viewport `theme-color` equals `--color-surface-base`. The toggle label is `[ light ]` / `[ dark ]`.
 
 ### Light mode
 
 Light mode is implemented as a toggle wired through a `[data-theme="light"]`
 attribute on `<html>`. The tokens below are the tested set; the accent has
-been hue-preserved (sky family) and contrast-verified at 5.5:1 on `#faf7f2` (gate: `npm run verify-contrast`).
+been contrast-verified (>= 4.5:1) on base, card, and rail (gate: `npm run verify-contrast`).
 
 | Token | Light value | Use |
 |-------|-------------|-----|
@@ -131,8 +159,8 @@ been hue-preserved (sky family) and contrast-verified at 5.5:1 on `#faf7f2` (gat
 | `--color-text-body` | `#1a1a1a` | Primary body text |
 | `--color-text-muted` | `#525252` | Secondary labels |
 | `--color-text-footnote` | `#6b6b6b` | Footnotes |
-| `--color-accent` | `#0369a1` | Links, inline `code`, hero reveal (light variant of `#22d3ee`) |
-| `--color-pillar-code` | `#0369a1` | Pillar: code intelligence (alias of primary accent) |
+| `--color-accent` | `#be185d` | Links, inline `code`, nav mark, stats counts (light variant of `#f472b6`) |
+| `--color-pillar-code` | `#0369a1` | Pillar: code intelligence |
 | `--color-pillar-ml` | `#6d28d9` | Pillar: machine learning |
 | `--color-pillar-quantum` | `#047857` | Pillar: quantum computing |
 | `--color-pillar-photonics` | `#b45309` | Pillar: photonics |
@@ -162,7 +190,7 @@ The canonical ASCII pillar diagram is the single shared visual motif across the 
 - Font: `var(--font-mono)` (JetBrains Mono, then Berkeley Mono, Geist Mono, ui-monospace fallbacks).
 - Line height: `1.2`.
 - No surrounding background, border, or box-shadow.
-- The `parsers -> qubits.` line is the single accent reveal: opacity 0 → 1 fade over 400ms (`accent-fade-in` in `globals.css`) on initial render, then static at `var(--color-accent)` (`#22d3ee` dark, `#0369a1` light). No hover state, no other animation.
+- The `parsers -> qubits.` line is the single accent reveal: opacity 0 → 1 fade over 400ms (`accent-fade-in` in `globals.css`) on initial render, then static in the pillar-coloured spans (`parsers` in `--color-pillar-code`, `qubits.` in `--color-pillar-quantum`). No hover state, no other animation.
 - ASCII only: `+`, `-`, `|`, `\`, `/`, `>`. No Unicode arrows. No box-drawing characters. No emoji.
 - Width is fixed at 60 characters between the `+` borders.
 
@@ -174,8 +202,7 @@ Every page renders a 1px horizontal hairline at the very top of `<main>`,
 echoing the OG-image hairline motif. It is a personality motif, not
 decoration, and is binding.
 
-- Color: `color-mix(in oklab, var(--color-accent) 15%, transparent)`. Both
-  themes use the same token; opacity is the differentiator.
+- Color: a gradient of all four pillar hues in order (code, ml, quantum, photonics), a signature of the pillar family. It does not use the accent.
 - Implemented as a `main::before` pseudo-element. Spans the full width
   inside the `<main>` container.
 - Pointer events disabled; the hairline never receives focus.
@@ -267,11 +294,11 @@ is never imported from a client component. Rendered only on `/`.
 
 - Syntax highlighting: Shiki.
 - Theme: `vesper` (preferred) or `vitesse-dark`.
-- Background: `--surface-base` (`#0a0a0f`). No tint, no border, no box shadow.
-- Line numbers: single left-aligned column. Font: code typeface, `--text-muted`
+- Background: `--color-surface-base` (`#0a0a0f`). No tint, no border, no box shadow.
+- Line numbers: single left-aligned column. Font: code typeface, `--color-text-muted`
   color.
 - Horizontal scroll at `82ch`. No line wrapping inside code blocks.
-- Inline `code`: `--accent` (`#22d3ee` dark, `#0369a1` light) color, `--surface-card` background,
+- Inline `code`: `--color-accent` (`#f472b6` dark, `#be185d` light) color, `--color-surface-card` background,
   `2px 4px` padding, `3px` border-radius.
 
 ---

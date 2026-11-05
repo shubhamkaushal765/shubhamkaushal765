@@ -56,7 +56,7 @@ binding visual primitives. The binding visual rules live in
 - `StageObserver.tsx`. Client island (`'use client'`). Runs an IntersectionObserver over `.parse-story__step` and sets `data-stage` on `.parse-story` via `setAttribute` only.
 - `HelpDialog.tsx`. Client component. `dialog#help` with `~/lab $` prompt (help/whoami/ls, mood line); opens on `?` or the `.footer-help` footer button via the `toggle-help` window event.
 - `Nav.tsx`. Primary nav (`home`, `writing`, `slides`) with active-state in
-  `var(--color-accent)`; embeds `<ThemeToggle>`.
+  `var(--color-accent)` (rose, never a pillar hue); the `~/` mark uses the accent; embeds `<ThemeToggle>`. Theme is set before paint by an inline script in `app/layout.tsx`.
 - `ThemeToggle.tsx`. Client component; flips `[data-theme]` and persists to
   `localStorage`. ASCII label `[ light ]` / `[ dark ]`, no icons.
 - `SectionRule.tsx`. `<h2>` with optional rail-bracket `[ NN ]` prefix when the `number` prop is set; 1px `var(--color-border-hair)` rule rendered BELOW the heading. The bracket prefix uses the existing `.section-num` class.

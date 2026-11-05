@@ -24,8 +24,8 @@
   --color-text-muted: #a3a098;
   --color-text-footnote: #757269;
 
-  /* primary accent (dark default): leans toward riso cyan, more printed-feeling */
-  --color-accent: #22d3ee;
+  /* primary accent (dark default): rose, outside the pillar hue wheel */
+  --color-accent: #f472b6;
 
   /* pillar dimension family (dark): bumped to -400 jewel tones with more presence */
   --color-pillar-code:      #22d3ee;  /* cyan-400 (circuits) */
@@ -54,7 +54,7 @@
   --color-text-body: #1a1a1a;
   --color-text-muted: #525252;
   --color-text-footnote: #6b6b6b;
-  --color-accent: #0369a1;
+  --color-accent: #be185d;
 
   --color-pillar-code:      #0369a1;  /* sky-700  */
   --color-pillar-ml:        #6d28d9;  /* violet-700 */
@@ -107,9 +107,10 @@
     background: linear-gradient(
       to right,
       transparent,
-      color-mix(in oklab, var(--color-pillar-code) 60%, transparent) 25%,
-      color-mix(in oklab, var(--color-pillar-ml) 60%, transparent) 50%,
-      color-mix(in oklab, var(--color-pillar-quantum) 60%, transparent) 75%,
+      color-mix(in oklab, var(--color-pillar-code) 60%, transparent) 20%,
+      color-mix(in oklab, var(--color-pillar-ml) 60%, transparent) 40%,
+      color-mix(in oklab, var(--color-pillar-quantum) 60%, transparent) 60%,
+      color-mix(in oklab, var(--color-pillar-photonics) 60%, transparent) 80%,
       transparent
     );
     pointer-events: none;
@@ -485,7 +486,7 @@
 
 /* Console-style prompt prefix. */
 .prompt-glyph {
-  color: var(--color-pillar-quantum);
+  color: var(--color-accent);
   font-family: var(--font-mono);
   user-select: none;
   margin-right: 0.4em;
@@ -615,6 +616,26 @@
   }
   .site-nav__link {
     padding: 4px 6px;
+  }
+}
+
+@media (max-width: 340px) {
+  .site-nav {
+    font-size: 0.78em;
+    padding: var(--spacing-2) var(--spacing-2);
+    gap: 2px;
+  }
+  .site-nav__items {
+    gap: 0;
+  }
+  .site-nav__items > span[aria-hidden] {
+    display: none;
+  }
+  .site-nav__link {
+    padding: 4px 4px;
+  }
+  .site-nav > button.site-nav__link {
+    padding: 4px 6px !important;
   }
 }
 
