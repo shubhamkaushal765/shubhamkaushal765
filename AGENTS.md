@@ -50,8 +50,11 @@ binding visual primitives. The binding visual rules live in
 `.agent/visual-system.md`. Inventory:
 
 - `PillarDiagram.tsx`. The canonical ASCII hero. Its string constant is
-  locked verbatim; never edit it.
-- `Hero.tsx`. Wraps `<PillarDiagram>`, the tagline reveal (split into pillar-colored spans: `parsers` (cyan/sky, code-int) + muted arrow + `qubits.` (emerald/quantum); text content stays exactly `parsers -> qubits.` per the lock), `<StatsLine>`, and `<Nav>`. The full variant renders a visible name `<h1 className="hero__name">Shubham Kaushal</h1>` above the tagline.
+  locked verbatim; never edit it. On the site it renders as the closing map of the home Four pillars story (inside `.parse-story__map` in `ParseStory.tsx`); still the home page, string unchanged.
+- `Hero.tsx`. Renders the tagline reveal (split into pillar-colored spans: `parsers` (cyan/sky, code-int) + muted arrow + `qubits.` (emerald/quantum); text content stays exactly `parsers -> qubits.` per the lock), `<StatsLine>`, and `<Nav>`. The full variant renders a visible name `<h1 className="hero__name">Shubham Kaushal</h1>` above the tagline, plus a desktop-only `.hero__teaser` card (`let y = x + 1;`, links to `#four-pillars`, hidden below 900px).
+- `ParseStory.tsx`. Server component. Home Four pillars story: sticky `.parse-story__figure`, four `.parse-story__step[data-step]` blocks (h3, link, `.aside`), and `.parse-story__map` holding `<PillarDiagram>`. `data-stage="1"` is in server JSX.
+- `StageObserver.tsx`. Client island (`'use client'`). Runs an IntersectionObserver over `.parse-story__step` and sets `data-stage` on `.parse-story` via `setAttribute` only.
+- `HelpDialog.tsx`. Client component. `dialog#help` with `~/lab $` prompt (help/whoami/ls, mood line); opens on `?` or the `.footer-help` footer button via the `toggle-help` window event.
 - `Nav.tsx`. Primary nav (`home`, `writing`, `slides`) with active-state in
   `var(--color-accent)`; embeds `<ThemeToggle>`.
 - `ThemeToggle.tsx`. Client component; flips `[data-theme]` and persists to

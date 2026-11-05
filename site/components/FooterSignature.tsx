@@ -37,7 +37,13 @@ export default function FooterSignature() {
         <span className="footer-signature__segment" title="local timezone">asia/kolkata (utc+5:30)</span>
         <span aria-hidden="true">·</span>
         <span className="footer-signature__segment" title="press ? to acknowledge the cursor blinking at you">
-          <span className="kbd">?</span> for help
+          <button
+            type="button"
+            className="footer-help"
+            onClick={() => window.dispatchEvent(new CustomEvent('toggle-help'))}
+          >
+            <span className="kbd">?</span> for help
+          </button>
         </span>
       </span>
       {mounted ? (

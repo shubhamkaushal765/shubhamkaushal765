@@ -136,7 +136,7 @@ The current `README.md` is the canonical exemplar of this voice. Match it.
 
 ## Personality motifs
 
-Five recurring elements give the README and site a coherent visual flavor without violating the hard rules. These are binding; do not remove them, do not replace them with decoration.
+Six recurring elements give the README and site a coherent visual flavor without violating the hard rules. These are binding; do not remove them, do not replace them with decoration.
 
 ### Hero codefence with ASCII pillar diagram
 
@@ -158,6 +158,8 @@ Shared between README and site Home/About. Canonical form (60 chars wide):
 `+----------------------------------------------------------+`
 
 ASCII only. Lowercase throughout. No Unicode arrows.
+
+On the site, the pillar diagram renders as the closing map of the home Four pillars story (still the home page, string unchanged).
 
 ### Section headers
 
@@ -189,6 +191,7 @@ Pillar hues are used ONLY on pillar-coded elements:
 
 - The three pillar `<h3>`s on `/about` and Home § What I work on (`01 / 02 / 03` number prefix per pillar).
 - Writing pages (`data-pillar` on `<main>` drives `--pillar-color`).
+- Home Four pillars story: step `h3`s and the stage-synced figure stroke.
 - The hero tagline split: `parsers` (cyan/sky) + `->` (muted) + `qubits.` (emerald). Text content stays verbatim per § Tagline.
 
 The pillar family is NOT used for general links, body prose, inline `code`, or any element without semantic pillar meaning. Decorative pillar coloring is forbidden.
@@ -200,6 +203,16 @@ Adding a new hue (e.g., a fifth pillar) requires updating this section, the `--c
 Monospace line at the bottom of every site page and the README:
 
 `~/lab · asia/kolkata (utc+5:30)`
+
+### Dry-wit asides and the `?` panel
+
+Motif 6. Rules:
+
+- Asides (`.aside`, `//` prefix, muted color, never pillar-tinted): max one per hero or story step.
+- Footer quips rotate daily.
+- `?` opens the help panel (`dialog#help`, `~/lab $` prompt, `help` / `whoami` / `ls`), which holds the mood line.
+- Jokes are self-deprecating or about the work, never about other people or named tools.
+- No new numbers or invented facts.
 
 ---
 
