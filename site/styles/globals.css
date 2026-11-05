@@ -663,15 +663,19 @@
 
 @media (max-width: 480px) {
   .site-nav {
-    padding: var(--spacing-3) var(--spacing-3);
+    padding: var(--spacing-3) var(--spacing-2);
     gap: var(--spacing-1);
   }
   .site-nav__items {
-    gap: var(--spacing-1);
+    gap: 0;
     min-width: 0;
   }
   .site-nav__link {
-    padding: 4px 6px;
+    padding: 4px 4px;
+  }
+  .site-nav > button.site-nav__link {
+    flex-shrink: 0;
+    padding: 4px 6px !important;
   }
 }
 
