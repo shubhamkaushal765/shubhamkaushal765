@@ -218,7 +218,7 @@ Motif 6. Rules:
 
 ### Line-art mascot
 
-Motif 7. A small line-art character on the home hero: long narrow face, short messy hair, rectangular glasses, clean shaven, calm smile, hoodie, a steaming coffee mug (a nod to the `mood: caffeinated` line in the `?` panel). Rules:
+Motif 7. A small line-art character on the home hero with a bold, fast, confident personality: long narrow face with a firm jaw, short messy hair swept back into spikes with speed lines behind, heavy rectangular glasses with a lens glint, clean shaven, one raised eyebrow and a one-sided smirk, hoodie, and a coffee mug raised in a quick cheers (a nod to the `mood: caffeinated` line in the `?` panel). Motion is snappy: a one-time slide-in, quick blink, glint sweep. Rules:
 
 - Loose likeness from owner-described features (no photo). Mascot-style line art, not a portrait.
 - Home hero only for now: large beside the teaser speech bubble on desktop, small beside the name below 900px.
