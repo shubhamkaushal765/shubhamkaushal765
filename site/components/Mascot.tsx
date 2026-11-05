@@ -3,12 +3,16 @@
 type Variant = 'lg' | 'sm';
 
 const HAIR =
-  'M61 92 C 55 64, 62 42, 74 34 C 74 26, 84 22, 90 27 C 94 19, 104 18, 106 25 C 112 18, 122 21, 122 29 C 130 28, 136 34, 132 40 C 142 52, 144 72, 139 92 C 137 80, 133 70, 125 64 C 122 70, 117 72, 113 66 C 110 72, 104 72, 101 64 C 97 71, 91 71, 88 64 C 84 70, 78 70, 75 64 C 68 70, 63 80, 61 92 Z';
+  'M63 84 C 58 60, 64 42, 76 34 L 82 16 L 94 28 L 106 10 L 114 26 L 132 14 L 130 32 L 152 30 L 138 46 C 141 58, 140 72, 137 84 C 133 70, 126 62, 116 60 L 108 66 L 100 58 L 90 64 C 78 62, 68 70, 63 84 Z';
+
+const FACE =
+  'M63 80 C 63 50, 80 36, 100 36 C 120 36, 137 50, 137 80 C 137 102, 133 118, 121 127 C 112 133, 88 133, 79 127 C 67 118, 63 102, 63 80 Z';
 
 export default function Mascot({ variant = 'lg', idSuffix }: { variant?: Variant; idSuffix: string }) {
   const decorative = variant === 'sm';
   const titleId = `mascot-title-${idSuffix}`;
   const descId = `mascot-desc-${idSuffix}`;
+  const lensId = `mascot-lens-${idSuffix}`;
   const a11y = decorative
     ? { 'aria-hidden': true as const, focusable: 'false' as const }
     : { role: 'img', 'aria-labelledby': `${titleId} ${descId}` };
@@ -19,20 +23,26 @@ export default function Mascot({ variant = 'lg', idSuffix }: { variant?: Variant
       viewBox="0 0 200 230"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2.25"
+      strokeWidth="2.75"
       strokeLinecap="round"
       strokeLinejoin="round"
       {...a11y}
     >
       {!decorative && (
         <>
-          <title id={titleId}>Line-art mascot of Shubham holding a coffee mug</title>
+          <title id={titleId}>Line-art mascot of Shubham raising a coffee mug, smirking</title>
           <desc id={descId}>
-            A friendly character with a long face, short messy hair, rectangular
-            glasses and a calm smile, clean shaven, wearing a hoodie and holding a steaming mug.
+            A bold line-art character with a long face, swept-back spiky hair,
+            rectangular glasses, one raised eyebrow and a confident smirk, clean
+            shaven, wearing a hoodie and raising a steaming mug in a quick cheers.
           </desc>
         </>
       )}
+      <defs>
+        <clipPath id={lensId}>
+          <rect x="107" y="82" width="25" height="16" rx="3" />
+        </clipPath>
+      </defs>
 
       {/* hoodie: hood rim behind the neck, crew collar, drawstrings */}
       <path
@@ -42,66 +52,72 @@ export default function Mascot({ variant = 'lg', idSuffix }: { variant?: Variant
       />
       <path d="M60 160 C 56 142, 76 131, 100 131 C 124 131, 144 142, 140 160" />
       <path d="M80 153 C 90 162, 110 162, 120 153" />
-      <path d="M86 160 L 84 178" />
-      <path d="M114 160 L 116 178" />
-      <circle cx="83.8" cy="181" r="2.4" fill="currentColor" stroke="none" />
-      <circle cx="116.2" cy="181" r="2.4" fill="currentColor" stroke="none" />
-      <path d="M54 230 L 56 208" />
+      <path d="M86 160 L 84 180" />
+      <path d="M114 160 L 116 180" />
+      <circle cx="83.8" cy="184" r="2.6" fill="currentColor" stroke="none" />
+      <circle cx="116.2" cy="184" r="2.6" fill="currentColor" stroke="none" />
       <path d="M146 230 L 144 208" />
 
-      <g transform="translate(0 7)">
-      <g className="mascot__head">
-        {/* neck */}
-        <path d="M91 126 L 91 146" />
-        <path d="M109 126 L 109 146" />
-        {/* ears */}
-        <path d="M63 86 C 51 84, 51 108, 64 106" fill="var(--color-surface-card)" />
-        <path d="M137 86 C 149 84, 149 108, 136 106" fill="var(--color-surface-card)" />
-        {/* face: long, narrow oval */}
-        <ellipse cx="100" cy="86" rx="38" ry="50" fill="var(--color-surface-card)" />
-        {/* hair: short and messy, cover the crown, then a light tint */}
-        <path d={HAIR} fill="var(--color-surface-card)" />
-        <path d={HAIR} fill="currentColor" fillOpacity="0.2" />
-        <path d="M97 20 C 96 15, 93 12, 89 11" />
-        <path d="M108 21 C 110 15, 114 13, 119 13" />
-        <path d="M78 31 C 75 27, 71 26, 67 27" />
-        <path d="M80 44 C 86 40, 92 39, 97 40" opacity="0.6" />
-        <path d="M106 40 C 113 39, 119 42, 123 46" opacity="0.6" />
-        <path d="M90 52 C 94 49, 99 48, 104 49" opacity="0.6" />
-        {/* brows */}
-        <path d="M73 80 C 78 77, 85 77, 90 79" />
-        <path d="M110 79 C 115 77, 122 77, 127 80" />
-        {/* rectangular glasses */}
-        <rect x="69" y="86" width="25" height="17" rx="3.5" />
-        <rect x="106" y="86" width="25" height="17" rx="3.5" />
-        <path d="M94 92 C 97 89, 103 89, 106 92" />
-        <path d="M69 90 L 62 88" />
-        <path d="M131 90 L 138 88" />
-        {/* eyes */}
-        <g className="mascot__eyes" fill="currentColor" stroke="none">
-          <circle cx="81.5" cy="94.5" r="3" />
-          <circle cx="118.5" cy="94.5" r="3" />
+      <g transform="translate(0 8)">
+        {/* speed lines trailing behind the head */}
+        <g className="mascot__speed" strokeWidth="2.5">
+          <path d="M154 40 L 176 36" />
+          <path d="M152 54 L 184 50" />
+          <path d="M152 68 L 172 66" />
         </g>
-        {/* nose */}
-        <path d="M100 104 C 98 109, 98 111, 102 112" opacity="0.7" />
-        {/* smile */}
-        <path d="M93 121 C 97 125, 103 125, 107 121" />
-      </g>
+        <g className="mascot__head">
+          {/* neck */}
+          <path d="M91 122 L 91 146" />
+          <path d="M109 122 L 109 146" />
+          {/* ears */}
+          <path d="M64 80 C 52 78, 52 102, 65 100" fill="var(--color-surface-card)" />
+          <path d="M136 80 C 148 78, 148 102, 135 100" fill="var(--color-surface-card)" />
+          {/* face: long and narrow, firm jaw */}
+          <path d={FACE} fill="var(--color-surface-card)" />
+          {/* hair: swept back and up, spiky */}
+          <path d={HAIR} fill="var(--color-surface-card)" />
+          <path d={HAIR} fill="currentColor" fillOpacity="0.45" />
+          <path d="M84 46 L 100 34" opacity="0.7" />
+          <path d="M102 48 L 120 36" opacity="0.7" />
+          {/* brows: thick, left set and angled in, right raised */}
+          <path d="M70 72 L 90 77" strokeWidth="4" />
+          <g className="mascot__brow">
+            <path d="M110 74 C 116 67, 124 66, 131 69" strokeWidth="4" />
+          </g>
+          {/* rectangular glasses, heavy frame */}
+          <rect x="68" y="82" width="25" height="16" rx="3" strokeWidth="3.25" />
+          <rect x="107" y="82" width="25" height="16" rx="3" strokeWidth="3.25" />
+          <path d="M93 88 C 96 85, 104 85, 107 88" strokeWidth="3" />
+          <path d="M68 86 L 63 84" strokeWidth="3" />
+          <path d="M132 86 L 137 84" strokeWidth="3" />
+          {/* lens glint */}
+          <g clipPath={`url(#${lensId})`}>
+            <path className="mascot__glint" d="M117 96 L 125 84" strokeWidth="2" opacity="0.85" />
+          </g>
+          {/* eyes, glancing toward the mug */}
+          <g className="mascot__eyes" fill="currentColor" stroke="none">
+            <circle cx="78.5" cy="90" r="3.2" />
+            <circle cx="117.5" cy="90" r="3.2" />
+          </g>
+          {/* nose */}
+          <path d="M100 98 C 98 103, 98 105, 102 106" opacity="0.75" />
+          {/* smirk: one side up */}
+          <path d="M91 114 C 97 117, 105 116, 111 109" />
+          <path d="M111 109 L 114 110" />
+        </g>
       </g>
 
-      {/* steam */}
-      <g className="mascot__steam" strokeWidth="2">
-        <path className="mascot__steam-line" d="M92 186 C 88 180, 96 176, 92 168" />
-        <path className="mascot__steam-line" d="M100 186 C 96 178, 104 174, 100 164" />
-        <path className="mascot__steam-line" d="M108 186 C 104 180, 112 176, 108 168" />
+      {/* raised arm, mug up at shoulder height */}
+      <path d="M26 214 C 24 196, 28 178, 34 164 L 56 168 C 52 180, 50 196, 52 212" fill="var(--color-surface-card)" />
+      <g className="mascot__steam" strokeWidth="2.25">
+        <path className="mascot__steam-line" d="M38 120 C 35 116, 41 113, 38 108" />
+        <path className="mascot__steam-line" d="M47 119 C 44 115, 50 112, 47 106" />
       </g>
-      {/* mug, the single accent detail, cupped in both hands */}
       <g className="mascot__mug">
-        <path d="M82 190 L 84 220 C 84 224, 86 226, 90 226 L 110 226 C 114 226, 116 224, 116 220 L 118 190 Z" fill="var(--color-surface-card)" />
-        <path d="M82 190 L 118 190" />
+        <path d="M27 134 C 18 134, 18 148, 27 148" />
+        <path d="M27 124 L 28 152 C 28 156, 30 158, 34 158 L 52 158 C 56 158, 58 156, 58 152 L 59 124 Z" fill="var(--color-surface-card)" />
       </g>
-      <rect x="71" y="202" width="17" height="21" rx="8.5" fill="var(--color-surface-card)" />
-      <rect x="112" y="202" width="17" height="21" rx="8.5" fill="var(--color-surface-card)" />
+      <rect x="47" y="138" width="18" height="26" rx="9" fill="var(--color-surface-card)" />
     </svg>
   );
 }
