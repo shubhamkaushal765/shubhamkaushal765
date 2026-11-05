@@ -100,7 +100,7 @@ One *primary* accent + a four-hue *pillar dimension family*. The primary accent 
 
 | Token | Hex (dark) | Hex (light) | Use |
 |-------|------------|-------------|-----|
-| `--color-accent` | `#22d3ee` | `#0369a1` | Links, inline `code`, focus rings, top-of-page hairline, footnote markers (`fn-ref`), hero-tagline fade animation. Same value as `--color-pillar-code`. |
+| `--color-accent` | `#22d3ee` | `#0369a1` | Links, inline `code`, focus rings, top-of-page hairline, footnote markers (`fn-ref`), hero-tagline fade animation. Same value as `--color-pillar-code`. Pillar hues additionally apply to home Four pillars story step `h3`s and the stage-synced figure stroke. |
 | `--color-pillar-code` | `#22d3ee` | `#0369a1` | Pillar-coded elements where the pillar is *code intelligence*. Hue: cyan (dark) / sky (light). |
 | `--color-pillar-ml` | `#a78bfa` | `#6d28d9` | Pillar-coded elements where the pillar is *machine learning*. Hue: violet. |
 | `--color-pillar-quantum` | `#34d399` | `#047857` | Pillar-coded elements where the pillar is *quantum computing*. Hue: emerald. |
@@ -154,7 +154,7 @@ the line works at every surface step.
 
 ## Hero diagram
 
-The canonical ASCII pillar diagram is the single shared visual motif across the README and site Home/About. It is reproduced verbatim from `.agent/profile-system.md` § Personality motifs. Do not modify the characters, the spacing, or the case.
+The canonical ASCII pillar diagram is the single shared visual motif across the README and site Home/About. It is reproduced verbatim from `.agent/profile-system.md` § Personality motifs. Do not modify the characters, the spacing, or the case. On the site, the pillar diagram renders as the closing map of the home Four pillars story (`.parse-story__map`); still the home page, string unchanged.
 
 ### Implementation rules
 
@@ -162,7 +162,7 @@ The canonical ASCII pillar diagram is the single shared visual motif across the 
 - Font: `var(--font-mono)` (JetBrains Mono, then Berkeley Mono, Geist Mono, ui-monospace fallbacks).
 - Line height: `1.2`.
 - No surrounding background, border, or box-shadow.
-- The `parsers -> qubits.` line is the single accent reveal: opacity 0 → 1 fade over 200ms on initial render, then static at `var(--color-accent)` (`#22d3ee` dark, `#0369a1` light). No hover state, no other animation.
+- The `parsers -> qubits.` line is the single accent reveal: opacity 0 → 1 fade over 400ms (`accent-fade-in` in `globals.css`) on initial render, then static at `var(--color-accent)` (`#22d3ee` dark, `#0369a1` light). No hover state, no other animation.
 - ASCII only: `+`, `-`, `|`, `\`, `/`, `>`. No Unicode arrows. No box-drawing characters. No emoji.
 - Width is fixed at 60 characters between the `+` borders.
 
@@ -299,16 +299,22 @@ introduction of new colors.
 
 ### Allowed animations (updated)
 
-The single allowed site animation is the 200ms accent fade on the home hero
-tagline. Any further addition requires a documentation step here.
+Any further animation requires a documentation step here.
 
 | Animation | Where | Duration | Easing | Behavior |
 |-----------|-------|----------|--------|----------|
-| Accent reveal | `.hero-tagline` on `/` | 200ms | ease-out | One play on initial paint |
+| Accent reveal (tagline fade) | `.hero-tagline` on `/` | per `accent-fade-in` in `globals.css` | ease-out | One play on initial paint |
+| Blink cursor | `.blink-cursor` | 1.05s steps | steps(1, end) | Infinite blink |
+| MZI beams | `.mzi-beam--a/b`, `.mzi-phase-dot` (photonics MDX) | 4s | ease-in-out | Infinite sweep and phase pulse |
+| Parse-story stage transitions | `.parse-story__node` on `/` | transform 600ms, opacity 400ms | ease-out | Driven by `data-stage` on `.parse-story`, set by an IntersectionObserver in `StageObserver.tsx` |
+| Stage-4 pulse | waveguide dash in the `.parse-story__figure` | 2.6s (`ps-travel` keyframes) | linear | `stroke-dashoffset` only, active only when `data-stage="4"` |
 
-The animation is CSS-only. No `'use client'` anywhere in the chain.
-Reduced-motion overrides live in the single `@media (prefers-reduced-motion:
-reduce)` block at the end of `globals.css`.
+The tagline fade, blink cursor, and MZI beams are CSS-only. `ParseStory.tsx`
+is a server component; `StageObserver.tsx` is the only client island in the
+story and only sets `data-stage` via `setAttribute`. `HelpDialog.tsx` is a
+client component and has no animation. Every animation above has a rule in a
+`prefers-reduced-motion` block in `globals.css` (stage nodes resolve to 0s transitions; the stage-4 dash is
+static at the midpoint).
 
 ---
 

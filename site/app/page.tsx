@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Hero from '@/components/Hero';
+import ParseStory from '@/components/ParseStory';
 import FooterSignature from '@/components/FooterSignature';
 import Content from '@/content/home.mdx';
 
@@ -26,6 +27,7 @@ export default function HomePage() {
   return (
     <main id="main">
       <Hero variant="full" />
+      <ParseStory />
       <Content />
       <FooterSignature />
     </main>

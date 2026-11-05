@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import { Inter, Fraunces, JetBrains_Mono } from 'next/font/google';
 import SkipLink from '@/components/SkipLink';
+import HelpDialog from '@/components/HelpDialog';
 import '@/styles/globals.css';
 
 const sans = Inter({
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <SkipLink />
         {children}
+        <HelpDialog />
       </body>
     </html>
   );

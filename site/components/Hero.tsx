@@ -1,4 +1,3 @@
-import PillarDiagram from './PillarDiagram';
 import Nav from './Nav';
 import StatsLine from './StatsLine';
 import PromptGlyph from './PromptGlyph';
@@ -43,7 +42,14 @@ export default function Hero({ variant = 'full' }: { variant?: Variant }) {
           </p>
           <StatsLine />
         </div>
-        <PillarDiagram />
+        <div className="hero__teaser">
+          <p className="hero__teaser-code" aria-hidden="true">
+            let y = x + 1;<span className="blink-cursor" />
+          </p>
+          <p className="hero__teaser-hint">
+            <a href="#four-pillars">{'// scroll: watch it compile into qubits'}</a>
+          </p>
+        </div>
       </div>
     </header>
   );
